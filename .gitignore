@@ -1,0 +1,8 @@
+.gradle
+build/
+
+# ignore eclipse specific files
+bin/
+/.settings
+/.project
+/.classpath
