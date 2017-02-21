@@ -1,13 +1,14 @@
 # Dessert
 
 The name is a short form of _De_pendency A_ssert_. Hence Dessert is a library to check assertions for
-dependencies. Typically it is used for unit-test.
+dependencies. Typically it is used in unit-tests.
 
 ## Goals
 
 - No additional dependencies but plain Java 8.
 - Simple and intuitive API.
-- Tests should be robust against refactorings (no strings for class or package names)
+- Assertions should be robust against refactorings (no strings for class or package names)
+- Easy and seamlessly integratable with other testing or assertion frameworks.
 - Speed.
 
 ## Progress
