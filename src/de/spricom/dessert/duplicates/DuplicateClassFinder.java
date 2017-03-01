@@ -31,6 +31,7 @@ public class DuplicateClassFinder implements ClassVisitor {
 
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
         DuplicateClassFinder finder = new DuplicateClassFinder();
+        String path = System.getProperty("java.class.path");
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
             case "-hashAlgorithm":
@@ -42,9 +43,13 @@ public class DuplicateClassFinder implements ClassVisitor {
             case "-continueOnDuplicate":
                 finder.setContinueOnDuplicate(true);
                 break;
+            case "-scanPath":
+                path = args[++i];
+                break;
             }
         }
-        finder.process(System.getProperty("java.class.path"));
+        logger.info("Processing " + path.replace(File.pathSeparator, File.pathSeparator + System.getProperty("line.separator")));
+        finder.process(path);
     }
 
     public void process(String classPath) throws IOException, NoSuchAlgorithmException {

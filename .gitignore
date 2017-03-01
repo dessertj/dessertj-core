@@ -4,6 +4,6 @@
 
 # ignore eclipse specific files
 /bin/
-/.settings
+/.settings/
 /.project
 /.classpath
