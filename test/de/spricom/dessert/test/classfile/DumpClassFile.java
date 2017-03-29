@@ -47,7 +47,7 @@ public class DumpClassFile {
 		System.out.println("fields:");
 		for (FieldInfo field : cf.getFields()) {
 			System.out.print("  ");
-			System.out.print(field.getDescriptor());
+			System.out.print(field.getFieldType());
 			System.out.print(" ");
 			System.out.print(field.getName());
 			System.out.println(";");

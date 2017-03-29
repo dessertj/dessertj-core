@@ -30,7 +30,7 @@ the same class on the class-path. You can use it like that:
 	}
 	
 	dependencies {
-		dessert 'com.github.hajo70:dessert:-SNAPSHOT'
+		dessert 'com.github.hajo70:dessert:0.1'
 		
 		runtime 'org.apache.httpcomponents:httpclient:4.5.3'
 		runtime 'org.keycloak:keycloak-osgi-thirdparty:1.1.1.Final'

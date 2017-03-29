@@ -10,4 +10,13 @@ public class FieldInfo extends MemberInfo {
 	public static final int ACC_TRANSIENT = 0x0080; // Declared transient; not written or read by a persistent object manager.
 	public static final int ACC_SYNTHETIC = 0x1000; // Declared synthetic; not present in the source code.
 	public static final int ACC_ENUM = 0x4000; // Declared as an element of an enum.
+	
+	private FieldType fieldType;
+	
+	public FieldType getFieldType() {
+		if (fieldType == null) {
+			fieldType = new FieldType(getDescriptor());
+		}
+		return fieldType;
+	}
 }
