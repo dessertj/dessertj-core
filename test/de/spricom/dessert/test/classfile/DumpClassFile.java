@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.Test;
+import org.springframework.aop.framework.autoproxy.BeanFactoryAdvisorRetrievalHelper;
+import org.springframework.aop.target.dynamic.BeanFactoryRefreshableTargetSource;
 import org.springframework.context.ApplicationContext;
 
 import de.spricom.dessert.classfile.ClassFile;
@@ -39,6 +41,16 @@ public class DumpClassFile {
 		dump(ApplicationContext.class);
 	}
 
+	@Test
+	public void testSpringApoFactory() throws IOException {
+		dump(BeanFactoryRefreshableTargetSource.class);
+	}
+
+	@Test
+	public void testSpringAopHelper() throws IOException {
+		dump(BeanFactoryAdvisorRetrievalHelper.class);
+	}
+
 	private void dump(Class<?> clazz) throws IOException {
 		ClassFile cf = new ClassFile(clazz);
 		System.out.println(cf.getThisClass());
@@ -47,18 +59,12 @@ public class DumpClassFile {
 		System.out.println("fields:");
 		for (FieldInfo field : cf.getFields()) {
 			System.out.print("  ");
-			System.out.print(field.getFieldType());
-			System.out.print(" ");
-			System.out.print(field.getName());
-			System.out.println(";");
+			System.out.println(field.getDeclaration());
 		}
 		System.out.println("methods:");
 		for (MethodInfo method : cf.getMethods()) {
 			System.out.print("  ");
-			System.out.print(method.getDescriptor());
-			System.out.print(" ");
-			System.out.print(method.getName());
-			System.out.println(";");
+			System.out.println(method.getDeclaration());
 		}
 		System.out.println("depends:");
 		cf.getDependentClasses().forEach(c -> System.out.println("  " + c));

@@ -4,7 +4,7 @@ public class FieldType {
 	private int arrayDimensions;
 	private Class<?> primitiveType;
 	private String objectTypeClassname;
-	
+
 	public FieldType(String descriptor) {
 		int i = 0;
 		while (descriptor.charAt(i) == '[') {
@@ -31,17 +31,22 @@ public class FieldType {
 			primitiveType = Long.TYPE;
 			break;
 		case 'L':
-			objectTypeClassname = descriptor.substring(i + 1, descriptor.indexOf(';', i+1)).replace('/', '.');
+			objectTypeClassname = descriptor.substring(i + 1, descriptor.indexOf(';', i + 1)).replace('/', '.');
 			break;
 		case 'S':
 			primitiveType = Short.TYPE;
 			break;
+		case 'V':
+			primitiveType = Void.TYPE;
+			break;
 		case 'Z':
 			primitiveType = Boolean.TYPE;
 			break;
+		default:
+			throw new IllegalArgumentException("Invalid field descriptor: " + descriptor);
 		}
 	}
-	
+
 	public int getDescriptorLength() {
 		if (isPrimitiveType()) {
 			return arrayDimensions + 1;
@@ -49,22 +54,26 @@ public class FieldType {
 			return arrayDimensions + objectTypeClassname.length() + 2;
 		}
 	}
-	
+
 	public boolean isArrayType() {
 		return arrayDimensions > 0;
 	}
-	
+
 	public boolean isPrimitiveType() {
-		return primitiveType != null;
+		return primitiveType != null && !isVoidType();
 	}
-	
+
+	public boolean isVoidType() {
+		return Void.TYPE == primitiveType;
+	}
+
 	public boolean isObjectType() {
 		return primitiveType == null;
 	}
-	
-	public String getName() {
+
+	public String getDeclaration() {
 		StringBuilder sb = new StringBuilder();
-		if (isPrimitiveType()) {
+		if (primitiveType != null) {
 			sb.append(primitiveType.getName());
 		} else {
 			sb.append(objectTypeClassname);
@@ -74,11 +83,11 @@ public class FieldType {
 		}
 		return sb.toString();
 	}
-	
+
 	public String toString() {
-		return getName();
+		return getDeclaration();
 	}
-	
+
 	public String getObjectTypeClassname() {
 		return objectTypeClassname;
 	}

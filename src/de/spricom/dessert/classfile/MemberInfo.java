@@ -1,10 +1,20 @@
 package de.spricom.dessert.classfile;
 
 abstract class MemberInfo {
-	protected int accessFlags;
+	private int accessFlags;
 	private String name;
 	private String descriptor;
 	private AttributeInfo[] attributes;
+
+	protected boolean is(int accessFlag) {
+		return (accessFlags & accessFlag) == accessFlag;
+	}
+	
+	public abstract String getDeclaration();
+
+	public String toString() {
+		return getDeclaration();
+	}
 
 	public int getAccessFlags() {
 		return accessFlags;
