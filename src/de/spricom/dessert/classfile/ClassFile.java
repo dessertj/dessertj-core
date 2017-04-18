@@ -151,6 +151,9 @@ public class ClassFile {
 
 	private String getConstantClassName(int index) {
 		ConstantClass clazz = (ConstantClass) constantPool[index];
+		if (clazz == null) {
+			return null;
+		}
 		ConstantUtf8 utf8 = (ConstantUtf8) constantPool[clazz.getNameIndex()];
 		return utf8.getValue().replace('/', '.');
 	}
@@ -265,10 +268,7 @@ public class ClassFile {
 			entry.setStartPc(is.readUnsignedShort());
 			entry.setEndPc(is.readUnsignedShort());
 			entry.setHandlerPc(is.readUnsignedShort());
-			int cacheTypeIndex = is.readUnsignedShort();
-			if (cacheTypeIndex != 0) {
-				entry.setCatchType(getConstantClassName(cacheTypeIndex));
-			}
+			entry.setCatchType(getConstantClassName(is.readUnsignedShort()));
 			exceptionTable[i] = entry;
 		}
 		code.setAttributes(readAttributes(is.readUnsignedShort(), is,
