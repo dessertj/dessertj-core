@@ -57,6 +57,7 @@ public class CheckAllDependenciesTest implements ClassVisitor {
 		Set<String> dependencies = new TreeSet<>();
 		ProcessBuilder pb = new ProcessBuilder("jDeps", "-cp", root.getAbsolutePath(), "-verbose:class", className);
 		pb.redirectErrorStream(true);
+		System.out.println("\n" + pb.command());
 		Process p = pb.start();
 		BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
 		boolean deps = false;
