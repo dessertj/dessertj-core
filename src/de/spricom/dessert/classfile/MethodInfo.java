@@ -18,39 +18,23 @@ public class MethodInfo extends MemberInfo {
 	public static final int ACC_STRICT = 0x0800; // Declared strictfp; floating-point mode is FP-strict.
 	public static final int ACC_SYNTHETIC = 0x1000; // Declared synthetic; not present in the source code.
 
-	private FieldType[] parameterTypes;
-	private FieldType returnType;
+	private MethodType methodType;
+	
+	public MethodType getMethodType() {
+		if (methodType == null) {
+			methodType = new MethodType(getDescriptor());
+		}
+		return methodType;
+	}
 	
 	public FieldType[] getParameterTypes() {
-		ensureDescriptorParsed();
-		return parameterTypes;
+		return getMethodType().getParameterTypes();
 	}
 	
 	public FieldType getReturnType() {
-		ensureDescriptorParsed();
-		return returnType;
+		return getMethodType().getReturnType();
 	}
 
-	private void ensureDescriptorParsed() {
-		if (parameterTypes != null) {
-			return;
-		}
-		String descriptor = Objects.requireNonNull(getDescriptor(), "descriptor = null");
-		if ('(' != descriptor.charAt(0)) {
-			throw new IllegalArgumentException("Invalid method descriptor: " + descriptor);
-		}
-		List<FieldType> params = new ArrayList<>();
-		int index = 1;
-		while (')' != descriptor.charAt(index)) {
-			FieldType param = new FieldType(descriptor.substring(index));
-			params.add(param);
-			index += param.getDescriptorLength();
-		}
-		parameterTypes = params.toArray(new FieldType[params.size()]);
-		index++;
-		returnType = new FieldType(descriptor.substring(index));
-	}
-	
 	public String getDeclaration() {
 		StringBuilder sb = new StringBuilder();
 		if (is(ACC_PUBLIC)) {
@@ -89,12 +73,12 @@ public class MethodInfo extends MemberInfo {
 		if (is(ACC_SYNTHETIC)) {
 			sb.append("synthetic ");
 		}
-		ensureDescriptorParsed();
 		sb.append(getReturnType().getDeclaration());
 		sb.append(" ");
 		sb.append(getName());
 		sb.append("(");
 		int i = 1;
+		FieldType[] parameterTypes = getParameterTypes();
 		for (FieldType parameterType : parameterTypes) {
 			sb.append(parameterType.getDeclaration());
 			if (i < parameterTypes.length) {
