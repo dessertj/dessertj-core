@@ -111,12 +111,6 @@ public class DumpMostDependencies implements ClassVisitor {
 			System.out.println(rec);
 		}
 	}
-
-	public void dumpSystemProperties() {
-		for (Object key : System.getProperties().keySet()) {
-			System.out.println(key + " := " + System.getProperty((String) key)); 
-		}
-	}
 	
 	@Override
 	public void visit(File root, String classname, InputStream content) {

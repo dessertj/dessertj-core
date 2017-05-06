@@ -22,6 +22,11 @@ public class DumpClassFile {
 	}
 
 	@Test
+	public void testClassfile() throws IOException {
+		dump(ClassFile.class);
+	}
+
+	@Test
 	public void testPathProcessor() throws IOException {
 		dump(PathProcessor.class);
 	}
@@ -49,6 +54,11 @@ public class DumpClassFile {
 	@Test
 	public void testSpringAopHelper() throws IOException {
 		dump(BeanFactoryAdvisorRetrievalHelper.class);
+	}
+
+	@Test
+	public void test594Dependencies() throws IOException {
+		dump(com.gargoylesoftware.htmlunit.javascript.configuration.JavaScriptConfiguration.class);
 	}
 
 	private void dump(Class<?> clazz) throws IOException {
