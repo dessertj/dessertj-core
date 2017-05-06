@@ -288,6 +288,7 @@ public class ClassFile {
 		for (MethodInfo methodInfo : methods) {
 			methodInfo.getMethodType().addDependendClassNames(classNames);
 		}
+		classNames.remove(thisClass);
 		return classNames;
 	}
 

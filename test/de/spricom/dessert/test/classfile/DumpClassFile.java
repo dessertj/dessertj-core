@@ -2,7 +2,9 @@ package de.spricom.dessert.test.classfile;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Set;
 
+import static org.fest.assertions.Assertions.*;
 import org.junit.Test;
 import org.springframework.aop.framework.autoproxy.BeanFactoryAdvisorRetrievalHelper;
 import org.springframework.aop.target.dynamic.BeanFactoryRefreshableTargetSource;
@@ -77,7 +79,12 @@ public class DumpClassFile {
 			System.out.println(method.getDeclaration());
 		}
 		System.out.println("depends:");
-		cf.getDependentClasses().forEach(c -> System.out.println("  " + c));
+		Set<String> dependentClasses = cf.getDependentClasses();
+		dependentClasses.forEach(c -> System.out.println("  " + c));
+		assertThat(dependentClasses).excludes(clazz.getName());
+		if (clazz.getSuperclass() != null) {
+			assertThat(dependentClasses).contains(clazz.getSuperclass().getName());
+		}
 		System.out.println("constant pool:");
 		System.out.println(cf.dumpConstantPool());
 	}

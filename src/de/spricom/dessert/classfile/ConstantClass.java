@@ -30,9 +30,6 @@ class ConstantClass extends ConstantPoolEntry {
 	@Override
 	protected void addClassNames(Set<String> classNames, ClassFile cf) {
 		String name = getName(cf);
-		if (name.equals(cf.getThisClass())) {
-			return;
-		}
 		Matcher matcher = classArrayPattern.matcher(name);
 		String classname;
 		if (matcher.matches()) {
