@@ -1,5 +1,7 @@
 package de.spricom.dessert.classfile;
 
+import java.util.Set;
+
 class ConstantFieldref extends ConstantPoolEntry {
 	public static final int TAG = 9;
 	private final int classIndex;
@@ -22,5 +24,15 @@ class ConstantFieldref extends ConstantPoolEntry {
 
 	public int getNameAndTypeIndex() {
 		return nameAndTypeIndex;
+	}
+
+	@Override
+	protected void addClassNames(Set<String> classNames, ClassFile cf) {
+		ConstantNameAndType nameAndType = (ConstantNameAndType) cf.getConstantPoolEntry(nameAndTypeIndex);
+		ConstantUtf8 descriptor = (ConstantUtf8) cf.getConstantPoolEntry(nameAndType.getDescriptorIndex());
+		FieldType type = new FieldType(descriptor.getValue());
+		if (type.isObjectType()) {
+			classNames.add(type.getObjectTypeClassname());
+		}
 	}
 }
