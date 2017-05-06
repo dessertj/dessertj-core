@@ -30,9 +30,6 @@ class ConstantFieldref extends ConstantPoolEntry {
 	protected void addClassNames(Set<String> classNames, ClassFile cf) {
 		ConstantNameAndType nameAndType = (ConstantNameAndType) cf.getConstantPoolEntry(nameAndTypeIndex);
 		ConstantUtf8 descriptor = (ConstantUtf8) cf.getConstantPoolEntry(nameAndType.getDescriptorIndex());
-		FieldType type = new FieldType(descriptor.getValue());
-		if (type.isObjectType()) {
-			classNames.add(type.getObjectTypeClassname());
-		}
+		new FieldType(descriptor.getValue()).addDependendClassNames(classNames);
 	}
 }

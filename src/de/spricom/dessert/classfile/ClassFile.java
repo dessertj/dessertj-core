@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ClassFile {
 	public static final int MAGIC = 0xCAFEBABE;
@@ -278,29 +276,19 @@ public class ClassFile {
 	}
 
 	public Set<String> getDependentClasses() {
-		Set<String> classes = new TreeSet<>();
+		Set<String> classNames = new TreeSet<>();
 		for (int i = 1; i < constantPool.length; i++) {
 			if (constantPool[i] != null) {
-				constantPool[i].addDependendClassNames(classes, this);
+				constantPool[i].addDependendClassNames(classNames, this);
 			}
 		}
 		for (FieldInfo fieldInfo : fields) {
-			if (fieldInfo.getFieldType().isObjectType()) {
-				classes.add(fieldInfo.getFieldType().getObjectTypeClassname());
-			}
+			fieldInfo.getFieldType().addDependendClassNames(classNames);
 		}
 		for (MethodInfo methodInfo : methods) {
-			if (methodInfo.getReturnType().isObjectType()) {
-				classes.add(
-						methodInfo.getReturnType().getObjectTypeClassname());
-			}
-			for (FieldType parameterType : methodInfo.getParameterTypes()) {
-				if (parameterType.isObjectType()) {
-					classes.add(parameterType.getObjectTypeClassname());
-				}
-			}
+			methodInfo.getMethodType().addDependendClassNames(classNames);
 		}
-		return classes;
+		return classNames;
 	}
 
 	public String dumpConstantPool() {

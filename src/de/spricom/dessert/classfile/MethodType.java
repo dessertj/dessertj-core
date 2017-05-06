@@ -3,6 +3,7 @@ package de.spricom.dessert.classfile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class MethodType {
 	private final FieldType[] parameterTypes;
@@ -23,6 +24,13 @@ public class MethodType {
 		parameterTypes = params.toArray(new FieldType[params.size()]);
 		index++;
 		returnType = new FieldType(descriptor.substring(index));
+	}
+
+	public final void addDependendClassNames(Set<String> classNames) {
+		for (FieldType parameterType : parameterTypes) {
+			parameterType.addDependendClassNames(classNames);
+		}
+		returnType.addDependendClassNames(classNames);
 	}
 
 	public FieldType[] getParameterTypes() {

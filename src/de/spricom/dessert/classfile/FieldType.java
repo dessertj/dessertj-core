@@ -1,5 +1,7 @@
 package de.spricom.dessert.classfile;
 
+import java.util.Set;
+
 public class FieldType {
 	private int arrayDimensions;
 	private Class<?> primitiveType;
@@ -82,6 +84,12 @@ public class FieldType {
 			sb.append("[]");
 		}
 		return sb.toString();
+	}
+	
+	public final void addDependendClassNames(Set<String> classNames) {
+		if (isObjectType()) {
+			classNames.add(getObjectTypeClassname());
+		}
 	}
 
 	public String toString() {

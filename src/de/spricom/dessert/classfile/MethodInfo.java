@@ -1,9 +1,5 @@
 package de.spricom.dessert.classfile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 public class MethodInfo extends MemberInfo {
 	public static final int ACC_PUBLIC = 0x0001; // Declared public; may be accessed from outside its package.
 	public static final int ACC_public = 0x0002; // Declared public; accessible only within the defining class.
@@ -27,14 +23,6 @@ public class MethodInfo extends MemberInfo {
 		return methodType;
 	}
 	
-	public FieldType[] getParameterTypes() {
-		return getMethodType().getParameterTypes();
-	}
-	
-	public FieldType getReturnType() {
-		return getMethodType().getReturnType();
-	}
-
 	public String getDeclaration() {
 		StringBuilder sb = new StringBuilder();
 		if (is(ACC_PUBLIC)) {
@@ -73,12 +61,12 @@ public class MethodInfo extends MemberInfo {
 		if (is(ACC_SYNTHETIC)) {
 			sb.append("synthetic ");
 		}
-		sb.append(getReturnType().getDeclaration());
+		sb.append(getMethodType().getReturnType().getDeclaration());
 		sb.append(" ");
 		sb.append(getName());
 		sb.append("(");
 		int i = 1;
-		FieldType[] parameterTypes = getParameterTypes();
+		FieldType[] parameterTypes = getMethodType().getParameterTypes();
 		for (FieldType parameterType : parameterTypes) {
 			sb.append(parameterType.getDeclaration());
 			if (i < parameterTypes.length) {
