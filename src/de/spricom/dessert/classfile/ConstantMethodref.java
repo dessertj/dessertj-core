@@ -1,5 +1,7 @@
 package de.spricom.dessert.classfile;
 
+import java.util.Set;
+
 class ConstantMethodref extends ConstantPoolEntry {
 	public static final int TAG = 10;
 	private final int classIndex;
@@ -23,4 +25,12 @@ class ConstantMethodref extends ConstantPoolEntry {
 	public int getNameAndTypeIndex() {
 		return nameAndTypeIndex;
 	}
+	
+	@Override
+	protected void addClassNames(Set<String> classNames, ClassFile cf) {
+		ConstantNameAndType nameAndType = (ConstantNameAndType) cf.getConstantPoolEntry(nameAndTypeIndex);
+		ConstantUtf8 descriptor = (ConstantUtf8) cf.getConstantPoolEntry(nameAndType.getDescriptorIndex());
+		new MethodType(descriptor.getValue()).addDependendClassNames(classNames);
+	}
+
 }
