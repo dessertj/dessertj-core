@@ -12,8 +12,6 @@ import java.util.regex.Pattern;
 
 public class ClassFile {
 	public static final int MAGIC = 0xCAFEBABE;
-	private static final Pattern classArrayPattern = Pattern
-			.compile("\\[+L(.*);");
 
 	public static final int ACC_PUBLIC = 0x0001; // Declared public; may be
 													// accessed from outside its
@@ -154,8 +152,7 @@ public class ClassFile {
 		if (clazz == null) {
 			return null;
 		}
-		ConstantUtf8 utf8 = (ConstantUtf8) constantPool[clazz.getNameIndex()];
-		return utf8.getValue().replace('/', '.');
+		return clazz.getName(this);
 	}
 
 	private void readInterfaces(DataInputStream is) throws IOException {
@@ -283,27 +280,8 @@ public class ClassFile {
 	public Set<String> getDependentClasses() {
 		Set<String> classes = new TreeSet<>();
 		for (int i = 1; i < constantPool.length; i++) {
-			if (constantPool[i] != null
-					&& constantPool[i] instanceof ConstantClass) {
-				String name = getConstantClassName(i);
-				if (name == thisClass) {
-					continue;
-				}
-				Matcher matcher = classArrayPattern.matcher(name);
-				String classname;
-				if (matcher.matches()) {
-					classname = matcher.group(1);
-				} else if (name.startsWith("[")) {
-					// ignore arrays of primitive types
-					continue;
-				} else {
-					classname = name;
-				}
-				int pos = classname.indexOf('$');
-				if (pos != -1) {
-					classname = classname.substring(0, pos);
-				}
-				classes.add(classname);
+			if (constantPool[i] != null) {
+				constantPool[i].addDependendClassNames(classes, this);
 			}
 		}
 		for (FieldInfo fieldInfo : fields) {
