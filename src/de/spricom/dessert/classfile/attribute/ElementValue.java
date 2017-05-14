@@ -1,7 +1,11 @@
-package de.spricom.dessert.classfile;
+package de.spricom.dessert.classfile.attribute;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+
+import de.spricom.dessert.classfile.ConstantPoolEntry;
+import de.spricom.dessert.classfile.ConstantUtf8;
+import de.spricom.dessert.classfile.FieldType;
 
 public class ElementValue {
 	private char tag;

@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class ConstantClass extends ConstantPoolEntry {
+public class ConstantClass extends ConstantPoolEntry {
 	public static final int TAG = 7;
 	private static final Pattern classArrayPattern = Pattern.compile("\\[+L(.*);");
 	private final int nameIndex;

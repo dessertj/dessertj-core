@@ -1,6 +1,6 @@
-package de.spricom.dessert.classfile;
+package de.spricom.dessert.classfile.attribute;
 
-class ExceptionTableEntry {
+public class ExceptionTableEntry {
     private int startPc;
     private int endPc;
     private int handlerPc;

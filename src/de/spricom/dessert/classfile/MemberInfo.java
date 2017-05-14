@@ -1,5 +1,7 @@
 package de.spricom.dessert.classfile;
 
+import de.spricom.dessert.classfile.attribute.AttributeInfo;
+
 abstract class MemberInfo {
 	private int accessFlags;
 	private String name;

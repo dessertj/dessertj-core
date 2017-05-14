@@ -1,0 +1,25 @@
+package de.spricom.dessert.classfile.attribute;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+
+import de.spricom.dessert.classfile.ConstantPoolEntry;
+import de.spricom.dessert.classfile.ConstantUtf8;
+
+public class RuntimeVisibleAnnotationsAttribute extends AttributeInfo {
+	private final Annotation[] annotations;
+
+	public RuntimeVisibleAnnotationsAttribute(ConstantUtf8 name, DataInputStream is,
+			ConstantPoolEntry[] constantPoolEntries) throws IOException {
+		super(name.getValue());
+		is.readInt(); // skip length
+		annotations = new Annotation[is.readUnsignedShort()];
+		for (int i = 0; i < annotations.length; i++) {
+			annotations[i] = new Annotation(is, constantPoolEntries);
+		}
+	}
+
+	public Annotation[] getAnnotations() {
+		return annotations;
+	}
+}

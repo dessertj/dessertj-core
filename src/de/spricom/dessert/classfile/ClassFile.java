@@ -8,6 +8,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
+import de.spricom.dessert.classfile.attribute.Annotation;
+import de.spricom.dessert.classfile.attribute.AttributeInfo;
+import de.spricom.dessert.classfile.attribute.CodeAttribute;
+import de.spricom.dessert.classfile.attribute.ConstantValueAttribute;
+import de.spricom.dessert.classfile.attribute.ExceptionTableEntry;
+import de.spricom.dessert.classfile.attribute.RuntimeVisibleAnnotationsAttribute;
+import de.spricom.dessert.classfile.attribute.UnknownAttribute;
+
 public class ClassFile {
 	public static final int MAGIC = 0xCAFEBABE;
 
@@ -68,7 +76,7 @@ public class ClassFile {
 				readInterfaces(is);
 				readFields(is);
 				readMethods(is);
-				attributes = readAttributes(is.readUnsignedShort(), is, constantPool);
+				attributes = AttributeInfo.readAttributes(is, constantPool);
 				if (is.read() != -1) {
 					throw new IOException("EOF not reached!");
 				}
@@ -172,92 +180,11 @@ public class ClassFile {
 		member.setAccessFlags(is.readUnsignedShort());
 		member.setName(readString(is));
 		member.setDescriptor(readString(is));
-		member.setAttributes(readAttributes(is.readUnsignedShort(), is, constantPool));
+		member.setAttributes(AttributeInfo.readAttributes(is, constantPool));
 	}
 
 	private String readString(DataInputStream is) throws IOException {
 		return ((ConstantUtf8) constantPool[is.readUnsignedShort()]).getValue();
-	}
-
-	private AttributeInfo[] readAttributes(int attributeCount, DataInputStream is,
-			ConstantPoolEntry[] constantPoolEntries) throws IOException {
-		AttributeInfo[] attributes = new AttributeInfo[attributeCount];
-		for (int i = 0; i < attributeCount; i++) {
-			ConstantUtf8 name = (ConstantUtf8) constantPoolEntries[is.readUnsignedShort()];
-			switch (name.getValue()) {
-			case "ConstantValue":
-				attributes[i] = readConstantValueAttribute(name, is, constantPoolEntries);
-				break;
-			case "Code":
-				attributes[i] = readCodeAttribute(name, is, constantPoolEntries);
-				break;
-			case "RuntimeVisibleAnnotationsAttribute":
-				attributes[i] = readRuntimeVisibleAnnotationsAttribute(name, is, constantPoolEntries);
-				break;
-			default:
-				attributes[i] = readUnknownAttribute(name, is);
-			}
-		}
-		return attributes;
-	}
-
-	private ConstantValueAttribute readConstantValueAttribute(ConstantUtf8 name, DataInputStream is,
-			ConstantPoolEntry[] constantPoolEntries) throws IOException {
-		ConstantValueAttribute constValue = new ConstantValueAttribute();
-		constValue.setName(name.getValue());
-		checkAttributeLength(is, 2, name.getValue());
-		constValue.setContstantValue(constantPoolEntries[is.readUnsignedShort()]);
-		return constValue;
-	}
-
-	private void checkAttributeLength(DataInputStream is, int expectedLength, String name) throws IOException {
-		int len;
-		if ((len = is.readInt()) != expectedLength) {
-			throw new IOException("Unexpected length of " + len + " for attribute " + name);
-		}
-	}
-
-	private UnknownAttribute readUnknownAttribute(ConstantUtf8 name, DataInputStream is) throws IOException {
-		UnknownAttribute attr = new UnknownAttribute();
-		attr.setName(name.getValue());
-		byte[] bytes = new byte[is.readInt()];
-		is.readFully(bytes);
-		attr.setBytes(bytes);
-		return attr;
-	}
-
-	private CodeAttribute readCodeAttribute(ConstantUtf8 name, DataInputStream is,
-			ConstantPoolEntry[] constantPoolEntries) throws IOException {
-		CodeAttribute code = new CodeAttribute();
-		code.setName(name.getValue());
-		is.readInt(); // skip length
-		code.setMaxStack(is.readUnsignedShort());
-		code.setMaxLocals(is.readUnsignedShort());
-		byte[] bytes = new byte[is.readInt()];
-		is.readFully(bytes);
-		code.setCode(bytes);
-		ExceptionTableEntry[] exceptionTable = new ExceptionTableEntry[is.readUnsignedShort()];
-		for (int i = 0; i < exceptionTable.length; i++) {
-			ExceptionTableEntry entry = new ExceptionTableEntry();
-			entry.setStartPc(is.readUnsignedShort());
-			entry.setEndPc(is.readUnsignedShort());
-			entry.setHandlerPc(is.readUnsignedShort());
-			entry.setCatchType(getConstantClassName(is.readUnsignedShort()));
-			exceptionTable[i] = entry;
-		}
-		code.setAttributes(readAttributes(is.readUnsignedShort(), is, constantPoolEntries));
-		return code;
-	}
-
-	private RuntimeVisibleAnnotationsAttribute readRuntimeVisibleAnnotationsAttribute(ConstantUtf8 name, DataInputStream is, ConstantPoolEntry[] constantPoolEntries) throws IOException {
-		RuntimeVisibleAnnotationsAttribute attribute = new RuntimeVisibleAnnotationsAttribute();
-		attribute.setName(name.getValue());
-		is.readInt(); // skip length
-		Annotation[] annotations = new Annotation[is.readUnsignedShort()];
-		for (int i = 0; i < annotations.length; i++) {
-			annotations[i] = new Annotation(is, constantPoolEntries);
-		}
-		return attribute;
 	}
 
 	public ConstantPoolEntry getConstantPoolEntry(int index) {

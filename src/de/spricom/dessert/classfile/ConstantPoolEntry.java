@@ -2,7 +2,7 @@ package de.spricom.dessert.classfile;
 
 import java.util.Set;
 
-abstract class ConstantPoolEntry {
+public abstract class ConstantPoolEntry {
 	private Set<String> classNamesDone;
 	
 	public abstract String dump(ClassFile cf);
