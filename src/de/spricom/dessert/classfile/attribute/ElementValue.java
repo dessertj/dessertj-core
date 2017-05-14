@@ -2,13 +2,14 @@ package de.spricom.dessert.classfile.attribute;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Set;
 
 import de.spricom.dessert.classfile.ConstantPoolEntry;
 import de.spricom.dessert.classfile.ConstantUtf8;
 import de.spricom.dessert.classfile.FieldType;
 
 public class ElementValue {
-	private char tag;
+	private final char tag;
 	private ConstantPoolEntry constantValue;
 	private FieldType type;
 	private Annotation annotation;
@@ -47,5 +48,39 @@ public class ElementValue {
 		default:
 			throw new IllegalArgumentException("Invalid ElementValue tag: " + tag);
 		}
+	}
+
+	public void addDependendClassNames(Set<String> classNames) {
+		if (type != null) {
+			type.addDependendClassNames(classNames);
+		}
+		if (annotation != null) {
+			annotation.addDependendClassNames(classNames);
+		}
+		if (values != null) {
+			for (ElementValue value : values) {
+				value.addDependendClassNames(classNames);
+			}
+		}
+	}
+
+	public char getTag() {
+		return tag;
+	}
+
+	public ConstantPoolEntry getConstantValue() {
+		return constantValue;
+	}
+
+	public FieldType getType() {
+		return type;
+	}
+
+	public Annotation getAnnotation() {
+		return annotation;
+	}
+
+	public ElementValue[] getValues() {
+		return values;
 	}
 }

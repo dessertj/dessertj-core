@@ -2,6 +2,7 @@ package de.spricom.dessert.classfile.attribute;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Set;
 
 import de.spricom.dessert.classfile.ConstantPoolEntry;
 import de.spricom.dessert.classfile.ConstantUtf8;
@@ -15,4 +16,15 @@ public class ElementValuePair {
 		value = new ElementValue(is, constantPoolEntries);
 	}
 
+	public void addDependendClassNames(Set<String> classNames) {
+		value.addDependendClassNames(classNames);
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public ElementValue getValue() {
+		return value;
+	}
 }

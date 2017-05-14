@@ -2,6 +2,7 @@ package de.spricom.dessert.classfile.attribute;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Set;
 
 import de.spricom.dessert.classfile.ConstantPoolEntry;
 import de.spricom.dessert.classfile.ConstantUtf8;
@@ -43,5 +44,8 @@ public abstract class AttributeInfo {
 		if ((len = is.readInt()) != expectedLength) {
 			throw new IOException("Unexpected length of " + len + " for attribute " + name);
 		}
+	}
+	
+	public void addDependendClassNames(Set<String> classNames) {
 	}
 }

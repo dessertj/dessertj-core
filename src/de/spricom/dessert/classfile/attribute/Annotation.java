@@ -2,6 +2,7 @@ package de.spricom.dessert.classfile.attribute;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Set;
 
 import de.spricom.dessert.classfile.ConstantPoolEntry;
 import de.spricom.dessert.classfile.ConstantUtf8;
@@ -19,4 +20,18 @@ public class Annotation {
 		}
 	}
 
+	public void addDependendClassNames(Set<String> classNames) {
+		type.addDependendClassNames(classNames);
+		for (ElementValuePair pair : elementValuePairs) {
+			pair.addDependendClassNames(classNames);
+		}
+	}
+
+	public FieldType getType() {
+		return type;
+	}
+
+	public ElementValuePair[] getElementValuePairs() {
+		return elementValuePairs;
+	}
 }

@@ -2,6 +2,7 @@ package de.spricom.dessert.classfile.attribute;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Set;
 
 import de.spricom.dessert.classfile.ConstantPoolEntry;
 import de.spricom.dessert.classfile.ConstantUtf8;
@@ -21,5 +22,11 @@ public class RuntimeVisibleAnnotationsAttribute extends AttributeInfo {
 
 	public Annotation[] getAnnotations() {
 		return annotations;
+	}
+	
+	public void addDependendClassNames(Set<String> classNames) {
+		for (Annotation annotation : annotations) {
+			annotation.addDependendClassNames(classNames);
+		}
 	}
 }
