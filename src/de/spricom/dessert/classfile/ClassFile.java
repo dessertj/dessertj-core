@@ -8,13 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
-import de.spricom.dessert.classfile.attribute.Annotation;
 import de.spricom.dessert.classfile.attribute.AttributeInfo;
-import de.spricom.dessert.classfile.attribute.CodeAttribute;
-import de.spricom.dessert.classfile.attribute.ConstantValueAttribute;
-import de.spricom.dessert.classfile.attribute.ExceptionTableEntry;
-import de.spricom.dessert.classfile.attribute.RuntimeVisibleAnnotationsAttribute;
-import de.spricom.dessert.classfile.attribute.UnknownAttribute;
 
 public class ClassFile {
 	public static final int MAGIC = 0xCAFEBABE;
@@ -199,10 +193,13 @@ public class ClassFile {
 			}
 		}
 		for (FieldInfo fieldInfo : fields) {
-			fieldInfo.getFieldType().addDependendClassNames(classNames);
+			fieldInfo.addDependendClassNames(classNames);
 		}
 		for (MethodInfo methodInfo : methods) {
-			methodInfo.getMethodType().addDependendClassNames(classNames);
+			methodInfo.addDependendClassNames(classNames);
+		}
+		for (AttributeInfo attribute : attributes) {
+			attribute.addDependendClassNames(classNames);
 		}
 		classNames.remove(thisClass);
 		return classNames;

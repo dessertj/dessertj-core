@@ -1,5 +1,7 @@
 package de.spricom.dessert.classfile;
 
+import java.util.Set;
+
 import de.spricom.dessert.classfile.attribute.AttributeInfo;
 
 abstract class MemberInfo {
@@ -11,7 +13,13 @@ abstract class MemberInfo {
 	protected boolean is(int accessFlag) {
 		return (accessFlags & accessFlag) == accessFlag;
 	}
-	
+
+	public void addDependendClassNames(Set<String> classNames) {
+		for (AttributeInfo attribute : attributes) {
+			attribute.addDependendClassNames(classNames);
+		}
+	}
+
 	public abstract String getDeclaration();
 
 	public String toString() {

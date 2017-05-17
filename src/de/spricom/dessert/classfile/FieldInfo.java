@@ -1,5 +1,7 @@
 package de.spricom.dessert.classfile;
 
+import java.util.Set;
+
 public class FieldInfo extends MemberInfo {
 	public static final int ACC_PUBLIC = 0x0001; // Declared public; may be
 													// accessed from outside its
@@ -34,6 +36,11 @@ public class FieldInfo extends MemberInfo {
 			fieldType = new FieldType(getDescriptor());
 		}
 		return fieldType;
+	}
+
+	public void addDependendClassNames(Set<String> classNames) {
+		getFieldType().addDependendClassNames(classNames);
+		super.addDependendClassNames(classNames);
 	}
 
 	public String getDeclaration() {

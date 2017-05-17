@@ -21,7 +21,7 @@ public abstract class AttributeInfo {
 			case "Code":
 				attributes[i] = new CodeAttribute(name, is, constantPoolEntries);
 				break;
-			case "RuntimeVisibleAnnotationsAttribute":
+			case "RuntimeVisibleAnnotations":
 				attributes[i] = new RuntimeVisibleAnnotationsAttribute(name, is, constantPoolEntries);
 				break;
 			default:
