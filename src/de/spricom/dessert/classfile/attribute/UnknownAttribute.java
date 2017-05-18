@@ -3,7 +3,7 @@ package de.spricom.dessert.classfile.attribute;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-import de.spricom.dessert.classfile.ConstantUtf8;
+import de.spricom.dessert.classfile.constpool.ConstantUtf8;
 
 public class UnknownAttribute extends AttributeInfo {
 	private final byte[] bytes;

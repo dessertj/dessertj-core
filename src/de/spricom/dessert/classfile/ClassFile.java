@@ -8,7 +8,21 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.bcel.classfile.ConstantDouble;
+import org.apache.bcel.classfile.ConstantFieldref;
+import org.apache.bcel.classfile.ConstantFloat;
+import org.apache.bcel.classfile.ConstantInteger;
+import org.apache.bcel.classfile.ConstantInterfaceMethodref;
+import org.apache.bcel.classfile.ConstantLong;
+import org.apache.bcel.classfile.ConstantMethodref;
+import org.apache.bcel.classfile.ConstantNameAndType;
+import org.apache.bcel.classfile.ConstantString;
+
 import de.spricom.dessert.classfile.attribute.AttributeInfo;
+import de.spricom.dessert.classfile.constpool.ConstantClass;
+import de.spricom.dessert.classfile.constpool.ConstantPool;
+import de.spricom.dessert.classfile.constpool.ConstantPoolEntry;
+import de.spricom.dessert.classfile.constpool.ConstantUtf8;
 
 public class ClassFile {
 	public static final int MAGIC = 0xCAFEBABE;
@@ -63,7 +77,7 @@ public class ClassFile {
 				}
 				minorVersion = is.readUnsignedShort();
 				majorVersion = is.readUnsignedShort();
-				readConstantPool(is);
+				constantPool = new ConstantPool(is).getEntries();
 				accessFlags = is.readUnsignedShort();
 				thisClass = getConstantClassName(is.readUnsignedShort());
 				superClass = getConstantClassName(is.readUnsignedShort());
@@ -78,63 +92,6 @@ public class ClassFile {
 		}
 	}
 
-	private void readConstantPool(DataInputStream is) throws IOException {
-		int constantPoolCount = is.readUnsignedShort();
-		constantPool = new ConstantPoolEntry[constantPoolCount];
-		int index = 1;
-		while (index < constantPoolCount) {
-			int tag = is.readUnsignedByte();
-			switch (tag) {
-			case ConstantUtf8.TAG:
-				constantPool[index] = new ConstantUtf8(is.readUTF());
-				break;
-			case ConstantInteger.TAG:
-				constantPool[index] = new ConstantInteger(is.readInt());
-				break;
-			case ConstantFloat.TAG:
-				constantPool[index] = new ConstantFloat(is.readFloat());
-				break;
-			case ConstantLong.TAG:
-				constantPool[index] = new ConstantLong(is.readLong());
-				index++;
-				break;
-			case ConstantDouble.TAG:
-				constantPool[index] = new ConstantDouble(is.readDouble());
-				index++;
-				break;
-			case ConstantClass.TAG:
-				constantPool[index] = new ConstantClass(is.readUnsignedShort());
-				break;
-			case ConstantString.TAG:
-				constantPool[index] = new ConstantString(is.readUnsignedShort());
-				break;
-			case ConstantFieldref.TAG:
-				constantPool[index] = new ConstantFieldref(is.readUnsignedShort(), is.readUnsignedShort());
-				break;
-			case ConstantMethodref.TAG:
-				constantPool[index] = new ConstantMethodref(is.readUnsignedShort(), is.readUnsignedShort());
-				break;
-			case ConstantInterfaceMethodref.TAG:
-				constantPool[index] = new ConstantInterfaceMethodref(is.readUnsignedShort(), is.readUnsignedShort());
-				break;
-			case ConstantNameAndType.TAG:
-				constantPool[index] = new ConstantNameAndType(is.readUnsignedShort(), is.readUnsignedShort());
-				break;
-			case ConstantMethodHandle.TAG:
-				constantPool[index] = new ConstantMethodHandle(is.readUnsignedByte(), is.readUnsignedShort());
-				break;
-			case ConstantMethodType.TAG:
-				constantPool[index] = new ConstantMethodType(is.readUnsignedShort());
-				break;
-			case ConstantInvokeDynamic.TAG:
-				constantPool[index] = new ConstantInvokeDynamic(is.readUnsignedShort(), is.readUnsignedShort());
-				break;
-			default:
-				throw new IOException("Unknown constant-pool tag: " + tag);
-			}
-			index++;
-		}
-	}
 
 	private String getConstantClassName(int index) {
 		ConstantClass clazz = (ConstantClass) constantPool[index];

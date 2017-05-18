@@ -1,4 +1,6 @@
-package de.spricom.dessert.classfile;
+package de.spricom.dessert.classfile.constpool;
+
+import de.spricom.dessert.classfile.ClassFile;
 
 class ConstantFloat extends ConstantPoolEntry {
 	public static final int TAG = 4;

@@ -1,8 +1,10 @@
-package de.spricom.dessert.classfile;
+package de.spricom.dessert.classfile.constpool;
 
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import de.spricom.dessert.classfile.ClassFile;
 
 public class ConstantClass extends ConstantPoolEntry {
 	public static final int TAG = 7;

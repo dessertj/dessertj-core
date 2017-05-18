@@ -1,20 +1,23 @@
-package de.spricom.dessert.classfile;
+package de.spricom.dessert.classfile.constpool;
 
 import java.util.Set;
 
-class ConstantFieldref extends ConstantPoolEntry {
-	public static final int TAG = 9;
+import de.spricom.dessert.classfile.ClassFile;
+import de.spricom.dessert.classfile.MethodType;
+
+class ConstantInterfaceMethodref extends ConstantPoolEntry {
+	public static final int TAG = 11;
 	private final int classIndex;
 	private final int nameAndTypeIndex;
 
-	public ConstantFieldref(int classIndex, int nameAndTypeIndex) {
+	public ConstantInterfaceMethodref(int classIndex, int nameAndTypeIndex) {
 		this.classIndex = classIndex;
 		this.nameAndTypeIndex = nameAndTypeIndex;
 	}
 
 	@Override
 	public String dump(ClassFile cf) {
-		return "fieldref: " + cf.getConstantPool()[classIndex].dump(cf) + ", "
+		return "interface methodref: " + cf.getConstantPool()[classIndex].dump(cf) + ", "
 				+ cf.getConstantPool()[nameAndTypeIndex].dump(cf);
 	}
 
@@ -30,6 +33,6 @@ class ConstantFieldref extends ConstantPoolEntry {
 	protected void addClassNames(Set<String> classNames, ClassFile cf) {
 		ConstantNameAndType nameAndType = (ConstantNameAndType) cf.getConstantPoolEntry(nameAndTypeIndex);
 		ConstantUtf8 descriptor = (ConstantUtf8) cf.getConstantPoolEntry(nameAndType.getDescriptorIndex());
-		new FieldType(descriptor.getValue()).addDependendClassNames(classNames);
+		new MethodType(descriptor.getValue()).addDependendClassNames(classNames);
 	}
 }

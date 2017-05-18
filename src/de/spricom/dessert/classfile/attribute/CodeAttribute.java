@@ -3,9 +3,9 @@ package de.spricom.dessert.classfile.attribute;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-import de.spricom.dessert.classfile.ConstantClass;
-import de.spricom.dessert.classfile.ConstantPoolEntry;
-import de.spricom.dessert.classfile.ConstantUtf8;
+import de.spricom.dessert.classfile.constpool.ConstantClass;
+import de.spricom.dessert.classfile.constpool.ConstantPoolEntry;
+import de.spricom.dessert.classfile.constpool.ConstantUtf8;
 
 public class CodeAttribute extends AttributeInfo {
     private int maxStack;

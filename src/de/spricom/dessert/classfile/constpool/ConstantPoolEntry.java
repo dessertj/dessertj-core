@@ -1,6 +1,8 @@
-package de.spricom.dessert.classfile;
+package de.spricom.dessert.classfile.constpool;
 
 import java.util.Set;
+
+import de.spricom.dessert.classfile.ClassFile;
 
 public abstract class ConstantPoolEntry {
 	private Set<String> classNamesDone;

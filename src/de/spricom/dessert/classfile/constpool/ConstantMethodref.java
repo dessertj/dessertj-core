@@ -1,6 +1,9 @@
-package de.spricom.dessert.classfile;
+package de.spricom.dessert.classfile.constpool;
 
 import java.util.Set;
+
+import de.spricom.dessert.classfile.ClassFile;
+import de.spricom.dessert.classfile.MethodType;
 
 class ConstantMethodref extends ConstantPoolEntry {
 	public static final int TAG = 10;

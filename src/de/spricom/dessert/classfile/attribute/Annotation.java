@@ -4,9 +4,9 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Set;
 
-import de.spricom.dessert.classfile.ConstantPoolEntry;
-import de.spricom.dessert.classfile.ConstantUtf8;
 import de.spricom.dessert.classfile.FieldType;
+import de.spricom.dessert.classfile.constpool.ConstantPoolEntry;
+import de.spricom.dessert.classfile.constpool.ConstantUtf8;
 
 public class Annotation {
 	private FieldType type;
