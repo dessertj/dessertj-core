@@ -38,7 +38,7 @@ public class ClassFile {
 
 	private int minorVersion;
 	private int majorVersion;
-	private ConstantPoolEntry[] constantPool;
+	private ConstantPool constantPool;
 	private int accessFlags;
 	private String thisClass;
 	private String superClass;
@@ -67,7 +67,7 @@ public class ClassFile {
 				}
 				minorVersion = is.readUnsignedShort();
 				majorVersion = is.readUnsignedShort();
-				constantPool = new ConstantPool(is).getEntries();
+				constantPool = new ConstantPool(is);
 				accessFlags = is.readUnsignedShort();
 				thisClass = getConstantClassName(is.readUnsignedShort());
 				superClass = getConstantClassName(is.readUnsignedShort());
@@ -84,7 +84,7 @@ public class ClassFile {
 
 
 	private String getConstantClassName(int index) {
-		ConstantClass clazz = (ConstantClass) constantPool[index];
+		ConstantClass clazz = (ConstantClass) constantPool.getEntry(index);
 		if (clazz == null) {
 			return null;
 		}
@@ -125,18 +125,18 @@ public class ClassFile {
 	}
 
 	private String readString(DataInputStream is) throws IOException {
-		return ((ConstantUtf8) constantPool[is.readUnsignedShort()]).getValue();
+		return ((ConstantUtf8) constantPool.getEntry(is.readUnsignedShort())).getValue();
 	}
 
 	public ConstantPoolEntry getConstantPoolEntry(int index) {
-		return constantPool[index];
+		return constantPool.getEntry(index);
 	}
 	
 	public Set<String> getDependentClasses() {
 		Set<String> classNames = new TreeSet<>();
-		for (int i = 1; i < constantPool.length; i++) {
-			if (constantPool[i] != null) {
-				constantPool[i].addDependendClassNames(classNames, this);
+		for (ConstantPoolEntry entry : constantPool.getEntries()) {
+			if (entry != null) {
+				entry.addDependendClassNames(classNames, this);
 			}
 		}
 		for (FieldInfo fieldInfo : fields) {
@@ -153,15 +153,7 @@ public class ClassFile {
 	}
 
 	public String dumpConstantPool() {
-		StringBuilder sb = new StringBuilder();
-		int index = 0;
-		for (ConstantPoolEntry entry : constantPool) {
-			if (entry != null) {
-				sb.append(String.format("%4d: %s%n", index, entry.dump()));
-			}
-			index++;
-		}
-		return sb.toString();
+		return constantPool.dumpConstantPool();
 	}
 
 	public int getMinorVersion() {
@@ -170,10 +162,6 @@ public class ClassFile {
 
 	public int getMajorVersion() {
 		return majorVersion;
-	}
-
-	public ConstantPoolEntry[] getConstantPool() {
-		return constantPool;
 	}
 
 	public int getAccessFlags() {

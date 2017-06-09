@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 
 import de.spricom.dessert.classfile.constpool.ConstantClass;
+import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.constpool.ConstantPoolEntry;
 import de.spricom.dessert.classfile.constpool.ConstantUtf8;
 
@@ -14,8 +15,9 @@ public class CodeAttribute extends AttributeInfo {
     private ExceptionTableEntry[] exceptionTable;
     private AttributeInfo[] attributes;
 
-    public CodeAttribute(ConstantUtf8 name, DataInputStream is, ConstantPoolEntry[] constantPoolEntries) throws IOException {
+    public CodeAttribute(ConstantUtf8 name, DataInputStream is, ConstantPool constantPool) throws IOException {
 		super(name.getValue());
+		ConstantPoolEntry[] constantPoolEntries = constantPool.getEntries();
 		is.readInt(); // skip length
 		maxStack = is.readUnsignedShort();
 		maxLocals = is.readUnsignedShort();
@@ -30,7 +32,7 @@ public class CodeAttribute extends AttributeInfo {
 			entry.setCatchType(getConstantClassName(constantPoolEntries, is.readUnsignedShort()));
 			exceptionTable[i] = entry;
 		}
-		setAttributes(AttributeInfo.readAttributes(is, constantPoolEntries));
+		setAttributes(AttributeInfo.readAttributes(is, constantPool));
 	}
 
     private String getConstantClassName(ConstantPoolEntry[] constantPool, int index) {

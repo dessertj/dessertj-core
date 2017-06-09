@@ -4,25 +4,25 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Set;
 
-import de.spricom.dessert.classfile.constpool.ConstantPoolEntry;
+import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.constpool.ConstantUtf8;
 
 public abstract class AttributeInfo {
     private final String name;
 
-	public static AttributeInfo[] readAttributes(DataInputStream is, ConstantPoolEntry[] constantPoolEntries) throws IOException {
+	public static AttributeInfo[] readAttributes(DataInputStream is, ConstantPool constantPool) throws IOException {
 		AttributeInfo[] attributes = new AttributeInfo[is.readUnsignedShort()];
 		for (int i = 0; i < attributes.length; i++) {
-			ConstantUtf8 name = (ConstantUtf8) constantPoolEntries[is.readUnsignedShort()];
+			ConstantUtf8 name = (ConstantUtf8) constantPool.getEntry(is.readUnsignedShort());
 			switch (name.getValue()) {
 			case "ConstantValue":
-				attributes[i] = new ConstantValueAttribute(name, is, constantPoolEntries);
+				attributes[i] = new ConstantValueAttribute(name, is, constantPool.getEntries());
 				break;
 			case "Code":
-				attributes[i] = new CodeAttribute(name, is, constantPoolEntries);
+				attributes[i] = new CodeAttribute(name, is, constantPool);
 				break;
 			case "RuntimeVisibleAnnotations":
-				attributes[i] = new RuntimeVisibleAnnotationsAttribute(name, is, constantPoolEntries);
+				attributes[i] = new RuntimeVisibleAnnotationsAttribute(name, is, constantPool.getEntries());
 				break;
 			default:
 				attributes[i] = new UnknownAttribute(name, is);
