@@ -1,7 +1,5 @@
 package de.spricom.dessert.classfile.constpool;
 
-import de.spricom.dessert.classfile.ClassFile;
-
 class ConstantDouble extends ConstantPoolEntry {
 	public static final int TAG = 6;
 	private final double value;
@@ -11,7 +9,7 @@ class ConstantDouble extends ConstantPoolEntry {
 	}
 
 	@Override
-	public String dump(ClassFile cf) {
+	public String dump() {
 		return "double: " + value;
 	}
 

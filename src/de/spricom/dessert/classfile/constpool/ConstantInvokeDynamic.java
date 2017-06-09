@@ -16,8 +16,8 @@ class ConstantInvokeDynamic extends ConstantPoolEntry {
 	}
 
 	@Override
-	public String dump(ClassFile cf) {
-		return "invokeDynamic: " + bootstrapMethodAttrIndex + ", " + cf.getConstantPool()[nameAndTypeIndex].dump(cf);
+	public String dump() {
+		return "invokeDynamic: " + bootstrapMethodAttrIndex + ", " + getConstantPoolEntry(nameAndTypeIndex).dump();
 	}
 
 	public int getNameAndTypeIndex() {

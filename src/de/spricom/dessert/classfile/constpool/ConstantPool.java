@@ -10,6 +10,7 @@ public final class ConstantPool {
 		entries = new ConstantPoolEntry[is.readUnsignedShort()];
 		int index = 1;
 		while (index < entries.length) {
+			int offset = 1;
 			int tag = is.readUnsignedByte();
 			switch (tag) {
 			case ConstantUtf8.TAG:
@@ -23,11 +24,11 @@ public final class ConstantPool {
 				break;
 			case ConstantLong.TAG:
 				entries[index] = new ConstantLong(is.readLong());
-				index++;
+				offset = 2;
 				break;
 			case ConstantDouble.TAG:
 				entries[index] = new ConstantDouble(is.readDouble());
-				index++;
+				offset = 2;
 				break;
 			case ConstantClass.TAG:
 				entries[index] = new ConstantClass(is.readUnsignedShort());
@@ -59,12 +60,34 @@ public final class ConstantPool {
 			default:
 				throw new IOException("Unknown constant-pool tag: " + tag);
 			}
-			index++;
+			entries[index].setConstantPool(this);
+			index += offset;
 		}
 	}
+
+	public String dumpConstantPool() {
+		StringBuilder sb = new StringBuilder();
+		int index = 0;
+		for (ConstantPoolEntry entry : entries) {
+			if (entry != null) {
+				sb.append(String.format("%4d: %s%n", index, entry.dump()));
+			}
+			index++;
+		}
+		return sb.toString();
+	}
+
 
 	public ConstantPoolEntry[] getEntries() {
 		return entries;
 	}
 
+	public ConstantPoolEntry getEntry(int index) {
+		return entries[index];
+	}
+	
+	public String getUtf8String(int index) {
+		ConstantUtf8 entry = (ConstantUtf8) entries[index];
+		return entry.getValue();
+	}
 }

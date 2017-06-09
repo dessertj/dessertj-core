@@ -16,9 +16,9 @@ class ConstantInterfaceMethodref extends ConstantPoolEntry {
 	}
 
 	@Override
-	public String dump(ClassFile cf) {
-		return "interface methodref: " + cf.getConstantPool()[classIndex].dump(cf) + ", "
-				+ cf.getConstantPool()[nameAndTypeIndex].dump(cf);
+	public String dump() {
+		return "interface methodref: " + getConstantPoolEntry(classIndex).dump() + ", "
+				+ getConstantPoolEntry(nameAndTypeIndex).dump();
 	}
 
 	public int getClassIndex() {

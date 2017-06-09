@@ -1,7 +1,5 @@
 package de.spricom.dessert.classfile.constpool;
 
-import de.spricom.dessert.classfile.ClassFile;
-
 class ConstantMethodHandle extends ConstantPoolEntry {
 	public static final int TAG = 15;
 	private final int referenceKind;
@@ -13,8 +11,8 @@ class ConstantMethodHandle extends ConstantPoolEntry {
 	}
 
 	@Override
-	public String dump(ClassFile cf) {
-		return "methodHandle " + referenceIndex + ": " + cf.getConstantPool()[referenceIndex].dump(cf);
+	public String dump() {
+		return "methodHandle " + referenceIndex + ": " + getConstantPoolEntry(referenceIndex).dump();
 	}
 
 	public int getReferenceKind() {

@@ -1,7 +1,5 @@
 package de.spricom.dessert.classfile.constpool;
 
-import de.spricom.dessert.classfile.ClassFile;
-
 class ConstantNameAndType extends ConstantPoolEntry {
 	public static final int TAG = 12;
 	private final int nameIndex;
@@ -13,9 +11,9 @@ class ConstantNameAndType extends ConstantPoolEntry {
 	}
 
 	@Override
-	public String dump(ClassFile cf) {
-		return "name: " + cf.getConstantPool()[nameIndex].dump(cf) + ", descriptor: "
-				+ cf.getConstantPool()[descriptorIndex].dump(cf);
+	public String dump() {
+		return "name: " + getConstantPoolEntry(nameIndex).dump() + ", descriptor: "
+				+ getConstantPoolEntry(descriptorIndex).dump();
 	}
 
 	public int getNameIndex() {

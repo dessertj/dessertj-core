@@ -8,16 +8,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.bcel.classfile.ConstantDouble;
-import org.apache.bcel.classfile.ConstantFieldref;
-import org.apache.bcel.classfile.ConstantFloat;
-import org.apache.bcel.classfile.ConstantInteger;
-import org.apache.bcel.classfile.ConstantInterfaceMethodref;
-import org.apache.bcel.classfile.ConstantLong;
-import org.apache.bcel.classfile.ConstantMethodref;
-import org.apache.bcel.classfile.ConstantNameAndType;
-import org.apache.bcel.classfile.ConstantString;
-
 import de.spricom.dessert.classfile.attribute.AttributeInfo;
 import de.spricom.dessert.classfile.constpool.ConstantClass;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
@@ -167,7 +157,7 @@ public class ClassFile {
 		int index = 0;
 		for (ConstantPoolEntry entry : constantPool) {
 			if (entry != null) {
-				sb.append(String.format("%4d: %s%n", index, entry.dump(this)));
+				sb.append(String.format("%4d: %s%n", index, entry.dump()));
 			}
 			index++;
 		}

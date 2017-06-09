@@ -14,8 +14,8 @@ class ConstantMethodType extends ConstantPoolEntry {
 	}
 
 	@Override
-	public String dump(ClassFile cf) {
-		return "methodType: " + cf.getConstantPool()[descriptorIndex].dump(cf);
+	public String dump() {
+		return "methodType: " + getConstantPoolEntry(descriptorIndex).dump();
 	}
 
 	public int getDescriptorIndex() {

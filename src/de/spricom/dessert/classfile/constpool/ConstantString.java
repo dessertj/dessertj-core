@@ -1,7 +1,5 @@
 package de.spricom.dessert.classfile.constpool;
 
-import de.spricom.dessert.classfile.ClassFile;
-
 class ConstantString extends ConstantPoolEntry {
 	public static final int TAG = 8;
 	private final int stringIndex;
@@ -11,8 +9,8 @@ class ConstantString extends ConstantPoolEntry {
 	}
 
 	@Override
-	public String dump(ClassFile cf) {
-		return "string: " + cf.getConstantPool()[stringIndex].dump(cf);
+	public String dump() {
+		return "string: " + getConstantPoolEntry(stringIndex).dump();
 	}
 
 	public int getStringIndex() {

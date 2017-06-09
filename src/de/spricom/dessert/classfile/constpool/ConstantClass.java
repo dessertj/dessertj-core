@@ -16,8 +16,8 @@ public class ConstantClass extends ConstantPoolEntry {
 	}
 
 	@Override
-	public String dump(ClassFile cf) {
-		return "class: " + cf.getConstantPool()[nameIndex].dump(cf);
+	public String dump() {
+		return "class: " + getConstantPoolEntry(nameIndex).dump();
 	}
 
 	public int getNameIndex() {
@@ -25,7 +25,7 @@ public class ConstantClass extends ConstantPoolEntry {
 	}
 
 	public String getName(ClassFile cf) {
-		ConstantUtf8 utf8 = (ConstantUtf8) cf.getConstantPool()[nameIndex];
+		ConstantUtf8 utf8 = (ConstantUtf8) getConstantPoolEntry(nameIndex);
 		return utf8.getValue().replace('/', '.');
 	}
 	
@@ -41,10 +41,6 @@ public class ConstantClass extends ConstantPoolEntry {
 			return;
 		} else {
 			classname = name;
-		}
-		int pos = classname.indexOf('$');
-		if (pos != -1) {
-			classname = classname.substring(0, pos);
 		}
 		classNames.add(classname);
 	}

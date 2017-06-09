@@ -16,9 +16,9 @@ class ConstantFieldref extends ConstantPoolEntry {
 	}
 
 	@Override
-	public String dump(ClassFile cf) {
-		return "fieldref: " + cf.getConstantPool()[classIndex].dump(cf) + ", "
-				+ cf.getConstantPool()[nameAndTypeIndex].dump(cf);
+	public String dump() {
+		return "fieldref: " + getConstantPoolEntry(classIndex).dump() + ", "
+				+ getConstantPoolEntry(nameAndTypeIndex).dump();
 	}
 
 	public int getClassIndex() {

@@ -1,7 +1,5 @@
 package de.spricom.dessert.classfile.constpool;
 
-import de.spricom.dessert.classfile.ClassFile;
-
 class ConstantLong extends ConstantPoolEntry {
 	public static final int TAG = 5;
 	private final long value;
@@ -11,7 +9,7 @@ class ConstantLong extends ConstantPoolEntry {
 	}
 
 	@Override
-	public String dump(ClassFile cf) {
+	public String dump() {
 		return "long: " + value;
 	}
 

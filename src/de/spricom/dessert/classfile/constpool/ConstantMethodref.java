@@ -16,9 +16,9 @@ class ConstantMethodref extends ConstantPoolEntry {
 	}
 
 	@Override
-	public String dump(ClassFile cf) {
-		return "methodref: " + cf.getConstantPool()[classIndex].dump(cf) + ", "
-				+ cf.getConstantPool()[nameAndTypeIndex].dump(cf);
+	public String dump() {
+		return "methodref: " + getConstantPoolEntry(classIndex).dump() + ", "
+				+ getConstantPoolEntry(nameAndTypeIndex).dump();
 	}
 
 	public int getClassIndex() {

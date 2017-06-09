@@ -1,7 +1,5 @@
 package de.spricom.dessert.classfile.constpool;
 
-import de.spricom.dessert.classfile.ClassFile;
-
 public class ConstantUtf8 extends ConstantPoolEntry {
 	public static final int TAG = 1;
 	private final String value;
@@ -11,7 +9,7 @@ public class ConstantUtf8 extends ConstantPoolEntry {
 	}
 
 	@Override
-	public String dump(ClassFile cf) {
+	public String dump() {
 		return "\"" + value + "\"";
 	}
 
