@@ -1,6 +1,6 @@
 package de.spricom.dessert.classfile.constpool;
 
-public class ConstantUtf8 extends ConstantPoolEntry {
+class ConstantUtf8 extends ConstantPoolEntry implements ConstantValue<String> {
 	public static final int TAG = 1;
 	private final String value;
 

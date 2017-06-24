@@ -1,6 +1,6 @@
 package de.spricom.dessert.classfile.constpool;
 
-class ConstantLong extends ConstantPoolEntry {
+class ConstantLong extends ConstantPoolEntry  implements ConstantValue<Long> {
 	public static final int TAG = 5;
 	private final long value;
 
@@ -13,7 +13,7 @@ class ConstantLong extends ConstantPoolEntry {
 		return "long: " + value;
 	}
 
-	public long getValue() {
+	public Long getValue() {
 		return value;
 	}
 }

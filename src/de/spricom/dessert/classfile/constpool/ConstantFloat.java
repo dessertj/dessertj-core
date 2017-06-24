@@ -1,6 +1,6 @@
 package de.spricom.dessert.classfile.constpool;
 
-class ConstantFloat extends ConstantPoolEntry {
+class ConstantFloat extends ConstantPoolEntry implements ConstantValue<Float> {
 	public static final int TAG = 4;
 	private final float value;
 
@@ -13,7 +13,7 @@ class ConstantFloat extends ConstantPoolEntry {
 		return "float: " + value;
 	}
 
-	public float getValue() {
+	public Float getValue() {
 		return value;
 	}
 }

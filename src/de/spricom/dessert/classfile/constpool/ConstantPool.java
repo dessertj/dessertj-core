@@ -2,10 +2,13 @@ package de.spricom.dessert.classfile.constpool;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Set;
 
-public final class ConstantPool {
+import de.spricom.dessert.classfile.dependency.DependencyHolder;
+
+public final class ConstantPool implements DependencyHolder {
 	private final ConstantPoolEntry[] entries;
-	
+
 	public ConstantPool(DataInputStream is) throws IOException {
 		entries = new ConstantPoolEntry[is.readUnsignedShort()];
 		int index = 1;
@@ -77,17 +80,38 @@ public final class ConstantPool {
 		return sb.toString();
 	}
 
-
-	public ConstantPoolEntry[] getEntries() {
-		return entries;
-	}
-
-	public ConstantPoolEntry getEntry(int index) {
+	ConstantPoolEntry getEntry(int index) {
 		return entries[index];
 	}
-	
+
 	public String getUtf8String(int index) {
 		ConstantUtf8 entry = (ConstantUtf8) entries[index];
 		return entry.getValue();
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T getConstantValue(int index) {
+		return (T) entries[index];
+	}
+
+	public FieldType getFieldType(int index) {
+		return new FieldType(getUtf8String(index));
+	}
+
+	public String getConstantClassName(int index) {
+		ConstantClass clazz = (ConstantClass) entries[index];
+		if (clazz == null) {
+			return null;
+		}
+		return clazz.getName();
+	}
+
+	@Override
+	public void addDependentClassNames(Set<String> classNames) {
+		for (ConstantPoolEntry entry : entries) {
+			if (entry != null) {
+				entry.addDependentClassNames(classNames);
+			}
+		}
 	}
 }

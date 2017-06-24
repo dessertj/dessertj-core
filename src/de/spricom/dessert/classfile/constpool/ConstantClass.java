@@ -4,9 +4,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.spricom.dessert.classfile.ClassFile;
-
-public class ConstantClass extends ConstantPoolEntry {
+ class ConstantClass extends ConstantPoolEntry {
 	public static final int TAG = 7;
 	private static final Pattern classArrayPattern = Pattern.compile("\\[+L(.*);");
 	private final int nameIndex;
@@ -24,14 +22,13 @@ public class ConstantClass extends ConstantPoolEntry {
 		return nameIndex;
 	}
 
-	public String getName(ClassFile cf) {
-		ConstantUtf8 utf8 = (ConstantUtf8) getConstantPoolEntry(nameIndex);
-		return utf8.getValue().replace('/', '.');
+	public String getName() {
+		return getConstantPool().getUtf8String(nameIndex).replace('/', '.');
 	}
 	
 	@Override
-	protected void addClassNames(Set<String> classNames, ClassFile cf) {
-		String name = getName(cf);
+	public void addDependentClassNames(Set<String> classNames) {
+		String name = getName();
 		Matcher matcher = classArrayPattern.matcher(name);
 		String classname;
 		if (matcher.matches()) {

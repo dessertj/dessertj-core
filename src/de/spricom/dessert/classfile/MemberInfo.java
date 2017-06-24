@@ -3,8 +3,9 @@ package de.spricom.dessert.classfile;
 import java.util.Set;
 
 import de.spricom.dessert.classfile.attribute.AttributeInfo;
+import de.spricom.dessert.classfile.dependency.DependencyHolder;
 
-abstract class MemberInfo {
+abstract class MemberInfo implements DependencyHolder {
 	private int accessFlags;
 	private String name;
 	private String descriptor;
@@ -14,9 +15,9 @@ abstract class MemberInfo {
 		return (accessFlags & accessFlag) == accessFlag;
 	}
 
-	public void addDependendClassNames(Set<String> classNames) {
+	public void addDependentClassNames(Set<String> classNames) {
 		for (AttributeInfo attribute : attributes) {
-			attribute.addDependendClassNames(classNames);
+			attribute.addDependentClassNames(classNames);
 		}
 	}
 

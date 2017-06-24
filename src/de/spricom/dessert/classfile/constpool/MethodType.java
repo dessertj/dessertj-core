@@ -1,11 +1,13 @@
-package de.spricom.dessert.classfile;
+package de.spricom.dessert.classfile.constpool;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-public class MethodType {
+import de.spricom.dessert.classfile.dependency.DependencyHolder;
+
+public class MethodType  implements DependencyHolder {
 	private final FieldType[] parameterTypes;
 	private final FieldType returnType;
 	
@@ -26,11 +28,11 @@ public class MethodType {
 		returnType = new FieldType(descriptor.substring(index));
 	}
 
-	public final void addDependendClassNames(Set<String> classNames) {
+	public final void addDependentClassNames(Set<String> classNames) {
 		for (FieldType parameterType : parameterTypes) {
-			parameterType.addDependendClassNames(classNames);
+			parameterType.addDependentClassNames(classNames);
 		}
-		returnType.addDependendClassNames(classNames);
+		returnType.addDependentClassNames(classNames);
 	}
 
 	public FieldType[] getParameterTypes() {

@@ -4,26 +4,26 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Set;
 
-import de.spricom.dessert.classfile.FieldType;
-import de.spricom.dessert.classfile.constpool.ConstantPoolEntry;
-import de.spricom.dessert.classfile.constpool.ConstantUtf8;
+import de.spricom.dessert.classfile.constpool.ConstantPool;
+import de.spricom.dessert.classfile.constpool.FieldType;
+import de.spricom.dessert.classfile.dependency.DependencyHolder;
 
-public class Annotation {
+public class Annotation implements DependencyHolder {
 	private FieldType type;
 	private ElementValuePair[] elementValuePairs;
 
-	public Annotation(DataInputStream is, ConstantPoolEntry[] constantPoolEntries) throws IOException {
-		type = new FieldType(((ConstantUtf8) constantPoolEntries[is.readUnsignedShort()]).getValue());
+	public Annotation(DataInputStream is, ConstantPool constantPool) throws IOException {
+		type = constantPool.getFieldType(is.readUnsignedShort());
 		elementValuePairs = new ElementValuePair[is.readUnsignedShort()];
 		for (int i = 0; i < elementValuePairs.length; i++) {
-			elementValuePairs[i] = new ElementValuePair(is, constantPoolEntries);
+			elementValuePairs[i] = new ElementValuePair(is, constantPool);
 		}
 	}
 
-	public void addDependendClassNames(Set<String> classNames) {
-		type.addDependendClassNames(classNames);
+	public void addDependentClassNames(Set<String> classNames) {
+		type.addDependentClassNames(classNames);
 		for (ElementValuePair pair : elementValuePairs) {
-			pair.addDependendClassNames(classNames);
+			pair.addDependentClassNames(classNames);
 		}
 	}
 

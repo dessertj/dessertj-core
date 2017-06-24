@@ -1,8 +1,10 @@
-package de.spricom.dessert.classfile;
+package de.spricom.dessert.classfile.constpool;
 
 import java.util.Set;
 
-public class FieldType {
+import de.spricom.dessert.classfile.dependency.DependencyHolder;
+
+public class FieldType  implements DependencyHolder {
 	private int arrayDimensions;
 	private Class<?> primitiveType;
 	private String objectTypeClassname;
@@ -86,7 +88,7 @@ public class FieldType {
 		return sb.toString();
 	}
 	
-	public final void addDependendClassNames(Set<String> classNames) {
+	public final void addDependentClassNames(Set<String> classNames) {
 		if (isObjectType()) {
 			classNames.add(getObjectTypeClassname());
 		}

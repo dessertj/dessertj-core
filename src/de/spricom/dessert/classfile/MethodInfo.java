@@ -2,6 +2,9 @@ package de.spricom.dessert.classfile;
 
 import java.util.Set;
 
+import de.spricom.dessert.classfile.constpool.FieldType;
+import de.spricom.dessert.classfile.constpool.MethodType;
+
 public class MethodInfo extends MemberInfo {
 	public static final int ACC_PUBLIC = 0x0001; // Declared public; may be accessed from outside its package.
 	public static final int ACC_public = 0x0002; // Declared public; accessible only within the defining class.
@@ -25,9 +28,9 @@ public class MethodInfo extends MemberInfo {
 		return methodType;
 	}
 
-	public void addDependendClassNames(Set<String> classNames) {
-		getMethodType().addDependendClassNames(classNames);
-		super.addDependendClassNames(classNames);
+	public void addDependentClassNames(Set<String> classNames) {
+		getMethodType().addDependentClassNames(classNames);
+		super.addDependentClassNames(classNames);
 	}
 
 	public String getDeclaration() {

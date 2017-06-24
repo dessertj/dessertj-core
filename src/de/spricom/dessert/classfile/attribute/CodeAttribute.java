@@ -3,10 +3,7 @@ package de.spricom.dessert.classfile.attribute;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-import de.spricom.dessert.classfile.constpool.ConstantClass;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
-import de.spricom.dessert.classfile.constpool.ConstantPoolEntry;
-import de.spricom.dessert.classfile.constpool.ConstantUtf8;
 
 public class CodeAttribute extends AttributeInfo {
     private int maxStack;
@@ -15,9 +12,8 @@ public class CodeAttribute extends AttributeInfo {
     private ExceptionTableEntry[] exceptionTable;
     private AttributeInfo[] attributes;
 
-    public CodeAttribute(ConstantUtf8 name, DataInputStream is, ConstantPool constantPool) throws IOException {
-		super(name.getValue());
-		ConstantPoolEntry[] constantPoolEntries = constantPool.getEntries();
+    public CodeAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
+		super(name);
 		is.readInt(); // skip length
 		maxStack = is.readUnsignedShort();
 		maxLocals = is.readUnsignedShort();
@@ -29,19 +25,10 @@ public class CodeAttribute extends AttributeInfo {
 			entry.setStartPc(is.readUnsignedShort());
 			entry.setEndPc(is.readUnsignedShort());
 			entry.setHandlerPc(is.readUnsignedShort());
-			entry.setCatchType(getConstantClassName(constantPoolEntries, is.readUnsignedShort()));
+			entry.setCatchType(constantPool.getConstantClassName(is.readUnsignedShort()));
 			exceptionTable[i] = entry;
 		}
 		setAttributes(AttributeInfo.readAttributes(is, constantPool));
-	}
-
-    private String getConstantClassName(ConstantPoolEntry[] constantPool, int index) {
-		ConstantClass clazz = (ConstantClass) constantPool[index];
-		if (clazz == null) {
-			return null;
-		}
-		ConstantUtf8 utf8 = (ConstantUtf8) constantPool[clazz.getNameIndex()];
-		return utf8.getValue().replace('/', '.');
 	}
 
 	public int getMaxStack() {

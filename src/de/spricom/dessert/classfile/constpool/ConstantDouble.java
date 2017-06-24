@@ -1,6 +1,6 @@
 package de.spricom.dessert.classfile.constpool;
 
-class ConstantDouble extends ConstantPoolEntry {
+class ConstantDouble extends ConstantPoolEntry implements ConstantValue<Double> {
 	public static final int TAG = 6;
 	private final double value;
 
@@ -13,7 +13,7 @@ class ConstantDouble extends ConstantPoolEntry {
 		return "double: " + value;
 	}
 
-	public double getValue() {
+	public Double getValue() {
 		return value;
 	}
 }

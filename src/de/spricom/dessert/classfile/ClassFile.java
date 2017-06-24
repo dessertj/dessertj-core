@@ -9,10 +9,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import de.spricom.dessert.classfile.attribute.AttributeInfo;
-import de.spricom.dessert.classfile.constpool.ConstantClass;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
-import de.spricom.dessert.classfile.constpool.ConstantPoolEntry;
-import de.spricom.dessert.classfile.constpool.ConstantUtf8;
 
 public class ClassFile {
 	public static final int MAGIC = 0xCAFEBABE;
@@ -69,8 +66,8 @@ public class ClassFile {
 				majorVersion = is.readUnsignedShort();
 				constantPool = new ConstantPool(is);
 				accessFlags = is.readUnsignedShort();
-				thisClass = getConstantClassName(is.readUnsignedShort());
-				superClass = getConstantClassName(is.readUnsignedShort());
+				thisClass = constantPool.getConstantClassName(is.readUnsignedShort());
+				superClass = constantPool.getConstantClassName(is.readUnsignedShort());
 				readInterfaces(is);
 				readFields(is);
 				readMethods(is);
@@ -82,20 +79,11 @@ public class ClassFile {
 		}
 	}
 
-
-	private String getConstantClassName(int index) {
-		ConstantClass clazz = (ConstantClass) constantPool.getEntry(index);
-		if (clazz == null) {
-			return null;
-		}
-		return clazz.getName(this);
-	}
-
 	private void readInterfaces(DataInputStream is) throws IOException {
 		int interfacesCount = is.readUnsignedShort();
 		interfaces = new String[interfacesCount];
 		for (int i = 0; i < interfacesCount; i++) {
-			interfaces[i] = getConstantClassName(is.readUnsignedShort());
+			interfaces[i] = constantPool.getConstantClassName(is.readUnsignedShort());
 		}
 	}
 
@@ -125,28 +113,20 @@ public class ClassFile {
 	}
 
 	private String readString(DataInputStream is) throws IOException {
-		return ((ConstantUtf8) constantPool.getEntry(is.readUnsignedShort())).getValue();
+		return constantPool.getUtf8String(is.readUnsignedShort());
 	}
 
-	public ConstantPoolEntry getConstantPoolEntry(int index) {
-		return constantPool.getEntry(index);
-	}
-	
 	public Set<String> getDependentClasses() {
 		Set<String> classNames = new TreeSet<>();
-		for (ConstantPoolEntry entry : constantPool.getEntries()) {
-			if (entry != null) {
-				entry.addDependendClassNames(classNames, this);
-			}
-		}
+		constantPool.addDependentClassNames(classNames);
 		for (FieldInfo fieldInfo : fields) {
-			fieldInfo.addDependendClassNames(classNames);
+			fieldInfo.addDependentClassNames(classNames);
 		}
 		for (MethodInfo methodInfo : methods) {
-			methodInfo.addDependendClassNames(classNames);
+			methodInfo.addDependentClassNames(classNames);
 		}
 		for (AttributeInfo attribute : attributes) {
-			attribute.addDependendClassNames(classNames);
+			attribute.addDependentClassNames(classNames);
 		}
 		classNames.remove(thisClass);
 		return classNames;

@@ -5,24 +5,24 @@ import java.io.IOException;
 import java.util.Set;
 
 import de.spricom.dessert.classfile.constpool.ConstantPool;
-import de.spricom.dessert.classfile.constpool.ConstantUtf8;
+import de.spricom.dessert.classfile.dependency.DependencyHolder;
 
-public abstract class AttributeInfo {
+public abstract class AttributeInfo implements DependencyHolder {
     private final String name;
 
 	public static AttributeInfo[] readAttributes(DataInputStream is, ConstantPool constantPool) throws IOException {
 		AttributeInfo[] attributes = new AttributeInfo[is.readUnsignedShort()];
 		for (int i = 0; i < attributes.length; i++) {
-			ConstantUtf8 name = (ConstantUtf8) constantPool.getEntry(is.readUnsignedShort());
-			switch (name.getValue()) {
+			String name = constantPool.getUtf8String(is.readUnsignedShort());
+			switch (name) {
 			case "ConstantValue":
-				attributes[i] = new ConstantValueAttribute(name, is, constantPool.getEntries());
+				attributes[i] = new ConstantValueAttribute(name, is, constantPool);
 				break;
 			case "Code":
 				attributes[i] = new CodeAttribute(name, is, constantPool);
 				break;
 			case "RuntimeVisibleAnnotations":
-				attributes[i] = new RuntimeVisibleAnnotationsAttribute(name, is, constantPool.getEntries());
+				attributes[i] = new RuntimeVisibleAnnotationsAttribute(name, is, constantPool);
 				break;
 			default:
 				attributes[i] = new UnknownAttribute(name, is);
@@ -46,6 +46,6 @@ public abstract class AttributeInfo {
 		}
 	}
 	
-	public void addDependendClassNames(Set<String> classNames) {
+	public void addDependentClassNames(Set<String> classNames) {
 	}
 }

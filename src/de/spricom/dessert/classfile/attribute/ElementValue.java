@@ -4,18 +4,19 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Set;
 
-import de.spricom.dessert.classfile.FieldType;
-import de.spricom.dessert.classfile.constpool.ConstantPoolEntry;
-import de.spricom.dessert.classfile.constpool.ConstantUtf8;
+import de.spricom.dessert.classfile.constpool.ConstantPool;
+import de.spricom.dessert.classfile.constpool.ConstantValue;
+import de.spricom.dessert.classfile.constpool.FieldType;
+import de.spricom.dessert.classfile.dependency.DependencyHolder;
 
-public class ElementValue {
+public class ElementValue implements DependencyHolder {
 	private final char tag;
-	private ConstantPoolEntry constantValue;
+	private ConstantValue<?> constantValue;
 	private FieldType type;
 	private Annotation annotation;
 	private ElementValue[] values;
 
-	public ElementValue(DataInputStream is, ConstantPoolEntry[] constantPoolEntries) throws IOException {
+	public ElementValue(DataInputStream is, ConstantPool constantPool) throws IOException {
 		tag = (char) is.readUnsignedByte();
 		switch (tag) {
 		case 'B':
@@ -27,22 +28,22 @@ public class ElementValue {
 		case 'S':
 		case 'Z':
 		case 's':
-			constantValue = constantPoolEntries[is.readUnsignedShort()];
+			constantValue = constantPool.getConstantValue(is.readUnsignedShort());
 			break;
 		case 'e':
-			type = new FieldType(((ConstantUtf8) constantPoolEntries[is.readUnsignedShort()]).getValue());
-			constantValue = constantPoolEntries[is.readUnsignedShort()];
+			type = constantPool.getFieldType(is.readUnsignedShort());
+			constantValue = constantPool.getConstantValue(is.readUnsignedShort());
 			break;
 		case 'c':
-			type = new FieldType(((ConstantUtf8) constantPoolEntries[is.readUnsignedShort()]).getValue());
+			type = constantPool.getFieldType(is.readUnsignedShort());
 			break;
 		case '@':
-			annotation = new Annotation(is, constantPoolEntries);
+			annotation = new Annotation(is, constantPool);
 			break;
 		case '[':
 			values = new ElementValue[is.readUnsignedShort()];
 			for (int i = 0; i < values.length; i++) {
-				values[i] = new ElementValue(is, constantPoolEntries);
+				values[i] = new ElementValue(is, constantPool);
 			}
 			break;
 		default:
@@ -50,16 +51,16 @@ public class ElementValue {
 		}
 	}
 
-	public void addDependendClassNames(Set<String> classNames) {
+	public void addDependentClassNames(Set<String> classNames) {
 		if (type != null) {
-			type.addDependendClassNames(classNames);
+			type.addDependentClassNames(classNames);
 		}
 		if (annotation != null) {
-			annotation.addDependendClassNames(classNames);
+			annotation.addDependentClassNames(classNames);
 		}
 		if (values != null) {
 			for (ElementValue value : values) {
-				value.addDependendClassNames(classNames);
+				value.addDependentClassNames(classNames);
 			}
 		}
 	}
@@ -68,7 +69,7 @@ public class ElementValue {
 		return tag;
 	}
 
-	public ConstantPoolEntry getConstantValue() {
+	public ConstantValue<?> getConstantValue() {
 		return constantValue;
 	}
 

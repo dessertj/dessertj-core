@@ -3,13 +3,11 @@ package de.spricom.dessert.classfile.attribute;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-import de.spricom.dessert.classfile.constpool.ConstantUtf8;
-
 public class UnknownAttribute extends AttributeInfo {
 	private final byte[] bytes;
 
-	public UnknownAttribute(ConstantUtf8 name, DataInputStream is) throws IOException {
-		super(name.getValue());
+	public UnknownAttribute(String name, DataInputStream is) throws IOException {
+		super(name);
 		bytes = new byte[is.readInt()];
 		is.readFully(bytes);
 	}
