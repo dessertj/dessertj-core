@@ -21,6 +21,7 @@ public class SignatureParserTest {
 		SignatureParser parser = new SignatureParser(signature);
 		parser.parseJavaTypeSignature();
 		assertThat(parser.isComplete()).isTrue();
+		assertThat(parser.getDependentClasses()).contains((Object[])dependentClasses);
 	}
 
 	@Test
@@ -32,5 +33,6 @@ public class SignatureParserTest {
 		SignatureParser parser = new SignatureParser(signature);
 		parser.parseMethodSignature();
 		assertThat(parser.isComplete()).isTrue();
+		assertThat(parser.getDependentClasses()).contains((Object[])dependentClasses);
 	}
 }

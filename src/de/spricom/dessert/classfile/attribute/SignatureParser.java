@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SignatureParser {
-	private Set<String> dependentClasses;
-	private String signature;
+	private final Set<String> dependentClasses;
+	private final String signature;
 	private int position;
 
 	public SignatureParser(String signature, Set<String> dependentClasses) {
@@ -128,11 +128,18 @@ public class SignatureParser {
 			return false;
 		}
 		position++;
+		int start = position;
 		parsePackageSpecifier();
 		ensure(parseSimpleClassTypeSignature());
 		while (parseClassTypeSignatureSuffix())
 			;
 		ensure(';' == lookAhead());
+		
+		String classname = signature.substring(start, position);
+		int typeIndex = classname.indexOf('<');
+		if (typeIndex == -1) typeIndex = classname.length();
+		dependentClasses.add(classname.substring(0, typeIndex).replace('/', '.'));
+		
 		position++;
 		return true;
 	}
@@ -249,5 +256,13 @@ public class SignatureParser {
 
 	public boolean isComplete() {
 		return position == signature.length();
+	}
+
+	public Set<String> getDependentClasses() {
+		return dependentClasses;
+	}
+
+	public String getSignature() {
+		return signature;
 	}
 }

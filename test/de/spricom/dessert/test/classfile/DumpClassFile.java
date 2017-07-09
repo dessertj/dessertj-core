@@ -1,6 +1,7 @@
 package de.spricom.dessert.test.classfile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.classfile.FieldInfo;
 import de.spricom.dessert.classfile.MethodInfo;
+import de.spricom.dessert.classfile.attribute.Annotation;
 import de.spricom.dessert.traversal.ClassVisitor;
 import de.spricom.dessert.traversal.PathProcessor;
 
@@ -61,6 +63,16 @@ public class DumpClassFile {
 	@Test
 	public void test594Dependencies() throws IOException {
 		dump(com.gargoylesoftware.htmlunit.javascript.configuration.JavaScriptConfiguration.class);
+	}
+
+	@Test
+	public void testAnnotation() throws IOException {
+		dump(Annotation.class);
+	}
+
+	@Test
+	public void testArrayList() throws IOException {
+		dump(ArrayList.class);
 	}
 
 	private void dump(Class<?> clazz) throws IOException {
