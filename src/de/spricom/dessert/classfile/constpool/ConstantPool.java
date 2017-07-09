@@ -106,6 +106,16 @@ public final class ConstantPool implements DependencyHolder {
 		return clazz.getName();
 	}
 
+	public String getNameAndTypeName(int index) {
+		ConstantNameAndType nameAndType = (ConstantNameAndType) entries[index];
+		return getUtf8String(nameAndType.getNameIndex());
+	}
+	
+	public MethodType getNameAndTypeMethodType(int index) {
+		ConstantNameAndType nameAndType = (ConstantNameAndType) entries[index];
+		return new MethodType(getUtf8String(nameAndType.getDescriptorIndex()));
+	}
+
 	@Override
 	public void addDependentClassNames(Set<String> classNames) {
 		for (ConstantPoolEntry entry : entries) {

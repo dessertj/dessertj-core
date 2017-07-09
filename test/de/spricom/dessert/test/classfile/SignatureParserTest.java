@@ -40,6 +40,7 @@ public class SignatureParserTest {
 	@Test
 	public void testClassSignature() {
 		checkClassSignature("Ljava/lang/Enum<Lde/spricom/dessert/classfile/attribute/AttributeInfo$AttributeContext;>;", "java.lang.Enum", "de.spricom.dessert.classfile.attribute.AttributeInfo$AttributeContext");
+		checkClassSignature("<A:Ljava/lang/Object;>Ljava/lang/Object;", "java.lang.Object");
 	}
 	
 	private void checkClassSignature(String signature, String... dependentClasses) {

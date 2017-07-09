@@ -30,6 +30,9 @@ public abstract class AttributeInfo implements DependencyHolder {
 			case "Signature":
 				attributes[i] = new SignatureAttribute(name, is, constantPool);
 				break;
+			case "EnclosingMethod":
+				attributes[i] = new EnclosingMethodAttribute(name, is, constantPool);
+				break;
 			default:
 				attributes[i] = new UnknownAttribute(name, is);
 			}

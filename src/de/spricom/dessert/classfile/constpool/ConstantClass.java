@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
- class ConstantClass extends ConstantPoolEntry {
+class ConstantClass extends ConstantPoolEntry {
 	public static final int TAG = 7;
 	private static final Pattern classArrayPattern = Pattern.compile("\\[+L(.*);");
 	private final int nameIndex;
@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 	public String getName() {
 		return getConstantPool().getUtf8String(nameIndex).replace('/', '.');
 	}
-	
+
 	@Override
 	public void addDependentClassNames(Set<String> classNames) {
 		String name = getName();
