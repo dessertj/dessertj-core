@@ -8,9 +8,12 @@ import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
 
 public abstract class AttributeInfo implements DependencyHolder {
+	public enum AttributeContext { CLASS, FIELD, METHOD, CODE }
+	
     private final String name;
+    private AttributeContext context;
 
-	public static AttributeInfo[] readAttributes(DataInputStream is, ConstantPool constantPool) throws IOException {
+	public static AttributeInfo[] readAttributes(DataInputStream is, ConstantPool constantPool, AttributeContext context) throws IOException {
 		AttributeInfo[] attributes = new AttributeInfo[is.readUnsignedShort()];
 		for (int i = 0; i < attributes.length; i++) {
 			String name = constantPool.getUtf8String(is.readUnsignedShort());
@@ -24,9 +27,13 @@ public abstract class AttributeInfo implements DependencyHolder {
 			case "RuntimeVisibleAnnotations":
 				attributes[i] = new RuntimeVisibleAnnotationsAttribute(name, is, constantPool);
 				break;
+			case "Signature":
+				attributes[i] = new SignatureAttribute(name, is, constantPool);
+				break;
 			default:
 				attributes[i] = new UnknownAttribute(name, is);
 			}
+			attributes[i].context = context;
 		}
 		return attributes;
 	}
@@ -47,5 +54,9 @@ public abstract class AttributeInfo implements DependencyHolder {
 	}
 	
 	public void addDependentClassNames(Set<String> classNames) {
+	}
+
+	public AttributeContext getContext() {
+		return context;
 	}
 }

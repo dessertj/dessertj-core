@@ -20,7 +20,7 @@ public class SignatureParser {
 	public boolean parseClassSignature() {
 		parseTypeParameters();
 		ensure(parseSuperclassSignature());
-		parseSuperInterfaceSignature();
+		while (parseSuperInterfaceSignature());
 		return true;
 	}
 
@@ -38,10 +38,12 @@ public class SignatureParser {
 	}
 
 	private boolean parseTypeParameter() {
-		if (!parseIdentifier()) {
+		int lastIndex = position;
+		parseIdentifier();
+		if (!parseClassBound()) {
+			position = lastIndex;
 			return false;
 		}
-		parseClassBound();
 		while (parseInterfaceBound())
 			;
 		return true;
@@ -51,8 +53,8 @@ public class SignatureParser {
 		if (':' != lookAhead()) {
 			return false;
 		}
-		parseReferenceTypeSignature();
 		position++;
+		parseReferenceTypeSignature();
 		return true;
 	}
 
@@ -60,8 +62,8 @@ public class SignatureParser {
 		if (':' != lookAhead()) {
 			return false;
 		}
-		ensure(parseReferenceTypeSignature());
 		position++;
+		ensure(parseReferenceTypeSignature());
 		return true;
 	}
 
@@ -71,8 +73,7 @@ public class SignatureParser {
 	}
 
 	private boolean parseSuperInterfaceSignature() {
-		ensure(parseClassTypeSignature());
-		return true;
+		return parseClassTypeSignature();
 	}
 
 	public boolean parseMethodSignature() {

@@ -80,6 +80,8 @@ public class DumpClassFile {
 		System.out.println(cf.getThisClass());
 		System.out.println("extends " + cf.getSuperClass());
 		System.out.println("implements " + Arrays.toString(cf.getInterfaces()));
+		System.out.println("constant pool:");
+		System.out.println(cf.dumpConstantPool());
 		System.out.println("fields:");
 		for (FieldInfo field : cf.getFields()) {
 			System.out.print("  ");
@@ -97,7 +99,5 @@ public class DumpClassFile {
 		if (clazz.getSuperclass() != null) {
 			assertThat(dependentClasses).contains(clazz.getSuperclass().getName());
 		}
-		System.out.println("constant pool:");
-		System.out.println(cf.dumpConstantPool());
 	}
 }

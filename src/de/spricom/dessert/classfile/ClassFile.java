@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import de.spricom.dessert.classfile.attribute.AttributeInfo;
+import de.spricom.dessert.classfile.attribute.AttributeInfo.AttributeContext;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 
 public class ClassFile {
@@ -71,7 +72,7 @@ public class ClassFile {
 				readInterfaces(is);
 				readFields(is);
 				readMethods(is);
-				attributes = AttributeInfo.readAttributes(is, constantPool);
+				attributes = AttributeInfo.readAttributes(is, constantPool, AttributeContext.CLASS);
 				if (is.read() != -1) {
 					throw new IOException("EOF not reached!");
 				}
@@ -92,7 +93,7 @@ public class ClassFile {
 		fields = new FieldInfo[fieldCount];
 		for (int i = 0; i < fieldCount; i++) {
 			fields[i] = new FieldInfo();
-			readMember(fields[i], is);
+			readMember(fields[i], is, AttributeContext.FIELD);
 		}
 	}
 
@@ -101,15 +102,15 @@ public class ClassFile {
 		methods = new MethodInfo[methodCount];
 		for (int i = 0; i < methodCount; i++) {
 			methods[i] = new MethodInfo();
-			readMember(methods[i], is);
+			readMember(methods[i], is, AttributeContext.METHOD);
 		}
 	}
 
-	private void readMember(MemberInfo member, DataInputStream is) throws IOException {
+	private void readMember(MemberInfo member, DataInputStream is, AttributeContext context) throws IOException {
 		member.setAccessFlags(is.readUnsignedShort());
 		member.setName(readString(is));
 		member.setDescriptor(readString(is));
-		member.setAttributes(AttributeInfo.readAttributes(is, constantPool));
+		member.setAttributes(AttributeInfo.readAttributes(is, constantPool, context));
 	}
 
 	private String readString(DataInputStream is) throws IOException {

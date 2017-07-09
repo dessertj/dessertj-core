@@ -28,7 +28,7 @@ public class CodeAttribute extends AttributeInfo {
 			entry.setCatchType(constantPool.getConstantClassName(is.readUnsignedShort()));
 			exceptionTable[i] = entry;
 		}
-		setAttributes(AttributeInfo.readAttributes(is, constantPool));
+		setAttributes(AttributeInfo.readAttributes(is, constantPool, AttributeContext.CODE));
 	}
 
 	public int getMaxStack() {
