@@ -7,7 +7,7 @@ public class SignatureParser {
 	private Set<String> dependentClasses;
 	private String signature;
 	private int position;
-	
+
 	public SignatureParser(String signature, Set<String> dependentClasses) {
 		this.dependentClasses = dependentClasses;
 		this.signature = signature;
@@ -16,21 +16,111 @@ public class SignatureParser {
 	public SignatureParser(String signature) {
 		this(signature, new HashSet<>());
 	}
-	
+
 	public boolean parseClassSignature() {
-		return false;
+		parseTypeParameters();
+		ensure(parseSuperclassSignature());
+		parseSuperInterfaceSignature();
+		return true;
 	}
-	
-	
+
+	private boolean parseTypeParameters() {
+		if ('<' != lookAhead()) {
+			return false;
+		}
+		position++;
+		parseTypeParameter();
+		while (parseTypeParameter())
+			;
+		ensure('>' == lookAhead());
+		position++;
+		return true;
+	}
+
+	private boolean parseTypeParameter() {
+		if (!parseIdentifier()) {
+			return false;
+		}
+		parseClassBound();
+		while (parseInterfaceBound())
+			;
+		return true;
+	}
+
+	private boolean parseClassBound() {
+		if (':' != lookAhead()) {
+			return false;
+		}
+		parseReferenceTypeSignature();
+		position++;
+		return true;
+	}
+
+	private boolean parseInterfaceBound() {
+		if (':' != lookAhead()) {
+			return false;
+		}
+		ensure(parseReferenceTypeSignature());
+		position++;
+		return true;
+	}
+
+	private boolean parseSuperclassSignature() {
+		ensure(parseClassTypeSignature());
+		return true;
+	}
+
+	private boolean parseSuperInterfaceSignature() {
+		ensure(parseClassTypeSignature());
+		return true;
+	}
+
+	public boolean parseMethodSignature() {
+		parseTypeParameters();
+		ensure('(' == lookAhead());
+		position++;
+		while (parseJavaTypeSignature())
+			;
+		ensure(')' == lookAhead());
+		position++;
+		ensure(parseResult());
+		while (parseThrowsSignature())
+			;
+		return true;
+	}
+
+	private boolean parseResult() {
+		return parseVoidDescriptor() || parseJavaTypeSignature();
+	}
+
+	private boolean parseVoidDescriptor() {
+		if ('V' != lookAhead()) {
+			return false;
+		}
+		position++;
+		return true;
+	}
+
+	private boolean parseThrowsSignature() {
+		if ('^' != lookAhead()) {
+			return false;
+		}
+		position++;
+		ensure(parseClassTypeSignature() || parseTypeVariableSignature());
+		return true;
+	}
+
+	public boolean parseFieldSignature() {
+		ensure(parseReferenceTypeSignature());
+		return true;
+	}
+
 	public boolean parseJavaTypeSignature() {
-		return parseBaseType() 
-				|| parseReferenceTypeSignature();
+		return parseBaseType() || parseReferenceTypeSignature();
 	}
 
 	private boolean parseReferenceTypeSignature() {
-		return parseClassTypeSignature()
-				|| parseTypeVariableSignature()
-				|| parseArrayTypeSignature();
+		return parseClassTypeSignature() || parseTypeVariableSignature() || parseArrayTypeSignature();
 	}
 
 	private boolean parseClassTypeSignature() {
@@ -40,7 +130,8 @@ public class SignatureParser {
 		position++;
 		parsePackageSpecifier();
 		ensure(parseSimpleClassTypeSignature());
-		while (parseClassTypeSignatureSuffix());
+		while (parseClassTypeSignatureSuffix())
+			;
 		ensure(';' == lookAhead());
 		position++;
 		return true;
@@ -63,14 +154,15 @@ public class SignatureParser {
 		parseTypeArguments();
 		return true;
 	}
-	
+
 	private boolean parseTypeArguments() {
 		if ('<' != lookAhead()) {
 			return false;
 		}
 		position++;
 		ensure(parseTypeArgument());
-		while(parseTypeArgument());
+		while (parseTypeArgument())
+			;
 		ensure('>' == lookAhead());
 		position++;
 		return true;
@@ -140,17 +232,21 @@ public class SignatureParser {
 		position++;
 		return true;
 	}
-	
+
 	private char lookAhead() {
+		if (position >= signature.length()) {
+			return 0;
+		}
 		return signature.charAt(position);
 	}
-	
+
 	private void ensure(boolean parsed) {
 		if (!parsed) {
-			throw new IllegalArgumentException(signature + " is invalid at position " + position + ": " + signature.substring(position));
+			throw new IllegalArgumentException(
+					signature + " is invalid at position " + position + ": " + signature.substring(position));
 		}
 	}
-	
+
 	public boolean isComplete() {
 		return position == signature.length();
 	}

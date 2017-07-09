@@ -9,7 +9,7 @@ import de.spricom.dessert.classfile.attribute.SignatureParser;
 public class SignatureParserTest {
 	
 	@Test
-	public void test() {
+	public void testJavaTypeSignature() {
 		checkJavaTypeSignature("B");
 		checkJavaTypeSignature("Ljava/lang/String;", "java.lang.String");
 		checkJavaTypeSignature("[Ljava/lang/String;", "java.lang.String");
@@ -20,6 +20,17 @@ public class SignatureParserTest {
 	private void checkJavaTypeSignature(String signature, String... dependentClasses) {
 		SignatureParser parser = new SignatureParser(signature);
 		parser.parseJavaTypeSignature();
+		assertThat(parser.isComplete()).isTrue();
+	}
+
+	@Test
+	public void testMethodSignature() {
+		checkMethodSignature("(Ljava/util/Set<Ljava/lang/String;>;)V", "java.lang.String", "java.util.Set");
+	}
+	
+	private void checkMethodSignature(String signature, String... dependentClasses) {
+		SignatureParser parser = new SignatureParser(signature);
+		parser.parseMethodSignature();
 		assertThat(parser.isComplete()).isTrue();
 	}
 }
