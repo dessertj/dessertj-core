@@ -33,13 +33,6 @@ public class CheckAllDependenciesTest implements ClassVisitor {
 		check(proc);
 	}
 
-	@Test
-	public void testJunit() throws IOException {
-		PathProcessor proc = new PathProcessor();
-		proc.setPath("C:/Users/Hajo/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.12.jar");
-		check(proc);
-	}
-
 	private void check(PathProcessor proc) throws IOException {
 		proc.traverseAllClasses(this);
 	}
@@ -65,7 +58,7 @@ public class CheckAllDependenciesTest implements ClassVisitor {
 	
 	private Set<String> getDependenciesUsingJDeps(File root, String className) throws IOException, InterruptedException {
 		Set<String> dependencies = new TreeSet<>();
-		ProcessBuilder pb = new ProcessBuilder("jDeps", "-cp", root.getAbsolutePath(), "-verbose:class", className);
+		ProcessBuilder pb = new ProcessBuilder("jdeps", "-cp", root.getAbsolutePath(), "-verbose:class", className);
 		pb.redirectErrorStream(true);
 		System.out.println("\n" + pb.command());
 		Process p = pb.start();
