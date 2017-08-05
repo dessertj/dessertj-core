@@ -48,7 +48,7 @@ public class Repository implements ClassVisitor {
     private Map<String, ClassFileEntry> findMatchingClasses(Rule rule) {
         Map<String, ClassFileEntry> members = new HashMap<>();
         for (ClassFileEntry entry : scannedClasses.values()) {
-            if (members.containsKey(entry.getClassName()) && rule.isMember(entry)) {
+            if (!members.containsKey(entry.getClassName()) && rule.isMember(entry)) {
                 members.put(entry.getClassName(), entry);
             }
         }
