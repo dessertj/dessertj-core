@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.fest.assertions.Assertions;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.spricom.dessert.classfile.ClassFile;
@@ -20,12 +21,14 @@ import de.spricom.dessert.traversal.PathProcessor;
 public class CheckAllDependenciesTest implements ClassVisitor {
 	private static final Pattern JDEPS_REGEX = Pattern.compile("^\\s+-> ([\\w.$]+)\\s*(\\S+)?$");
 	
+	@Ignore
 	@Test
 	public void test() throws IOException {
 		PathProcessor proc = new PathProcessor();
 		check(proc);
 	}
 
+    @Ignore
 	@Test
 	public void testJdk() throws IOException {
 		PathProcessor proc = new PathProcessor();

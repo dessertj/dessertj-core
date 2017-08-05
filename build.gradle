@@ -46,12 +46,12 @@ dependencies {
     testCompile 'org.easytesting:fest-assert:1.4'
     
     // Some example libraries for testing
-    testRuntime 'org.springframework:spring-core:+'
-    testRuntime 'org.springframework:spring-context:+'
+    testCompile 'org.springframework:spring-core:+'
+    testCompile 'org.springframework:spring-context:+'
     testRuntime 'org.springframework:spring-test:+'
     testRuntime 'org.hibernate:hibernate-core:5.+'
     testRuntime 'org.hibernate:hibernate-envers:5.+'
     testRuntime 'org.hibernate:hibernate-search:5.+'
-    testRuntime 'com.google.gwt:gwt-dev:+'
+    testCompile 'com.google.gwt:gwt-dev:+'
     testRuntime 'com.google.gwt:gwt-user:+'
 }
