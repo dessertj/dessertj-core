@@ -8,8 +8,26 @@ public class DirectoryRoot extends ClassRoot {
     }
 
     @Override
-    public void resolve(String packagename) {
-        // TODO Auto-generated method stub
-        
+    public boolean resolve(String packagename) {
+        if (getFirstChild() != null) {
+            return true;
+        }
+        File packageDir = new File(getRootFile(), packagename.replace('.', '/'));
+        if (!(packageDir.exists() && packageDir.isDirectory())) {
+            return false;
+        }
+        scan(this, getRootFile());
+        return true;
+    }
+    
+    private void scan(ClassContainer cc, File dir) {
+        for (File file : dir.listFiles()) {
+            if (file.isDirectory()) {
+                scan(new ClassPackage(cc, file.getName()), file);
+            }
+        }
+        if (cc.getFirstChild() == null) {
+            cc.setLeaf();
+        }
     }
 }

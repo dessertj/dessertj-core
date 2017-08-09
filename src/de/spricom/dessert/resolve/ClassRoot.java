@@ -20,5 +20,5 @@ public abstract class ClassRoot extends ClassContainer {
         return file;
     }
 
-    public abstract void resolve(String packagename) throws IOException;
+    public abstract boolean resolve(String packagename) throws IOException;
 }

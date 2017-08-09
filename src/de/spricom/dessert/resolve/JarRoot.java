@@ -12,7 +12,7 @@ public class JarRoot extends ClassRoot {
     }
 
     @Override
-    public void resolve(String packagename) throws IOException {
+    public boolean resolve(String packagename) throws IOException {
         if (getFirstChild() == null) {
             try (JarFile jarFile = new JarFile(getRootFile())) {
                 Enumeration<JarEntry> entries = jarFile.entries();
@@ -24,13 +24,14 @@ public class JarRoot extends ClassRoot {
                 }
             }
         }
+        return true;
     }
 
     private void add(String name) {
         ClassContainer cc = this;
         for (String segment : name.split("/")) {
             if (cc.getFirstChild() == null) {
-                cc.setFirstChild(new ClassPackage(cc, segment));
+                new ClassPackage(cc, segment);
                 cc = cc.getFirstChild();
             } else {
                 ClassPackage cp = cc.getFirstChild();

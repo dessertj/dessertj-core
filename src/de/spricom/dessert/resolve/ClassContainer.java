@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.Objects;
 
 abstract class ClassContainer {
-    static final ClassPackage NONE = new ClassPackage(null, null);
-
     private ClassPackage firstChild;
     private ClassFileEntry[] classes;
 
@@ -16,8 +14,24 @@ abstract class ClassContainer {
         return firstChild;
     }
     
-    void setFirstChild(ClassPackage firstChild) {
-        this.firstChild = firstChild;
+    void add(ClassPackage cp) {
+        if (firstChild == null) {
+            firstChild = cp;
+            return;
+        }
+        ClassPackage previous = firstChild;
+        while (previous.getNextSibling() != null) {
+            previous = previous.getNextSibling();
+        }
+        previous.setNextSibling(cp);
+    }
+    
+    boolean isLeaf() {
+        return firstChild == ClassPackage.NONE;
+    }
+    
+    void setLeaf() {
+        firstChild = ClassPackage.NONE;
     }
     
     ClassFileEntry[] getClasses() {
@@ -30,7 +44,7 @@ abstract class ClassContainer {
     
     public ClassContainer find(String segment) {
         Objects.requireNonNull(firstChild, "firstChild");
-        if (firstChild == NONE) {
+        if (firstChild == ClassPackage.NONE) {
             return null;
         }
         ClassPackage p = firstChild;
@@ -38,6 +52,7 @@ abstract class ClassContainer {
             if (segment.equals(p.getName())) {
                 return p;
             }
+            p = p.getNextSibling();
         }
         return null;
     }
