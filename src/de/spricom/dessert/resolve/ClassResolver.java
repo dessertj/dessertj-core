@@ -11,8 +11,31 @@ public class ClassResolver {
     private static Logger log = Logger.getLogger(ClassResolver.class.getName());
 
     public List<ClassRoot> path = new ArrayList<>();
-    
-    public void add(String filename) {
+
+    public ClassResolver() throws IOException {
+        addClassPath();
+        addBootClassPath();
+    }
+
+    public ClassResolver(String path) throws IOException {
+        add(path);
+    }
+
+    public void addClassPath() throws IOException {
+        add(System.getProperty("java.class.path"));
+    }
+
+    public void addBootClassPath() throws IOException {
+        add(System.getProperty("sun.boot.class.path"));
+    }
+
+    public void add(String path) throws IOException {
+        for (String entry : path.split(File.pathSeparator)) {
+            addFile(entry);
+        }
+    }
+
+    private void addFile(String filename) throws IOException {
         File file = new File(filename);
         if (!file.exists()) {
             log.warning("Does not exist: " + filename);
@@ -26,7 +49,7 @@ public class ClassResolver {
             log.warning("Don't know how to process: " + filename);
         }
     }
-    
+
     private ClassRoot getRoot(File file) {
         for (ClassRoot root : path) {
             if (root.getRootFile().equals(file)) {
@@ -35,13 +58,20 @@ public class ClassResolver {
         }
         return null;
     }
-    
+
     public List<ClassFileEntry> getClassFile(String classname) {
         return null;
     }
 
-    public List<ClassPackage> getPackage(String packagename) {
-        return null;
+    public List<ClassPackage> getPackage(String packagename) throws IOException {
+        List<ClassPackage> matches = new ArrayList<>();
+        for (ClassRoot cr : path) {
+            ClassPackage match = getPackage(cr, packagename);
+            if (match != null) {
+                matches.add(match);
+            }
+        }
+        return matches;
     }
 
     public ClassFileEntry getClassFile(File root, String classname) {
@@ -51,23 +81,11 @@ public class ClassResolver {
     public ClassPackage getPackage(File root, String packagename) throws IOException {
         ClassRoot cr = getRoot(root);
         Objects.requireNonNull(cr, root + " is not in path");
-        
-        ClassContainer cc = cr;
-        int lastIndex = 0;
-        int index = packagename.indexOf('.');
-        while (cr != null && index != -1) {
-            String segment = packagename.substring(lastIndex, index);
-            if (cc.getFirstChild() == null) {
-                cr.resolve(packagename);
-            }
-            cc = cc.find(segment);
-            lastIndex = index + 1;
-        }
-        if (cc != null) {
-            String segment = packagename.substring(lastIndex);
-            cc = cc.find(segment);
-        }
-        return (ClassPackage) cc;
+        return getPackage(cr, packagename);
+    }
+
+    private ClassPackage getPackage(ClassRoot cr, String packagename) throws IOException {
+        return cr.packages.get(packagename);
     }
 
     public List<ClassPackage> getSubpackages(ClassContainer pckg) {

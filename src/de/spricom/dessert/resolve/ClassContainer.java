@@ -1,37 +1,19 @@
 package de.spricom.dessert.resolve;
 
 import java.io.File;
-import java.util.Objects;
+import java.util.LinkedList;
+import java.util.List;
 
-abstract class ClassContainer {
-    private ClassPackage firstChild;
+public abstract class ClassContainer {
+    private final LinkedList<ClassPackage> subPackages = new LinkedList<>();
     private ClassFileEntry[] classes;
 
     public abstract String getPackageName();
     public abstract File getRootFile();
 
-    ClassPackage getFirstChild() {
-        return firstChild;
-    }
     
-    void add(ClassPackage cp) {
-        if (firstChild == null) {
-            firstChild = cp;
-            return;
-        }
-        ClassPackage previous = firstChild;
-        while (previous.getNextSibling() != null) {
-            previous = previous.getNextSibling();
-        }
-        previous.setNextSibling(cp);
-    }
-    
-    boolean isLeaf() {
-        return firstChild == ClassPackage.NONE;
-    }
-    
-    void setLeaf() {
-        firstChild = ClassPackage.NONE;
+    public List<ClassPackage> getSubPackages() {
+        return subPackages;
     }
     
     ClassFileEntry[] getClasses() {
@@ -42,18 +24,4 @@ abstract class ClassContainer {
         this.classes = classes;
     }
     
-    public ClassContainer find(String segment) {
-        Objects.requireNonNull(firstChild, "firstChild");
-        if (firstChild == ClassPackage.NONE) {
-            return null;
-        }
-        ClassPackage p = firstChild;
-        while (p != null) {
-            if (segment.equals(p.getName())) {
-                return p;
-            }
-            p = p.getNextSibling();
-        }
-        return null;
-    }
 }

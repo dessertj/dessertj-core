@@ -3,46 +3,47 @@ package de.spricom.dessert.resolve;
 import java.io.File;
 
 public class ClassPackage extends ClassContainer {
-    static final ClassPackage NONE = new ClassPackage();
-
+    private final ClassRoot root;
+    private final String packageName;
     private final ClassContainer parent;
-    private final String name;
-    private ClassPackage nextSibling;
+ 
+    public ClassPackage(ClassRoot root, String name) {
+        this.root = root;
+        this.packageName = name;
+        root.packages.put(name, this);
 
-    private ClassPackage() {
-        parent = null;
-        name = "NONE";
-    }
-    
-    public ClassPackage(ClassContainer parent, String name) {
-        this.parent = parent;
-        this.name = name;
-        parent.add(this);
-    }
-
-    @Override
-    public String getPackageName() {
-        return (parent.getPackageName() + "." + name).substring(1);
-    }
-
-    @Override
-    public File getRootFile() {
-        return parent.getRootFile();
-    }
-
-    public ClassPackage getNextSibling() {
-        return nextSibling;
-    }
-
-    public void setNextSibling(ClassPackage nextSibling) {
-        this.nextSibling = nextSibling;
+        int index = packageName.lastIndexOf('.');
+        if (index == -1) {
+            parent = root;
+        } else {
+            String parentName = packageName.substring(0, index);
+            ClassPackage pp = root.packages.get(parentName);
+            if (pp != null) {
+                parent = pp;
+            } else {
+                parent = new ClassPackage(root, parentName);
+            }
+        }
+        
+        parent.getSubPackages().add(this);
     }
 
     public ClassContainer getParent() {
         return parent;
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public String getPackageName() {
+        return packageName;
+    }
+
+    @Override
+    public File getRootFile() {
+        return root.getRootFile();
+    }
+    
+    @Override
+    public final String toString() {
+        return packageName;
     }
 }
