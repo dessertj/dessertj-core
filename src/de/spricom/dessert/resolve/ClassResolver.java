@@ -4,13 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
 public class ClassResolver {
     private static Logger log = Logger.getLogger(ClassResolver.class.getName());
 
     public List<ClassRoot> path = new ArrayList<>();
+    public final Map<String, ClassPackage> packages = new TreeMap<>();
 
     public ClassResolver() throws IOException {
         addClassPath();
@@ -42,12 +44,16 @@ public class ClassResolver {
         } else if (getRoot(file) != null) {
             log.warning("Already on path: " + filename);
         } else if (file.isDirectory()) {
-            path.add(new DirectoryRoot(file));
+            path.add(new DirectoryRoot(this, file));
         } else if (file.isFile() && file.getName().endsWith(".jar")) {
-            path.add(new JarRoot(file));
+            path.add(new JarRoot(this, file));
         } else {
             log.warning("Don't know how to process: " + filename);
         }
+    }
+
+    void addPackage(ClassPackage cp) {
+        packages.put(cp.getPackageName(), cp);
     }
 
     private ClassRoot getRoot(File file) {
@@ -59,40 +65,23 @@ public class ClassResolver {
         return null;
     }
 
-    public List<ClassFileEntry> getClassFile(String classname) {
-        return null;
+    public ClassPackage getPackage(String packageName) {
+        return packages.get(packageName);
     }
 
-    public List<ClassPackage> getPackage(String packagename) throws IOException {
-        List<ClassPackage> matches = new ArrayList<>();
-        for (ClassRoot cr : path) {
-            ClassPackage match = getPackage(cr, packagename);
-            if (match != null) {
-                matches.add(match);
-            }
+    public ClassPackage getPackage(File root, String packageName) {
+        ClassPackage cp = getPackage(packageName);
+        while (cp != null && !root.equals(cp.getRootFile())) {
+            cp = cp.getAlternative();
         }
-        return matches;
+        return cp;
     }
 
     public ClassFileEntry getClassFile(File root, String classname) {
         return null;
     }
 
-    public ClassPackage getPackage(File root, String packagename) throws IOException {
-        ClassRoot cr = getRoot(root);
-        Objects.requireNonNull(cr, root + " is not in path");
-        return getPackage(cr, packagename);
-    }
-
-    private ClassPackage getPackage(ClassRoot cr, String packagename) throws IOException {
-        return cr.packages.get(packagename);
-    }
-
-    public List<ClassPackage> getSubpackages(ClassContainer pckg) {
-        return null;
-    }
-
-    public List<ClassFileEntry> getClasses(ClassContainer pckg) {
+    public ClassFileEntry getClassFile(String classname) {
         return null;
     }
 }

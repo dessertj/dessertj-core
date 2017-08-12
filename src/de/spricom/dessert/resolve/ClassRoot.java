@@ -1,17 +1,49 @@
 package de.spricom.dessert.resolve;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class ClassRoot extends ClassContainer {
+    private final ClassResolver resolver;
     private final File file;
-    final Map<String, ClassPackage> packages = new HashMap<>();
 
-    protected ClassRoot(File file) {
+    protected ClassRoot(ClassResolver resolver, File file) {
+        this.resolver = resolver;
         this.file = file;
     }
 
+    final boolean containsPackage(String packageName) {
+        return resolver.getPackage(file, packageName) != null;
+    }
+    
+    final ClassPackage addPackage(String packageName) {
+        int index = packageName.lastIndexOf('.');
+        if (index == -1) {
+            return addPackage(this, packageName);
+        } else {
+            String parentName = packageName.substring(0, index);
+            return addPackage(addPackage(parentName), packageName);
+        }
+    }
+
+    final ClassPackage addPackage(ClassContainer parent, String packageName) {
+        ClassPackage alt = resolver.getPackage(packageName);
+        ClassPackage cp = alt;
+        while (cp != null && !file.equals(cp.getRootFile())) {
+            alt = cp;
+            cp = alt.getAlternative();
+        }
+        if (cp == null) {
+            cp = new ClassPackage(this, parent, packageName);
+            parent.getSubPackages().add(cp);
+            if (alt == null) {
+                resolver.addPackage(cp);
+            } else {
+                alt.setAlternative(cp);
+            }
+        }
+        return cp;
+    }
+    
     @Override
     public final String getPackageName() {
         return "";

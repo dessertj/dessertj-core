@@ -3,8 +3,8 @@ package de.spricom.dessert.resolve;
 import java.io.File;
 
 public class DirectoryRoot extends ClassRoot {
-    public DirectoryRoot(File file) {
-        super(file);
+    public DirectoryRoot(ClassResolver resolver, File file) {
+        super(resolver, file);
         scan(this, getRootFile(), "");
     }
 
@@ -12,7 +12,7 @@ public class DirectoryRoot extends ClassRoot {
         for (File file : dir.listFiles()) {
             if (file.isDirectory()) {
                 String packageName = prefix + file.getName();
-                scan(new ClassPackage(this, packageName), file, packageName + ".");
+                scan(addPackage(cc, packageName), file, packageName + ".");
             }
         }
     }

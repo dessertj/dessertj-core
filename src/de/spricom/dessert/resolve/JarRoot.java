@@ -7,8 +7,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class JarRoot extends ClassRoot {
-    public JarRoot(File file) throws IOException {
-        super(file);
+    public JarRoot(ClassResolver resolver, File file) throws IOException {
+        super(resolver, file);
         try (JarFile jarFile = new JarFile(getRootFile())) {
             Enumeration<JarEntry> entries = jarFile.entries();
             while (entries.hasMoreElements()) {
@@ -17,9 +17,7 @@ public class JarRoot extends ClassRoot {
                     int index = entry.getName().lastIndexOf('/');
                     if (index != -1) {
                         String pn = entry.getName().substring(0, index).replace('/', '.');
-                        if (!packages.containsKey(pn)) {
-                            new ClassPackage(this, pn);
-                        }
+                        addPackage(pn);
                     }
                 }
              }
