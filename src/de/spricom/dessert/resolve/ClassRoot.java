@@ -16,6 +16,10 @@ public abstract class ClassRoot extends ClassContainer {
     }
     
     final ClassPackage addPackage(String packageName) {
+        ClassPackage cp = resolver.getPackage(file, packageName);
+        if (cp != null) {
+            return cp;
+        }
         int index = packageName.lastIndexOf('.');
         if (index == -1) {
             return addPackage(this, packageName);

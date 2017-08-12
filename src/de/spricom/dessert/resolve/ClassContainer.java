@@ -6,22 +6,21 @@ import java.util.List;
 
 public abstract class ClassContainer {
     private final LinkedList<ClassPackage> subPackages = new LinkedList<>();
-    private ClassFileEntry[] classes;
+    private List<ClassFileEntry> classes;
 
     public abstract String getPackageName();
+
     public abstract File getRootFile();
 
-    
     public List<ClassPackage> getSubPackages() {
         return subPackages;
     }
-    
-    ClassFileEntry[] getClasses() {
+
+    public List<ClassFileEntry> getClasses() {
         return classes;
     }
-    
-    void setClasses(ClassFileEntry[] classes) {
+
+    void setClasses(List<ClassFileEntry> classes) {
         this.classes = classes;
     }
-    
 }

@@ -53,7 +53,8 @@ public class ClassResolver {
     }
 
     void addPackage(ClassPackage cp) {
-        packages.put(cp.getPackageName(), cp);
+        ClassPackage previous = packages.put(cp.getPackageName(), cp);
+        assert previous == null : "Added " + cp + " twice!";
     }
 
     private ClassRoot getRoot(File file) {
