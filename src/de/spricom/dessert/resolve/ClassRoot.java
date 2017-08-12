@@ -48,6 +48,10 @@ public abstract class ClassRoot extends ClassContainer {
         return cp;
     }
     
+    final void addClass(ClassFileEntry cf) {
+        resolver.addClass(cf);
+    }
+    
     @Override
     public final String getPackageName() {
         return "";

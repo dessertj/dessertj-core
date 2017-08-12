@@ -31,7 +31,9 @@ public class DirectoryRoot extends ClassRoot {
     private ClassFileEntry scanClass(ClassContainer cc, File file) throws IOException {
         try (FileInputStream is = new FileInputStream(file)) {
             ClassFile cf = new ClassFile(is);
-            return new ClassFileEntry(cc, file.getName(), cf);
+            ClassFileEntry entry = new ClassFileEntry(cc, file.getName(), cf);
+            addClass(entry);
+            return entry;
         }
     }
 }

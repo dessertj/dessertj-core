@@ -40,7 +40,9 @@ public class JarRoot extends ClassRoot {
         }
         try (InputStream is = jarFile.getInputStream(entry)) {
             ClassFile cf = new ClassFile(is);
-            cc.getClasses().add(new ClassFileEntry(cc, filename, cf));
+            ClassFileEntry cfe = new ClassFileEntry(cc, filename, cf);
+            addClass(cfe);
+            cc.getClasses().add(cfe);
         } 
     }
 }

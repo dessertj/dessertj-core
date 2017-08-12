@@ -1,9 +1,13 @@
 package de.spricom.dessert.slicing;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
-import de.spricom.dessert.dependency.ClassFileEntry;
+import de.spricom.dessert.resolve.ClassContainer;
+import de.spricom.dessert.resolve.ClassFileEntry;
+import de.spricom.dessert.resolve.ClassPackage;
 
 /**
  * A slice represents (subset of) a single Java package for one concrete root.
@@ -16,17 +20,50 @@ import de.spricom.dessert.dependency.ClassFileEntry;
  * convention, all classes implementing some interfaces, all inner classes etc.
  */
 public class Slice {
-
-    public Slice getParentPackage() {
-        return new Slice();
-    }
-
-    public File getRoot() {
-        return new File(".");
+    private final ClassContainer container;
+    private final SliceContext context;
+    private final List<SliceEntry> entries;
+    
+    Slice(ClassContainer cc, SliceContext context) {
+        container = cc;
+        this.context = context;
+        entries = new ArrayList<>(container.getClasses().size());
+        for (ClassFileEntry cf : container.getClasses()) {
+            entries.add(context.uniqueEntry(cf));
+        }
     }
     
-    public Slice slice(Predicate<ClassFileEntry> predicate) {
-        return new Slice();
+    private Slice(Slice slice, Predicate<SliceEntry> predicate) {
+        container = slice.container;
+        context = slice.context;
+        entries = new ArrayList<>(slice.entries.size());
+        for (SliceEntry entry : slice.entries) {
+            if (predicate.test(entry)) {
+                entries.add(entry);
+            }
+        }
+    }
+    
+    public Slice getParentPackage() {
+        if (container instanceof ClassPackage) {
+            return new Slice(((ClassPackage)container).getParent(), context);
+        }
+        return null;
     }
 
+    public List<SliceEntry> getEntries() {
+        return entries;
+    }
+
+    public Slice slice(Predicate<SliceEntry> predicate) {
+        return new Slice(this, predicate);
+    }
+
+    public String getPackageName() {
+        return container.getPackageName();
+    }
+
+    public File getRootFile() {
+        return container.getRootFile();
+    }
 }

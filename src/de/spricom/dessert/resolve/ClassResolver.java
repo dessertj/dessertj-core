@@ -13,6 +13,7 @@ public class ClassResolver {
 
     public List<ClassRoot> path = new ArrayList<>();
     public final Map<String, ClassPackage> packages = new TreeMap<>();
+    public final Map<String, ClassFileEntry> classes = new TreeMap<>();
 
     public ClassResolver() throws IOException {
         addClassPath();
@@ -57,6 +58,16 @@ public class ClassResolver {
         assert previous == null : "Added " + cp + " twice!";
     }
 
+    void addClass(ClassFileEntry cf) {
+        String cn = cf.getClassfile().getThisClass();
+        ClassFileEntry prev = classes.get(cn);
+        if (prev == null) {
+            classes.put(cn, cf);
+        } else {
+            prev.addAlternative(cf);
+        }
+    }
+
     private ClassRoot getRoot(File file) {
         for (ClassRoot root : path) {
             if (root.getRootFile().equals(file)) {
@@ -78,11 +89,23 @@ public class ClassResolver {
         return cp;
     }
 
-    public ClassFileEntry getClassFile(File root, String classname) {
-        return null;
-    }
-
     public ClassFileEntry getClassFile(String classname) {
+        return classes.get(classname);
+    }
+ 
+    public ClassFileEntry getClassFile(File root, String classname) {
+        ClassFileEntry cf = getClassFile(classname);
+        if (root.equals(cf.getPackage().getRootFile())) {
+            return cf;
+        }
+        if (cf.getAlternatives() == null) {
+            return null;
+        }
+        for (ClassFileEntry alt : cf.getAlternatives()) {
+            if (root.equals(alt.getPackage().getRootFile())) {
+                return alt;
+            }
+        }
         return null;
     }
 }
