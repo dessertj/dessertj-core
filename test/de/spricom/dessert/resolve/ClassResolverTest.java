@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 import org.fest.assertions.Condition;
 import org.fest.assertions.Fail;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ClassResolverTest {
@@ -24,10 +24,10 @@ public class ClassResolverTest {
     };
 
     private static Logger log = Logger.getLogger(ClassResolverTest.class.getName());
-    private ClassResolver resolver;
+    private static ClassResolver resolver;
 
-    @Before
-    public void init() throws IOException {
+    @BeforeClass
+    public static void init() throws IOException {
         long ts = System.currentTimeMillis();
         resolver = new ClassResolver();
         log.info("Needed " + (System.currentTimeMillis() - ts) + " ms to initialize ClassResolver.");
@@ -43,6 +43,11 @@ public class ClassResolverTest {
         assertThat(resolver.getPackage("java.lang")).isNotNull().is(hasNoAlternative);
         assertThat(resolver.getPackage(getClass().getPackage().getName())).isNotNull().is(hasNoAlternative);
         assertThat(resolver.getPackage("org.springframework.aop.framework")).isNotNull().is(hasNoAlternative);
+    }
+    
+    @Test
+    public void testIOException() throws IOException {
+        assertThat(resolver.getClassFile(java.io.IOException.class.getName())).isNotNull();
     }
 
     private File findInPath(String pattern) {

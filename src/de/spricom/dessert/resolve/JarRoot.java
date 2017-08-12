@@ -28,6 +28,7 @@ public class JarRoot extends ClassRoot {
                     } else {
                         lastPackageName = entry.getName().substring(0, index);
                         lastPackage = addPackage(lastPackageName.replace('/', '.'));
+                        addClass(lastPackage, entry.getName().substring(index + 1), entry, jarFile);
                     }
                 }
              }
