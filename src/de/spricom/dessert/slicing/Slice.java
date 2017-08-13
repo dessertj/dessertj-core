@@ -1,9 +1,8 @@
 package de.spricom.dessert.slicing;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
+import java.util.HashSet;
+import java.util.Set;
 
 import de.spricom.dessert.resolve.ClassContainer;
 import de.spricom.dessert.resolve.ClassFileEntry;
@@ -22,21 +21,21 @@ import de.spricom.dessert.resolve.ClassPackage;
 public class Slice {
     private final ClassContainer container;
     private final SliceContext context;
-    private final List<SliceEntry> entries;
+    private final Set<SliceEntry> entries;
     
     Slice(ClassContainer cc, SliceContext context) {
         container = cc;
         this.context = context;
-        entries = new ArrayList<>(container.getClasses().size());
+        entries = new HashSet<>(container.getClasses().size());
         for (ClassFileEntry cf : container.getClasses()) {
-            entries.add(context.uniqueEntry(cf));
+            entries.add(new SliceEntry(context, cf));
         }
     }
     
-    private Slice(Slice slice, Predicate<SliceEntry> predicate) {
+    private Slice(Slice slice, SlicePredicate<SliceEntry> predicate) {
         container = slice.container;
         context = slice.context;
-        entries = new ArrayList<>(slice.entries.size());
+        entries = new HashSet<>(slice.entries.size());
         for (SliceEntry entry : slice.entries) {
             if (predicate.test(entry)) {
                 entries.add(entry);
@@ -51,11 +50,11 @@ public class Slice {
         return null;
     }
 
-    public List<SliceEntry> getEntries() {
+    public Set<SliceEntry> getEntries() {
         return entries;
     }
 
-    public Slice slice(Predicate<SliceEntry> predicate) {
+    public Slice slice(SlicePredicate<SliceEntry> predicate) {
         return new Slice(this, predicate);
     }
 

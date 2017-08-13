@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.fest.assertions.Fail;
 import org.junit.Test;
 
+import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.slicing.SliceAssertions;
 import de.spricom.dessert.slicing.SliceContext;
@@ -22,7 +23,7 @@ public class DependencyCheck {
     
     @Test
     public void testAssert() throws IOException {
-        SliceContext sc = new SliceContext();
+        SliceContext sc = new SliceContext(ClassResolver.ofClassPathAndBootClassPath());
         SliceSet dessert = sc.subPackagesOf("de.spricom.dessert");
         SliceSet io = sc.subPackagesOf("java.io");
         Slice ioSlice = io.iterator().next();

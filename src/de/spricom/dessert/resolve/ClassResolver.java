@@ -3,25 +3,51 @@ package de.spricom.dessert.resolve;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Logger;
 
 public class ClassResolver {
     private static Logger log = Logger.getLogger(ClassResolver.class.getName());
 
     public List<ClassRoot> path = new ArrayList<>();
-    public final Map<String, ClassPackage> packages = new TreeMap<>();
-    public final Map<String, ClassFileEntry> classes = new TreeMap<>();
+    public final Map<String, ClassPackage> packages = new HashMap<>(3000);
+    public final Map<String, ClassFileEntry> classes = new HashMap<>(60000);
 
-    public ClassResolver() throws IOException {
-        addClassPath();
-        addBootClassPath();
+    public static ClassResolver of(String path) throws IOException {
+        ClassResolver r = new ClassResolver();
+        r.add(path);
+        return r;
     }
 
-    public ClassResolver(String path) throws IOException {
-        add(path);
+    public static ClassResolver ofClassPath() throws IOException {
+        ClassResolver r = new ClassResolver();
+        r.addClassPath();
+        return r;
+    }
+
+    public static ClassResolver ofClassPathWithoutJars() throws IOException {
+        ClassResolver r = new ClassResolver();
+        for (String entry : System.getProperty("java.class.path").split(File.pathSeparator)) {
+            if (entry.endsWith(".jar")) {
+                r.addFile(entry);
+            }
+        }
+        return r;
+    }
+
+    public static ClassResolver ofBootClassPath() throws IOException {
+        ClassResolver r = new ClassResolver();
+        r.addBootClassPath();
+        return r;
+    }
+
+    public static ClassResolver ofClassPathAndBootClassPath() throws IOException {
+        ClassResolver r = new ClassResolver();
+        r.addClassPath();
+        r.addBootClassPath();
+        return r;
     }
 
     public void addClassPath() throws IOException {
@@ -92,7 +118,7 @@ public class ClassResolver {
     public ClassFileEntry getClassFile(String classname) {
         return classes.get(classname);
     }
- 
+
     public ClassFileEntry getClassFile(File root, String classname) {
         ClassFileEntry cf = getClassFile(classname);
         if (root.equals(cf.getPackage().getRootFile())) {
@@ -107,5 +133,13 @@ public class ClassResolver {
             }
         }
         return null;
+    }
+    
+    public int getPackageCount() {
+        return packages.size();
+    }
+
+    public int getClassCount() {
+        return classes.size();
     }
 }

@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import org.fest.assertions.Condition;
 import org.fest.assertions.Fail;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ClassResolverTest {
@@ -24,30 +23,35 @@ public class ClassResolverTest {
     };
 
     private static Logger log = Logger.getLogger(ClassResolverTest.class.getName());
-    private static ClassResolver resolver;
+    private static ClassResolver defaultResolver;
 
-    @BeforeClass
-    public static void init() throws IOException {
-        long ts = System.currentTimeMillis();
-        resolver = new ClassResolver();
-        log.info("Needed " + (System.currentTimeMillis() - ts) + " ms to initialize ClassResolver.");
+    private static ClassResolver getDefaultResolver() throws IOException {
+        if (defaultResolver == null) {
+            long ts = System.currentTimeMillis();
+            defaultResolver = ClassResolver.ofClassPathAndBootClassPath();
+            log.info("Needed " + (System.currentTimeMillis() - ts) + " ms to initialize resolver for "
+                    + defaultResolver.getClassCount() + " classes in " + defaultResolver.getPackageCount()
+                    + " packages.");
+        }
+        return defaultResolver;
     }
 
     @Test
     public void testPerformance() throws IOException {
-        assertThat(resolver.getPackage("bla.blub")).isNull();
+        assertThat(getDefaultResolver().getPackage("bla.blub")).isNull();
     }
 
     @Test
     public void test() throws IOException {
+        ClassResolver resolver = getDefaultResolver();
         assertThat(resolver.getPackage("java.lang")).isNotNull().is(hasNoAlternative);
         assertThat(resolver.getPackage(getClass().getPackage().getName())).isNotNull().is(hasNoAlternative);
         assertThat(resolver.getPackage("org.springframework.aop.framework")).isNotNull().is(hasNoAlternative);
     }
-    
+
     @Test
     public void testIOException() throws IOException {
-        assertThat(resolver.getClassFile(java.io.IOException.class.getName())).isNotNull();
+        assertThat(getDefaultResolver().getClassFile(java.io.IOException.class.getName())).isNotNull();
     }
 
     private File findInPath(String pattern) {

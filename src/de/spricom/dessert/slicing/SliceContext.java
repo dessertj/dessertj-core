@@ -3,27 +3,70 @@ package de.spricom.dessert.slicing;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import de.spricom.dessert.resolve.ClassFileEntry;
 import de.spricom.dessert.resolve.ClassPackage;
 import de.spricom.dessert.resolve.ClassResolver;
 
 public class SliceContext {
+    private static Logger log = Logger.getLogger(SliceContext.class.getName());
     private static ClassResolver defaultResolver;
 
     private final ClassResolver resolver;
-    private Map<SliceEntry, SliceEntry> entries = new HashMap<>();
+    private boolean useClassLoader = true;
+
+    private Map<String, SliceEntry> entries = new HashMap<>();
 
     public SliceContext() throws IOException {
         if (defaultResolver == null) {
-            defaultResolver = new ClassResolver();
+            defaultResolver = ClassResolver.ofClassPath();
         }
         resolver = defaultResolver;
     }
 
-    public SliceContext(String path) throws IOException {
-        resolver = new ClassResolver(path);
+    public SliceContext(ClassResolver resolver) throws IOException {
+        this.resolver = resolver;
+    }
+
+    SliceEntry getSliceEntry(String classname) {
+        SliceEntry se = entries.get(classname);
+        if (se == null) {
+            se = resolveEntry(classname);
+            if (se == null && useClassLoader) {
+                se = loadClass(classname);
+            }
+            if (se == null) {
+                se = undefined(classname);
+            }
+            entries.put(classname, se);
+        }
+        return se;
+    }
+
+    private SliceEntry resolveEntry(String classname) {
+        ClassFileEntry resolverEntry = resolver.getClassFile(classname);
+        if (resolverEntry == null) {
+            return null;
+        }
+        return new SliceEntry(this, resolverEntry);
+    }
+
+    private SliceEntry loadClass(String classname) {
+        try {
+            Class<?> clazz = Class.forName(classname);
+            return new SliceEntry(this, clazz);
+        } catch (ClassNotFoundException ex) {
+            log.log(Level.FINE, "Cannot find " + classname, ex);
+        } catch (IOException ex) {
+            log.log(Level.WARNING, "Cannot analyze " + classname, ex);
+        }
+        return null;
+    }
+    
+    private SliceEntry undefined(String classname) {
+        return new SliceEntry(this, classname);
     }
 
     public SliceSet subPackagesOf(Package pkg) {
@@ -43,19 +86,11 @@ public class SliceContext {
         return ss;
     }
 
-    SliceEntry getSliceEntry(String classname) {
-        ClassFileEntry cf = resolver.getClassFile(classname);
-        Objects.requireNonNull(cf, "No " + classname + " found!");
-        return uniqueEntry(cf);
+    public boolean isUseClassLoader() {
+        return useClassLoader;
     }
 
-    SliceEntry uniqueEntry(ClassFileEntry cf) {
-        SliceEntry se = new SliceEntry(this, cf);
-        SliceEntry existing = entries.get(se);
-        if (existing != null) {
-            return existing;
-        }
-        entries.put(se, se);
-        return se;
+    public void setUseClassLoader(boolean useClassLoader) {
+        this.useClassLoader = useClassLoader;
     }
 }
