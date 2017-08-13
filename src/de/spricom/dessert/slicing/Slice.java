@@ -7,6 +7,7 @@ import java.util.Set;
 import de.spricom.dessert.resolve.ClassContainer;
 import de.spricom.dessert.resolve.ClassFileEntry;
 import de.spricom.dessert.resolve.ClassPackage;
+import de.spricom.dessert.resolve.ClassPredicate;
 
 /**
  * A slice represents (subset of) a single Java package for one concrete root.
@@ -22,7 +23,7 @@ public class Slice {
     private final ClassContainer container;
     private final SliceContext context;
     private final Set<SliceEntry> entries;
-    
+
     Slice(ClassContainer cc, SliceContext context) {
         container = cc;
         this.context = context;
@@ -31,8 +32,8 @@ public class Slice {
             entries.add(new SliceEntry(context, cf));
         }
     }
-    
-    private Slice(Slice slice, SlicePredicate<SliceEntry> predicate) {
+
+    private Slice(Slice slice, ClassPredicate<SliceEntry> predicate) {
         container = slice.container;
         context = slice.context;
         entries = new HashSet<>(slice.entries.size());
@@ -42,10 +43,10 @@ public class Slice {
             }
         }
     }
-    
+
     public Slice getParentPackage() {
         if (container instanceof ClassPackage) {
-            return new Slice(((ClassPackage)container).getParent(), context);
+            return new Slice(((ClassPackage) container).getParent(), context);
         }
         return null;
     }
@@ -54,8 +55,12 @@ public class Slice {
         return entries;
     }
 
-    public Slice slice(SlicePredicate<SliceEntry> predicate) {
+    public Slice slice(ClassPredicate<SliceEntry> predicate) {
         return new Slice(this, predicate);
+    }
+
+    public SliceSet asSliceSet() {
+        return new SliceSet(this);
     }
 
     public String getPackageName() {

@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
-public class ClassResolver {
+public final class ClassResolver {
     private static Logger log = Logger.getLogger(ClassResolver.class.getName());
 
     public List<ClassRoot> path = new ArrayList<>();
@@ -94,7 +96,7 @@ public class ClassResolver {
         }
     }
 
-    private ClassRoot getRoot(File file) {
+    public ClassRoot getRoot(File file) {
         for (ClassRoot root : path) {
             if (root.getRootFile().equals(file)) {
                 return root;
@@ -134,7 +136,47 @@ public class ClassResolver {
         }
         return null;
     }
-    
+
+    public Set<File> getRootFiles() {
+        return getRootFiles(new ClassPredicate<File>() {
+
+            @Override
+            public boolean test(File t) {
+                return true;
+            }
+        });
+    }
+
+    public Set<File> getRootJars() {
+        return getRootFiles(new ClassPredicate<File>() {
+
+            @Override
+            public boolean test(File t) {
+                return !t.isDirectory();
+            }
+        });
+    }
+
+    public Set<File> getRootDirs() {
+        return getRootFiles(new ClassPredicate<File>() {
+
+            @Override
+            public boolean test(File t) {
+                return t.isDirectory();
+            }
+        });
+    }
+
+    public Set<File> getRootFiles(ClassPredicate<File> predicate) {
+        Set<File> files = new HashSet<>();
+        for (ClassRoot cr : path) {
+            if (predicate.test(cr.getRootFile())) {
+                files.add(cr.getRootFile());
+            }
+        }
+        return files;
+    }
+
     public int getPackageCount() {
         return packages.size();
     }

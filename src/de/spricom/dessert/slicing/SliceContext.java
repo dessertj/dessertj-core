@@ -1,14 +1,17 @@
 package de.spricom.dessert.slicing;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.spricom.dessert.resolve.ClassFileEntry;
 import de.spricom.dessert.resolve.ClassPackage;
 import de.spricom.dessert.resolve.ClassResolver;
+import de.spricom.dessert.resolve.ClassRoot;
 
 public class SliceContext {
     private static Logger log = Logger.getLogger(SliceContext.class.getName());
@@ -86,6 +89,25 @@ public class SliceContext {
         return ss;
     }
 
+    public SliceSet packagesOf(Set<File> rootFiles) {
+        SliceSet ss = new SliceSet();
+        for (File rootFile : rootFiles) {
+            ClassRoot cr = resolver.getRoot(rootFile);
+            if (cr != null) {
+                ss.addRecursive(cr, this);
+            }
+        }
+        return ss;
+    }
+    
+    public Slice packageOf(String packageName) {
+        ClassPackage cp = resolver.getPackage(packageName);
+        if (cp == null) {
+            return null;
+        }
+        return new Slice(cp, this);
+    }
+    
     public boolean isUseClassLoader() {
         return useClassLoader;
     }
