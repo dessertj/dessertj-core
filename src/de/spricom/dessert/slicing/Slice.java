@@ -70,4 +70,52 @@ public class Slice {
     public File getRootFile() {
         return container.getRootFile();
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + getRootFile().hashCode();
+        result = prime * result + getPackageName().hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Slice other = (Slice) obj;
+        if (!getRootFile().equals(other.getRootFile())) {
+            return false;
+        }
+        if (!getPackageName().equals(other.getPackageName())) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(getPackageName());
+        int count = 0;
+        for (SliceEntry entry: entries) {
+            sb.append(count == 0 ? "[" : ",");
+            sb.append(entry.getFilename());
+            count++;
+            if (count > 10) {
+                sb.append("...");
+                break;
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+    
+    public boolean hasSameEntries(Slice other) {
+        return entries.equals(other.entries);
+    }
 }

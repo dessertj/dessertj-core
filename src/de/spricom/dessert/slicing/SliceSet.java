@@ -1,13 +1,13 @@
 package de.spricom.dessert.slicing;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.function.Predicate;
+import java.util.Set;
 
 import de.spricom.dessert.resolve.ClassContainer;
 import de.spricom.dessert.resolve.ClassPackage;
+import de.spricom.dessert.resolve.ClassPredicate;
 
 /**
  * A SliceSet is as Set of the slices for which the elements of each
@@ -16,14 +16,18 @@ import de.spricom.dessert.resolve.ClassPackage;
  * naming convention etc.
  */
 public class SliceSet implements Iterable<Slice> {
-    private final List<Slice> slices;
+    private final Set<Slice> slices;
 
     SliceSet() {
-        slices = new ArrayList<>();
+        slices = new HashSet<>();
+    }
+
+    SliceSet(int expectedSize) {
+        slices = new HashSet<>(expectedSize);
     }
 
     SliceSet(Slice slice) {
-        slices = Collections.singletonList(slice);
+        slices = Collections.singleton(slice);
     }
 
     @Override
@@ -32,16 +36,27 @@ public class SliceSet implements Iterable<Slice> {
     }
 
     public SliceSet with(SliceSet other) {
-        return null;
+        SliceSet ss = new SliceSet(slices.size() + other.slices.size());
+        ss.slices.addAll(slices);
+        ss.slices.addAll(other.slices);
+        return ss;
     }
 
     public SliceSet without(SliceSet other) {
-        return null;
+        SliceSet ss = new SliceSet(slices.size() + other.slices.size());
+        ss.slices.addAll(slices);
+        ss.slices.removeAll(other.slices);
+        return ss;
     }
 
-    public SliceSet slice(Predicate<SliceEntry> predicate) {
-        SliceSet ss = new SliceSet();
-
+    public SliceSet slice(ClassPredicate<SliceEntry> predicate) {
+        SliceSet ss = new SliceSet(slices.size());
+        for (Slice s : slices) {
+            Slice filtered = s.slice(predicate);
+            if (!filtered.getEntries().isEmpty()) {
+                ss.slices.add(s);
+            }
+        }
         return ss;
     }
 
