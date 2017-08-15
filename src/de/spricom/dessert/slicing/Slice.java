@@ -8,6 +8,7 @@ import de.spricom.dessert.resolve.ClassContainer;
 import de.spricom.dessert.resolve.ClassFileEntry;
 import de.spricom.dessert.resolve.ClassPackage;
 import de.spricom.dessert.resolve.ClassPredicate;
+import de.spricom.dessert.util.SetHelper;
 
 /**
  * A slice represents (subset of) a single Java package for one concrete root.
@@ -131,12 +132,6 @@ public class Slice {
     }
     
     public boolean isUsing(Slice slice) {
-        Set<SliceEntry> used = getUsedClasses();
-        for (SliceEntry entry : slice.getEntries()) {
-            if (used.contains(entry)) {
-                return true;
-            }
-        }
-        return false;
+        return SetHelper.containsAny(getUsedClasses(), slice.getEntries());
     }
  }

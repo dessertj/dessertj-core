@@ -1,4 +1,4 @@
-package de.spricom.dessert.slicing;
+package de.spricom.dessert.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -119,7 +119,7 @@ public final class DependencyGraph<T> {
             n.mark = Mark.TEMPORARY;
             for (Node<T> m : n.directDependencies) {
                 if (visit(m)) {
-                    cycle.add(n);
+                    cycle.addFirst(n);
                     return true;
                 }
             }

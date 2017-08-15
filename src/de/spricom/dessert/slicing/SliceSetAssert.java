@@ -1,5 +1,6 @@
 package de.spricom.dessert.slicing;
 
+import de.spricom.dessert.util.DependencyGraph;
 import junit.framework.AssertionFailedError;
 
 public class SliceSetAssert {

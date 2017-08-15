@@ -206,4 +206,8 @@ public final class SliceEntry {
         }
         return alternatives;
     }
+
+    public String getClassname() {
+        return classname;
+    }
 }
