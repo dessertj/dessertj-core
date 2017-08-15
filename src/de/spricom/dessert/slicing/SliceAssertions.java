@@ -12,6 +12,10 @@ public final class SliceAssertions {
         return new SliceSetAssert(set);
     }
 
+    public static SliceAssert dessert(Slice slice) {
+        return assertThat(slice);
+    }
+
     public static SliceAssert assertThat(Slice slice) {
         return new SliceAssert(slice);
     }

@@ -23,6 +23,7 @@ public class Slice {
     private final ClassContainer container;
     private final SliceContext context;
     private final Set<SliceEntry> entries;
+    private Set<SliceEntry> usedClasses;
 
     Slice(ClassContainer cc, SliceContext context) {
         container = cc;
@@ -118,4 +119,24 @@ public class Slice {
     public boolean hasSameEntries(Slice other) {
         return entries.equals(other.entries);
     }
-}
+
+    public Set<SliceEntry> getUsedClasses() {
+        if (usedClasses == null) {
+            usedClasses = new HashSet<>();
+            for (SliceEntry entry : entries) {
+                usedClasses.addAll(entry.getUsedClasses());
+            }
+        }
+        return usedClasses;
+    }
+    
+    public boolean isUsing(Slice slice) {
+        Set<SliceEntry> used = getUsedClasses();
+        for (SliceEntry entry : slice.getEntries()) {
+            if (used.contains(entry)) {
+                return true;
+            }
+        }
+        return false;
+    }
+ }
