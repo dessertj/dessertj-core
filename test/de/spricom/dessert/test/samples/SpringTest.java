@@ -46,12 +46,20 @@ public class SpringTest {
         DependencyGraph<SliceEntry> dag = new DependencyGraph<>();
         for (SliceEntry n : classes) {
             for (SliceEntry m : classes) {
-                if (n != m && !n.getPackageName().equals(m.getPackageName()) && n.getUsedClasses().contains(m)) {
+                if (n != m && !isSameClass(n, m) && n.getUsedClasses().contains(m)) {
                     dag.addDependency(n, m);
                 }
             }
         }
-        assertThat(dag.isCycleFree()).isTrue();
+        assertThat(dag.isCycleFree()).isFalse();
+        System.out.println("Class-Cycle:");
+        for (SliceEntry entry : dag.getCycle()) {
+            System.out.println("-> " + entry.getClassname());
+        }
+    }
+    
+    private boolean isSameClass(SliceEntry s1, SliceEntry s2) {
+        return s1.getClassname().startsWith(s2.getClassname()) || s2.getClassname().startsWith(s1.getClassname());
     }
 
     private static ClassResolver getHibernateResolver() throws IOException {
