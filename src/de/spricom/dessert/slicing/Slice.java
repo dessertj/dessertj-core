@@ -1,6 +1,7 @@
 package de.spricom.dessert.slicing;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,9 +30,13 @@ public class Slice {
     Slice(ClassContainer cc, SliceContext context) {
         container = cc;
         this.context = context;
-        entries = new HashSet<>(container.getClasses().size());
-        for (ClassFileEntry cf : container.getClasses()) {
-            entries.add(new SliceEntry(context, cf));
+        if (cc.getClasses() == null) {
+            entries = Collections.emptySet();
+        } else {
+            entries = new HashSet<>(container.getClasses().size());
+            for (ClassFileEntry cf : container.getClasses()) {
+                entries.add(new SliceEntry(context, cf));
+            }
         }
     }
 

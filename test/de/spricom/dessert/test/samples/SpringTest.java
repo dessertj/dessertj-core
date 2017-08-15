@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.fest.assertions.Fail;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,28 +18,29 @@ import de.spricom.dessert.slicing.SliceContext;
 import de.spricom.dessert.slicing.SliceEntry;
 import de.spricom.dessert.slicing.SliceSet;
 import de.spricom.dessert.util.DependencyGraph;
+import junit.framework.AssertionFailedError;
 
 public class SpringTest {
     private static ClassResolver resolver;
 
     private SliceContext sc;
+    private SliceSet packages;
 
     @Before
     public void init() throws IOException {
         sc = new SliceContext(getHibernateResolver());
+        packages = sc.packagesOf(resolver.getRootFiles());
     }
 
     @Test
-    public void testCycleFree() throws IOException {
-        SliceSet packages = sc.packagesOf(resolver.getRootFiles());
+    public void testPackageCycles() throws IOException {
         packages = packages.without(sc.subPackagesOf("org.springframework.cglib.core"));
         packages = packages.without(sc.subPackagesOf("org.springframework.objenesis"));
         SliceAssertions.assertThat(packages).isCycleFree();
     }
 
     @Test
-    public void testClasses() {
-        SliceSet packages = sc.packagesOf(resolver.getRootFiles());
+    public void testClassCycles() {
         Set<SliceEntry> classes = new HashSet<>();
         for (Slice slice : packages) {
             classes.addAll(slice.getEntries());
@@ -57,7 +59,31 @@ public class SpringTest {
             System.out.println("-> " + entry.getClassname());
         }
     }
-    
+
+    @Test
+    public void testNestedPackageDependencies() {
+        try {
+            for (Slice slice : packages) {
+                SliceAssertions.assertThat(slice).doesNotUse(slice.getParentPackage());
+            }
+            Fail.fail("No dependency found");
+        } catch (AssertionFailedError ae) {
+            System.out.println(ae.getMessage());
+        }
+    }
+
+    @Test
+    public void testOuterPackageDependencies() {
+        try {
+            for (Slice slice : packages) {
+                SliceAssertions.assertThat(slice.getParentPackage()).doesNotUse(slice);
+            }
+            Fail.fail("No dependency found");
+        } catch (AssertionFailedError ae) {
+            System.out.println(ae.getMessage());
+        }
+    }
+
     private boolean isSameClass(SliceEntry s1, SliceEntry s2) {
         return s1.getClassname().startsWith(s2.getClassname()) || s2.getClassname().startsWith(s1.getClassname());
     }
