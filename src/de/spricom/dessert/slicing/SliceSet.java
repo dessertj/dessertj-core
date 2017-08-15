@@ -61,7 +61,7 @@ public class SliceSet implements Iterable<Slice> {
     }
 
     void add(ClassContainer cc, SliceContext context) {
-        if (cc == null || cc.getClasses().isEmpty()) {
+        if (cc == null || cc.getClasses() == null || cc.getClasses().isEmpty()) {
             return;
         }
         slices.add(new Slice(cc, context));

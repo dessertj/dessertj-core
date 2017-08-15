@@ -1,5 +1,7 @@
 package de.spricom.dessert.slicing;
 
+import junit.framework.AssertionFailedError;
+
 public class SliceSetAssert {
     private final SliceSet set;
     
@@ -16,6 +18,15 @@ public class SliceSetAssert {
                 }
             }
         }
-        dag.getSorted();
+        if (!dag.isCycleFree()) {
+            StringBuilder sb = new StringBuilder("Cycle:\n");
+            int count = 0;
+            for (Slice n : dag.getCycle()) {
+                sb.append(count == 0 ? "" : ",\n");
+                sb.append(n.getPackageName());
+                count++;
+            }
+            throw new AssertionFailedError(sb.toString());
+        }
     }
 }

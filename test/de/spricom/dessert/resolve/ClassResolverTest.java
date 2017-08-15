@@ -2,12 +2,10 @@ package de.spricom.dessert.resolve;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.fest.assertions.Condition;
-import org.fest.assertions.Fail;
 import org.junit.Test;
 
 public class ClassResolverTest {
@@ -52,15 +50,5 @@ public class ClassResolverTest {
     @Test
     public void testIOException() throws IOException {
         assertThat(getDefaultResolver().getClassFile(java.io.IOException.class.getName())).isNotNull();
-    }
-
-    private File findInPath(String pattern) {
-        for (String filename : System.getProperty("java.class.path").split(File.pathSeparator)) {
-            if (filename.matches(pattern)) {
-                return new File(filename);
-            }
-        }
-        Fail.fail("Thers is no " + pattern + " in classpath");
-        return null;
     }
 }

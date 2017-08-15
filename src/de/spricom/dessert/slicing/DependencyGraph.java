@@ -53,6 +53,7 @@ public final class DependencyGraph<T> {
 
     private Map<T, Node<T>> nodes = new HashMap<>();
     private LinkedList<Node<T>> sorted;
+    private LinkedList<Node<T>> cycle;
 
     public void addDependency(T from, T to) {
         sorted = null;
@@ -68,12 +69,30 @@ public final class DependencyGraph<T> {
         return n;
     }
 
+    public boolean isCycleFree() {
+        if (sorted == null) {
+            sort();
+        }
+        return cycle == null;
+    }
+
     public List<T> getSorted() {
         if (sorted == null) {
             sort();
         }
-        List<T> list = new ArrayList<>(sorted.size());
-        for (Node<T> node : sorted) {
+        if (cycle != null) {
+            throw new IllegalStateException("Not a DAG, cycle: " + getCycle());
+        }
+        return values(sorted);
+    }
+
+    public List<T> getCycle() {
+        return values(cycle);
+    }
+
+    private List<T> values(List<Node<T>> nodes) {
+        List<T> list = new ArrayList<>(nodes.size());
+        for (Node<T> node : nodes) {
             list.add(node.value);
         }
         return list;
@@ -82,22 +101,31 @@ public final class DependencyGraph<T> {
     private void sort() {
         sorted = new LinkedList<>();
         for (Node<T> n : nodes.values()) {
-            visit(n);
+            if (visit(n)) {
+                return;
+            }
+            ;
         }
     }
 
-    private void visit(Node<T> n) {
+    private boolean visit(Node<T> n) {
         if (n.mark == Mark.PERMANENT) {
-            return;
+            return false;
         } else if (n.mark == Mark.TEMPORARY) {
-            throw new IllegalStateException("Not a DAG");
+            cycle = new LinkedList<>();
+            cycle.add(n);
+            return true;
         } else {
             n.mark = Mark.TEMPORARY;
             for (Node<T> m : n.directDependencies) {
-                visit(m);
+                if (visit(m)) {
+                    cycle.add(n);
+                    return true;
+                }
             }
             n.mark = Mark.PERMANENT;
             sorted.addFirst(n);
+            return false;
         }
     }
 }
