@@ -3,8 +3,6 @@ package de.spricom.dessert.slicing;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.AssertionFailedError;
-
 public class SliceAssert {
     private final Slice slice;
     
@@ -19,7 +17,7 @@ public class SliceAssert {
         }
         deps.retainAll(pckg.getEntries());
         if (!deps.isEmpty()) {
-            throw new AssertionFailedError(slice.getPackageName() + " uses " + deps);
+            throw new AssertionError(slice.getPackageName() + " uses " + deps);
         }
     }
 
