@@ -1,24 +1,18 @@
 package de.spricom.dessert.test.samples;
 
-import static org.fest.assertions.Assertions.assertThat;
+import de.spricom.dessert.resolve.ClassResolver;
+import de.spricom.dessert.slicing.*;
+import de.spricom.dessert.util.DependencyGraph;
+import org.fest.assertions.Fail;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.fest.assertions.Fail;
-import org.junit.Before;
-import org.junit.Test;
-
-import de.spricom.dessert.resolve.ClassResolver;
-import de.spricom.dessert.slicing.Slice;
-import de.spricom.dessert.slicing.SliceAssertions;
-import de.spricom.dessert.slicing.SliceContext;
-import de.spricom.dessert.slicing.SliceEntry;
-import de.spricom.dessert.slicing.SliceSet;
-import de.spricom.dessert.util.DependencyGraph;
-import junit.framework.AssertionFailedError;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class HibernateTest {
     private static ClassResolver resolver;
@@ -27,7 +21,7 @@ public class HibernateTest {
 
     @Before
     public void init() throws IOException {
-        sc = new SliceContext(getHibernateResolver());
+        sc = new SliceContext(getHibernateJarsResolver());
     }
 
     @Test
@@ -36,7 +30,7 @@ public class HibernateTest {
         try {
             SliceAssertions.assertThat(packages).isCycleFree();
             Fail.fail("No cycle found");
-        } catch (AssertionFailedError ae) {
+        } catch (AssertionError ae) {
             System.out.println(ae.toString());
         }
     }
@@ -63,7 +57,7 @@ public class HibernateTest {
         }
     }
 
-    private static ClassResolver getHibernateResolver() throws IOException {
+    private static ClassResolver getHibernateJarsResolver() throws IOException {
         if (resolver == null) {
             resolver = new ClassResolver();
             for (String filename : System.getProperty("java.class.path").split(File.pathSeparator)) {

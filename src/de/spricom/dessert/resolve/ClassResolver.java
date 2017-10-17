@@ -32,7 +32,7 @@ public final class ClassResolver {
     public static ClassResolver ofClassPathWithoutJars() throws IOException {
         ClassResolver r = new ClassResolver();
         for (String entry : System.getProperty("java.class.path").split(File.pathSeparator)) {
-            if (entry.endsWith(".jar")) {
+            if (!entry.endsWith(".jar")) {
                 r.addFile(entry);
             }
         }

@@ -28,7 +28,7 @@ public class SpringTest {
 
     @Before
     public void init() throws IOException {
-        sc = new SliceContext(getHibernateResolver());
+        sc = new SliceContext(getSpringJarsResolver());
         packages = sc.packagesOf(resolver.getRootFiles());
     }
 
@@ -67,7 +67,7 @@ public class SpringTest {
                 SliceAssertions.assertThat(slice).doesNotUse(slice.getParentPackage());
             }
             Fail.fail("No dependency found");
-        } catch (AssertionFailedError ae) {
+        } catch (AssertionError ae) {
             System.out.println(ae.getMessage());
         }
     }
@@ -79,7 +79,7 @@ public class SpringTest {
                 SliceAssertions.assertThat(slice.getParentPackage()).doesNotUse(slice);
             }
             Fail.fail("No dependency found");
-        } catch (AssertionFailedError ae) {
+        } catch (AssertionError ae) {
             System.out.println(ae.getMessage());
         }
     }
@@ -88,7 +88,7 @@ public class SpringTest {
         return s1.getClassname().startsWith(s2.getClassname()) || s2.getClassname().startsWith(s1.getClassname());
     }
 
-    private static ClassResolver getHibernateResolver() throws IOException {
+    private static ClassResolver getSpringJarsResolver() throws IOException {
         if (resolver == null) {
             resolver = new ClassResolver();
             for (String filename : System.getProperty("java.class.path").split(File.pathSeparator)) {
