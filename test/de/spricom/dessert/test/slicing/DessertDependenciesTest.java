@@ -1,7 +1,9 @@
 package de.spricom.dessert.test.slicing;
 
 import de.spricom.dessert.resolve.ClassResolver;
+import de.spricom.dessert.slicing.SliceAssertions;
 import de.spricom.dessert.slicing.SliceContext;
+import de.spricom.dessert.slicing.SliceSet;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -16,7 +18,8 @@ public class DessertDependenciesTest {
     }
 
     @Test
-    public void test() throws IOException {
-        System.out.println(resolver.getRootFiles());
+    public void testPackagesAreCycleFree() throws IOException {
+        SliceSet subPackages = new SliceContext().subPackagesOf("de.spricom.dessert");
+        SliceAssertions.dessert(subPackages).isCycleFree();
     }
 }

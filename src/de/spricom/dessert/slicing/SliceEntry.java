@@ -15,6 +15,9 @@ import java.util.Set;
 import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.resolve.ClassFileEntry;
 
+/**
+ * For each class belonging to a {@link Slice} there is a SliceEntry.
+ */
 public final class SliceEntry {
     public static final SliceEntry UNDEFINED = new SliceEntry();
     
