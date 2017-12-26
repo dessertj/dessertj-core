@@ -10,12 +10,12 @@ import java.util.Set;
 
 public class SliceSetAssert {
     private final SliceSet set;
-    
+
     public SliceSetAssert(SliceSet set) {
         this.set = set;
     }
 
-    public void isCycleFree() {
+    public SliceSetAssert isCycleFree() {
         DependencyGraph<Slice> dag = new DependencyGraph<>();
         for (Slice n : set) {
             for (Slice m : set) {
@@ -34,9 +34,10 @@ public class SliceSetAssert {
             }
             throw new AssertionError(sb.toString());
         }
+        return this;
     }
 
-    public void usesOnly(SliceSet other) {
+    public SliceSetAssert usesOnly(SliceSet... other) {
         Set<SliceEntry> allowedEntries = entries(other);
         allowedEntries.addAll(entries(set));
         Map<Slice, Set<SliceEntry>> illegalDependencies = new HashMap<>();
@@ -48,25 +49,33 @@ public class SliceSetAssert {
         if (!illegalDependencies.isEmpty()) {
             throw new AssertionError("Illegal Dependencies:\n" + renderDependencies(illegalDependencies));
         }
+        return this;
     }
 
-    public void doesNotUse(SliceSet other) {
+    public SliceSetAssert doesNotUse(SliceSet... other) {
         Set<SliceEntry> disallowedEntries = entries(other);
         Map<Slice, Set<SliceEntry>> illegalDependencies = new HashMap<>();
         for (Slice s : set) {
             if (SetHelper.containsAny(s.getUsedClasses(), disallowedEntries)) {
-                illegalDependencies.put(s, SetHelper.subtract(s.getUsedClasses(), disallowedEntries));
+                illegalDependencies.put(s, SetHelper.intersect(s.getUsedClasses(), disallowedEntries));
             }
         }
         if (!illegalDependencies.isEmpty()) {
             throw new AssertionError("Illegal Dependencies:\n" + renderDependencies(illegalDependencies));
         }
+        return this;
     }
 
-    private Set<SliceEntry> entries(SliceSet sliceSet) {
+    public SliceSetUsage uses(SliceSet other) {
+        return new SliceSetUsage(this, other);
+    }
+
+    private Set<SliceEntry> entries(SliceSet... sliceSets) {
         HashSet<SliceEntry> entries = new HashSet<>();
-        for (Slice s : sliceSet) {
-            entries.addAll(s.getEntries());
+        for (SliceSet sliceSet : sliceSets) {
+            for (Slice s : sliceSet) {
+                entries.addAll(s.getEntries());
+            }
         }
         return entries;
     }
