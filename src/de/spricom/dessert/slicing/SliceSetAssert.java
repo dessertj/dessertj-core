@@ -1,6 +1,12 @@
 package de.spricom.dessert.slicing;
 
 import de.spricom.dessert.util.DependencyGraph;
+import de.spricom.dessert.util.SetHelper;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class SliceSetAssert {
     private final SliceSet set;
@@ -28,5 +34,56 @@ public class SliceSetAssert {
             }
             throw new AssertionError(sb.toString());
         }
+    }
+
+    public void usesOnly(SliceSet other) {
+        Set<SliceEntry> allowedEntries = entries(other);
+        allowedEntries.addAll(entries(set));
+        Map<Slice, Set<SliceEntry>> illegalDependencies = new HashMap<>();
+        for (Slice s : set) {
+            if (!SetHelper.containsAll(allowedEntries, s.getUsedClasses())) {
+                illegalDependencies.put(s, SetHelper.subtract(s.getUsedClasses(), allowedEntries));
+            }
+        }
+        if (!illegalDependencies.isEmpty()) {
+            throw new AssertionError("Illegal Dependencies:\n" + renderDependencies(illegalDependencies));
+        }
+    }
+
+    public void doesNotUse(SliceSet other) {
+        Set<SliceEntry> disallowedEntries = entries(other);
+        Map<Slice, Set<SliceEntry>> illegalDependencies = new HashMap<>();
+        for (Slice s : set) {
+            if (SetHelper.containsAny(s.getUsedClasses(), disallowedEntries)) {
+                illegalDependencies.put(s, SetHelper.subtract(s.getUsedClasses(), disallowedEntries));
+            }
+        }
+        if (!illegalDependencies.isEmpty()) {
+            throw new AssertionError("Illegal Dependencies:\n" + renderDependencies(illegalDependencies));
+        }
+    }
+
+    private Set<SliceEntry> entries(SliceSet sliceSet) {
+        HashSet<SliceEntry> entries = new HashSet<>();
+        for (Slice s : sliceSet) {
+            entries.addAll(s.getEntries());
+        }
+        return entries;
+    }
+
+    private String renderDependencies(Map<Slice, Set<SliceEntry>> deps) {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<Slice, Set<SliceEntry>> entry : deps.entrySet()) {
+            for (SliceEntry sliceEntry : entry.getKey().getEntries()) {
+                if (SetHelper.containsAny(entry.getValue(), sliceEntry.getUsedClasses())) {
+                    sb.append(sliceEntry.getClassname()).append("\n");
+                    Set<SliceEntry> illegal = SetHelper.intersect(sliceEntry.getUsedClasses(), entry.getValue());
+                    for (SliceEntry illegalDependency : illegal) {
+                        sb.append(" -> ").append(illegalDependency).append("\n");
+                    }
+                }
+            }
+        }
+        return sb.toString();
     }
 }
