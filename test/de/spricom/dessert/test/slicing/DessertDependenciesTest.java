@@ -24,7 +24,7 @@ public class DessertDependenciesTest {
     }
 
     @Test
-    public void testDependencies() throws IOException {
+    public void testExternalDependencies() throws IOException {
         SliceContext sc = new SliceContext();
         SliceSet dessert = sc.subPackagesOf("de.spricom.dessert")
                 .without(sc.subPackagesOf("de.spricom.dessert.test"));

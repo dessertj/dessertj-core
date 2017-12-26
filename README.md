@@ -2,7 +2,7 @@ Dessert
 =======
 
 The name is a short form of **De**pendency A**ssert**. Hence Dessert is a library to check assertions for
-dependencies. Typically it is used for unit-tests.
+dependencies. Typically it is used within unit-tests.
 
 Goals
 -----
@@ -73,8 +73,20 @@ whos slices contain all classes. The `slice` method of the intial `SliceSet` can
 `ClassPredicate` to create smaller `SliceSet` objects. For the actual dependency checking between such
 `SliceSet` objects the `SliceAssertions` class provides a fluent API.  
 
-## Progress
+Thus a simple test could look like this:
 
+    @Test
+    public void testExternalDependencies() throws IOException {
+        SliceContext sc = new SliceContext();
+        SliceSet dessert = sc.subPackagesOf("de.spricom.dessert")
+                .without(sc.subPackagesOf("de.spricom.dessert.test"));
+        SliceSet java = sc.subPackagesOf("java.lang")
+                .with(sc.subPackagesOf("java.util"))
+                .with(sc.subPackagesOf("java.io"))
+                .with(sc.subPackagesOf("java.net"))
+                .with(sc.subPackagesOf("java.security"));
+        SliceAssertions.assertThat(dessert).usesOnly(java);
+    }
 
 DuplicateClassFinder
 ====================
