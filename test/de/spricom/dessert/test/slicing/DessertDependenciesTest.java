@@ -1,7 +1,7 @@
 package de.spricom.dessert.test.slicing;
 
 import de.spricom.dessert.classfile.ClassFile;
-import de.spricom.dessert.classfile.attribute.AttributeInfo;
+import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
 import de.spricom.dessert.duplicates.DuplicateClassFinder;
 import de.spricom.dessert.resolve.ClassPredicate;
@@ -9,7 +9,6 @@ import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.slicing.*;
 import de.spricom.dessert.traversal.ClassVisitor;
 import de.spricom.dessert.util.SetHelper;
-import javassist.bytecode.ConstPool;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -58,8 +57,9 @@ public class DessertDependenciesTest {
                 .with(sc.subPackagesOf("java.util"));
         SliceSet javaIO = sc.subPackagesOf("java.io").with(javaCore);
         SliceAssertions.assertThat(classfile).usesOnly(javaIO);
-        SliceAssertions.assertThat(sc.subPackagesOf(DependencyHolder.class.getPackage())).usesOnly(javaCore);
-        SliceAssertions.assertThat(sc.subPackagesOf(ConstPool.class.getPackage())).usesOnly(javaCore);
+        SliceSet dependecnyHolder = sc.subPackagesOf(DependencyHolder.class.getPackage());
+        SliceAssertions.assertThat(dependecnyHolder).usesOnly(javaCore);
+        SliceAssertions.assertThat(sc.subPackagesOf(ConstantPool.class.getPackage())).usesOnly(javaIO, dependecnyHolder);
     }
 
     @Test
