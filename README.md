@@ -16,7 +16,8 @@ Goals
 Getting Started
 ---------------
 
-After having included the test dependency `com.github.hajo70:dessert:0.2` a test checking
+After having included the test dependency `com.github.hajo70:dessert:0.2` from the
+`https://jitpack.io` repository a test checking
 all dependencies of the dessert library can be implemented like this:
 
     @Test
@@ -53,7 +54,7 @@ with the same fqcn can appear in different directories or JAR files. Thus we nee
 besides the fqcn always it's container (directory or JAR file) to specify it
 uniquely.
 
-For the following a container is directory or JAR file that could be added to the CLASSPATH to include
+For the following a container is a directory or JAR file that could be added to the CLASSPATH to include
 all classes within the container. A class is a concrete .class file uniquely defined by its fqcn name
 and its container. Hence for the concepts below an interface or an inner class is a class because
 it has its own .class file.
@@ -87,6 +88,9 @@ The `SliceContext` provides some methods (`packagesOf`, `subPackagesOf`) to crea
 whos slices contain all classes. The `slice` method of the intial `SliceSet` can be used with a corresponding
 `ClassPredicate` to create smaller `SliceSet` objects. For the actual dependency checking between such
 `SliceSet` objects the `SliceAssertions` class provides a fluent API.
+
+For an example of using the API see
+[DessertDependenciesTest.java](https://github.com/hajo70/dessert/blob/master/test/de/spricom/dessert/test/slicing/DessertDependenciesTest.java).
 
 Cycle detection and general dependency rules
 --------------------------------------------
