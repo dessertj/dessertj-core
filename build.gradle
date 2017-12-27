@@ -9,6 +9,7 @@
 
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
+apply plugin: 'jacoco'
 
 sourceSets {
     main {
@@ -55,3 +56,5 @@ dependencies {
     testCompile 'com.google.gwt:gwt-dev:2.8.1'
     testRuntime 'com.google.gwt:gwt-user:2.8.1'
 }
+
+build.dependsOn jacocoTestReport
