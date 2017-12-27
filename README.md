@@ -9,9 +9,24 @@ Goals
 
 - No additional dependencies but plain Java 6 or above (version 0.2 requires Java 8)
 - Simple and intuitive API
-- Assertions should be robust against refactorings (no strings for class or package names)
+- Assertions should be robust against refactorings (strings for class or package names required)
 - Easy and seamless integration with other testing or assertion frameworks
 - Speed
+
+Getting Started
+---------------
+
+After having included the test dependency `com.github.hajo70:dessert:0.2` a test checking
+all dependencies of the dessert library can be implemented like this:
+
+    @Test
+    public void checkDessertDependencies() throws IOException {
+        SliceContext sc = new SliceContext();
+        SliceSet dessert = sc.subPackagesOf("de.spricom.dessert")
+                .without(sc.subPackagesOf("de.spricom.dessert.test"));
+        SliceSet java = sc.subPackagesOf("java");
+        SliceAssertions.assertThat(dessert).usesOnly(java);
+    }
 
 Background
 ----------
@@ -71,27 +86,36 @@ the same `SliceContext`.
 The `SliceContext` provides some methods (`packagesOf`, `subPackagesOf`) to create an initial `SliceSet`
 whos slices contain all classes. The `slice` method of the intial `SliceSet` can be used with a corresponding
 `ClassPredicate` to create smaller `SliceSet` objects. For the actual dependency checking between such
-`SliceSet` objects the `SliceAssertions` class provides a fluent API.  
+`SliceSet` objects the `SliceAssertions` class provides a fluent API.
 
-Thus a simple test could look like this:
+Cycle detection and general dependency rules
+--------------------------------------------
+
+All classes involved in a cycle are mutually dependent. Hence one cannot easily use or test a single class
+without having working and properly initialized instances of the other classes. Dessert provides an easy way
+to detect such cycles:
 
     @Test
-    public void testExternalDependencies() throws IOException {
-        SliceContext sc = new SliceContext();
-        SliceSet dessert = sc.subPackagesOf("de.spricom.dessert")
-                .without(sc.subPackagesOf("de.spricom.dessert.test"));
-        SliceSet java = sc.subPackagesOf("java.lang")
-                .with(sc.subPackagesOf("java.util"))
-                .with(sc.subPackagesOf("java.io"))
-                .with(sc.subPackagesOf("java.net"))
-                .with(sc.subPackagesOf("java.security"));
-        SliceAssertions.assertThat(dessert).usesOnly(java);
+    public void checkPackagesAreCycleFree() throws IOException {
+        SliceSet subPackages = new SliceContext().subPackagesOf("de.spricom.dessert");
+        SliceAssertions.dessert(subPackages).isCycleFree();
+    }
+
+One might want to enforce other general dependency rules. For example within dessert a deeper nested package
+should not use classes of its parent package. Such a rule can be enforced like this:
+
+    @Test
+    public void checkNestedPackagesShouldNotUseOuterPackages() throws IOException {
+        SliceSet subPackages = new SliceContext().subPackagesOf("de.spricom.dessert");
+        for (Slice pckg : subPackages) {
+            SliceAssertions.assertThat(pckg).doesNotUse(pckg.getParentPackage());
+        }
     }
 
 DuplicateClassFinder
 ====================
 
-The DuplicateClassFinder is included in Dessert. It checks if there are different implementations of
+The DuplicateClassFinder is included in the dessert library. It checks if there are different implementations of
 the same class on the class-path. You can use it form a Gradle file like that:
 
 	apply plugin: 'java'
@@ -106,7 +130,7 @@ the same class on the class-path. You can use it form a Gradle file like that:
 	}
 	
 	dependencies {
-		dessert 'com.github.hajo70:dessert:0.1'
+		dessert 'com.github.hajo70:dessert:0.2'
 		
 		runtime 'org.apache.httpcomponents:httpclient:4.5.3'
 		runtime 'org.keycloak:keycloak-osgi-thirdparty:1.1.1.Final'
@@ -116,4 +140,3 @@ the same class on the class-path. You can use it form a Gradle file like that:
 	  classpath = files(configurations.dessert, configurations.runtime)
 	  main = 'de.spricom.dessert.duplicates.DuplicateClassFinder'
 	}
-
