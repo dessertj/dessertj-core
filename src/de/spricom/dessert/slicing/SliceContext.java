@@ -24,7 +24,7 @@ public class SliceContext {
 
     public SliceContext() throws IOException {
         if (defaultResolver == null) {
-            defaultResolver = ClassResolver.ofClassPath();
+            defaultResolver = ClassResolver.ofClassPathAndBootClassPath();
         }
         resolver = defaultResolver;
     }

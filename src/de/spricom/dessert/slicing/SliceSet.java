@@ -54,7 +54,7 @@ public class SliceSet implements Iterable<Slice> {
         for (Slice s : slices) {
             Slice filtered = s.slice(predicate);
             if (!filtered.getEntries().isEmpty()) {
-                ss.slices.add(s);
+                ss.slices.add(filtered);
             }
         }
         return ss;
