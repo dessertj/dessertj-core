@@ -44,15 +44,14 @@ public class ClassResolverTest {
         long ts = System.currentTimeMillis();
         assertThat(getDefaultResolver().getPackage("bla.blub")).isNull();
         assertThat(System.currentTimeMillis() - ts).isLessThan(10000);
-        assertThat(getDefaultResolver().getRootFiles().size()).isGreaterThan(90);
-        assertThat(getDefaultResolver().getClassCount()).isGreaterThan(50000);
+        assertThat(getDefaultResolver().getRootFiles().size()).isGreaterThan(10);
+        assertThat(getDefaultResolver().getClassCount()).isGreaterThan(20000);
     }
 
     @Test
     public void testResolvingUniquePackages() throws IOException {
         ClassResolver resolver = getDefaultResolver();
         assertThat(resolver.getPackage("java.lang")).isNotNull().is(hasNoAlternative);
-        assertThat(resolver.getPackage("org.springframework.aop.framework")).isNotNull().is(hasNoAlternative);
         assertThat(resolver.getPackage(getClass().getPackage().getName())).isNotNull().is(hasNoAlternative);
     }
 
