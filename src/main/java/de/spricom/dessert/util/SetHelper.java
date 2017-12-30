@@ -26,13 +26,13 @@ public final class SetHelper {
     }
 
     public static <T> Set<T> subtract(Set<T> s, Set<T> t) {
-        HashSet<T> r = new HashSet<>(s);
+        HashSet<T> r = new HashSet<T>(s);
         r.removeAll(t);
         return r;
     }
 
     public static <T> Set<T> intersect(Set<T> s, Set<T> t) {
-        HashSet<T> r = new HashSet<>(s);
+        HashSet<T> r = new HashSet<T>(s);
         r.retainAll(t);
         return r;
     }

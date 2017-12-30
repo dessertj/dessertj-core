@@ -1,16 +1,14 @@
 package de.spricom.dessert.test.resolve;
 
-import static org.fest.assertions.Assertions.assertThat;
+import de.spricom.dessert.slicing.SliceEntry;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.util.Objects;
 
-import org.junit.Test;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class UrlTest {
 
@@ -39,23 +37,6 @@ public class UrlTest {
     }
 
     private File getRootFile(Class<?> clazz) {
-        String filename = "/" + clazz.getName().replace('.', '/') + ".class";
-        URL url = clazz.getResource(clazz.getSimpleName() + ".class");
-        Objects.requireNonNull(url, "Resource for " + clazz + " not found!");
-        switch (url.getProtocol()) {
-        case "file":
-            assert url.getFile().endsWith(filename) : url + " does not end with " + filename;
-            return new File(url.getFile().substring(0, url.getFile().length() - filename.length()));
-        case "jar":
-            assert url.getFile().startsWith("file:") : url + " does not start with jar:file";
-            assert url.getFile().endsWith(".jar!" + filename) : url + " does not end with .jar!" + filename;
-            try {
-                return new File(URLDecoder.decode(url.getFile().substring("file:".length(), url.getFile().length() - filename.length() - 1), "UTF-8"));
-            } catch (UnsupportedEncodingException ex) {
-                throw new IllegalStateException("UTF-8 encoding not supported!", ex);
-            }
-        default:
-            throw new IllegalArgumentException("Unknown protocol in " + url);
-        }
+        return SliceEntry.getRootFile(clazz);
     }
 }

@@ -1,15 +1,15 @@
 package de.spricom.dessert.slicing;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import de.spricom.dessert.resolve.ClassContainer;
 import de.spricom.dessert.resolve.ClassFileEntry;
 import de.spricom.dessert.resolve.ClassPackage;
 import de.spricom.dessert.resolve.ClassPredicate;
 import de.spricom.dessert.util.SetHelper;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A slice represents (subset of) a single Java package for one concrete root.
@@ -33,7 +33,7 @@ public class Slice {
         if (cc.getClasses() == null) {
             entries = Collections.emptySet();
         } else {
-            entries = new HashSet<>(container.getClasses().size());
+            entries = new HashSet<SliceEntry>(container.getClasses().size());
             for (ClassFileEntry cf : container.getClasses()) {
                 entries.add(new SliceEntry(context, cf));
             }
@@ -43,7 +43,7 @@ public class Slice {
     private Slice(Slice slice, ClassPredicate<SliceEntry> predicate) {
         container = slice.container;
         context = slice.context;
-        entries = new HashSet<>(slice.entries.size());
+        entries = new HashSet<SliceEntry>(slice.entries.size());
         for (SliceEntry entry : slice.entries) {
             if (predicate.test(entry)) {
                 entries.add(entry);
@@ -128,7 +128,7 @@ public class Slice {
 
     public Set<SliceEntry> getUsedClasses() {
         if (usedClasses == null) {
-            usedClasses = new HashSet<>();
+            usedClasses = new HashSet<SliceEntry>();
             for (SliceEntry entry : entries) {
                 usedClasses.addAll(entry.getUsedClasses());
             }

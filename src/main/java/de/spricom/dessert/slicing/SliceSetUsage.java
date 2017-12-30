@@ -5,7 +5,7 @@ import java.util.List;
 
 public class SliceSetUsage {
     private final SliceSetAssert sliceSetAssert;
-    private final List<SliceSet> sliceSets = new ArrayList<>();
+    private final List<SliceSet> sliceSets = new ArrayList<SliceSet>();
 
     SliceSetUsage(SliceSetAssert sliceSetAssert, SliceSet sliceSet) {
         this.sliceSetAssert = sliceSetAssert;

@@ -16,7 +16,7 @@ public class SliceSetAssert {
     }
 
     public SliceSetAssert isCycleFree() {
-        DependencyGraph<Slice> dag = new DependencyGraph<>();
+        DependencyGraph<Slice> dag = new DependencyGraph<Slice>();
         for (Slice n : set) {
             for (Slice m : set) {
                 if (n != m && n.isUsing(m)) {
@@ -40,7 +40,7 @@ public class SliceSetAssert {
     public SliceSetAssert usesOnly(SliceSet... other) {
         Set<SliceEntry> allowedEntries = entries(other);
         allowedEntries.addAll(entries(set));
-        Map<Slice, Set<SliceEntry>> illegalDependencies = new HashMap<>();
+        Map<Slice, Set<SliceEntry>> illegalDependencies = new HashMap<Slice, Set<SliceEntry>>();
         for (Slice s : set) {
             if (!SetHelper.containsAll(allowedEntries, s.getUsedClasses())) {
                 illegalDependencies.put(s, SetHelper.subtract(s.getUsedClasses(), allowedEntries));
@@ -54,7 +54,7 @@ public class SliceSetAssert {
 
     public SliceSetAssert doesNotUse(SliceSet... other) {
         Set<SliceEntry> disallowedEntries = entries(other);
-        Map<Slice, Set<SliceEntry>> illegalDependencies = new HashMap<>();
+        Map<Slice, Set<SliceEntry>> illegalDependencies = new HashMap<Slice, Set<SliceEntry>>();
         for (Slice s : set) {
             if (SetHelper.containsAny(s.getUsedClasses(), disallowedEntries)) {
                 illegalDependencies.put(s, SetHelper.intersect(s.getUsedClasses(), disallowedEntries));
@@ -71,7 +71,7 @@ public class SliceSetAssert {
     }
 
     private Set<SliceEntry> entries(SliceSet... sliceSets) {
-        HashSet<SliceEntry> entries = new HashSet<>();
+        HashSet<SliceEntry> entries = new HashSet<SliceEntry>();
         for (SliceSet sliceSet : sliceSets) {
             for (Slice s : sliceSet) {
                 entries.addAll(s.getEntries());

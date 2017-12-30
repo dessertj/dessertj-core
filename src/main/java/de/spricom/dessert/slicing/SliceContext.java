@@ -1,5 +1,10 @@
 package de.spricom.dessert.slicing;
 
+import de.spricom.dessert.resolve.ClassFileEntry;
+import de.spricom.dessert.resolve.ClassPackage;
+import de.spricom.dessert.resolve.ClassResolver;
+import de.spricom.dessert.resolve.ClassRoot;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -8,11 +13,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import de.spricom.dessert.resolve.ClassFileEntry;
-import de.spricom.dessert.resolve.ClassPackage;
-import de.spricom.dessert.resolve.ClassResolver;
-import de.spricom.dessert.resolve.ClassRoot;
-
 public class SliceContext {
     private static Logger log = Logger.getLogger(SliceContext.class.getName());
     private static ClassResolver defaultResolver;
@@ -20,7 +20,7 @@ public class SliceContext {
     private final ClassResolver resolver;
     private boolean useClassLoader = true;
 
-    private Map<String, SliceEntry> entries = new HashMap<>();
+    private Map<String, SliceEntry> entries = new HashMap<String, SliceEntry>();
 
     public SliceContext() throws IOException {
         if (defaultResolver == null) {
@@ -67,7 +67,7 @@ public class SliceContext {
         }
         return null;
     }
-    
+
     private SliceEntry undefined(String classname) {
         return new SliceEntry(this, classname);
     }
@@ -99,7 +99,7 @@ public class SliceContext {
         }
         return ss;
     }
-    
+
     public Slice packageOf(String packageName) {
         ClassPackage cp = resolver.getPackage(packageName);
         if (cp == null) {
@@ -107,7 +107,7 @@ public class SliceContext {
         }
         return new Slice(cp, this);
     }
-    
+
     public boolean isUseClassLoader() {
         return useClassLoader;
     }

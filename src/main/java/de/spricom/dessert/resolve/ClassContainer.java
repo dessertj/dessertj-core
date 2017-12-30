@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class ClassContainer {
-    private final LinkedList<ClassPackage> subPackages = new LinkedList<>();
+    private final LinkedList<ClassPackage> subPackages = new LinkedList<ClassPackage>();
     private List<ClassFileEntry> classes;
 
     public abstract String getPackageName();

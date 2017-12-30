@@ -14,7 +14,7 @@ public class SignatureParser {
 	}
 
 	public SignatureParser(String signature) {
-		this(signature, new HashSet<>());
+		this(signature, new HashSet<String>());
 	}
 
 	public boolean parseClassSignature() {

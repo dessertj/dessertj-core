@@ -2,20 +2,15 @@ package de.spricom.dessert.resolve;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 public final class ClassResolver {
     private static Logger log = Logger.getLogger(ClassResolver.class.getName());
 
-    public List<ClassRoot> path = new ArrayList<>();
-    public final Map<String, ClassPackage> packages = new HashMap<>(3000);
-    public final Map<String, ClassFileEntry> classes = new HashMap<>(60000);
+    public List<ClassRoot> path = new ArrayList<ClassRoot>(60);
+    public final Map<String, ClassPackage> packages = new HashMap<String, ClassPackage>(3000);
+    public final Map<String, ClassFileEntry> classes = new HashMap<String, ClassFileEntry>(60000);
 
     public static ClassResolver of(String path) throws IOException {
         ClassResolver r = new ClassResolver();
@@ -168,7 +163,7 @@ public final class ClassResolver {
     }
 
     public Set<File> getRootFiles(ClassPredicate<File> predicate) {
-        Set<File> files = new HashSet<>();
+        Set<File> files = new HashSet<File>();
         for (ClassRoot cr : path) {
             if (predicate.test(cr.getRootFile())) {
                 files.add(cr.getRootFile());

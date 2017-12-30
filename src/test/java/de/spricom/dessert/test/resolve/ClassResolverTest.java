@@ -1,14 +1,14 @@
 package de.spricom.dessert.test.resolve;
 
-import static org.fest.assertions.Assertions.assertThat;
-
-import java.io.IOException;
-import java.util.logging.Logger;
-
 import de.spricom.dessert.resolve.ClassPackage;
 import de.spricom.dessert.resolve.ClassResolver;
 import org.fest.assertions.Condition;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.util.logging.Logger;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 public class ClassResolverTest {
     private static final Condition<Object> hasNoAlternative = new Condition<Object>("has no alternative") {
@@ -45,7 +45,7 @@ public class ClassResolverTest {
         assertThat(getDefaultResolver().getPackage("bla.blub")).isNull();
         assertThat(System.currentTimeMillis() - ts).isLessThan(10000);
         assertThat(getDefaultResolver().getRootFiles().size()).isGreaterThan(10);
-        assertThat(getDefaultResolver().getClassCount()).isGreaterThan(20000);
+        assertThat(getDefaultResolver().getClassCount()).isGreaterThan(15000);
     }
 
     @Test

@@ -1,21 +1,13 @@
 package de.spricom.dessert.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class implements the Depth-first search algorithm (see <a href=
  * "https://en.wikipedia.org/wiki/Topological_sorting">https://en.wikipedia.org/wiki/Topological_sorting</a>)
  * to detect cyclic dependencies.
- * 
- * @param <T>
- *            The type of object to sort.
+ *
+ * @param <T> The type of object to sort.
  */
 public final class DependencyGraph<T> {
     static enum Mark {
@@ -24,11 +16,11 @@ public final class DependencyGraph<T> {
 
     static final class Node<T> {
         final T value;
-        final Set<Node<T>> directDependencies = new HashSet<>();
+        final Set<Node<T>> directDependencies = new HashSet<Node<T>>();
         Mark mark = Mark.NONE;
 
         public Node(T value) {
-            Objects.requireNonNull(value, "value");
+            assert value != null : "value == null";
             this.value = value;
         }
 
@@ -51,7 +43,7 @@ public final class DependencyGraph<T> {
         }
     }
 
-    private Map<T, Node<T>> nodes = new HashMap<>();
+    private Map<T, Node<T>> nodes = new HashMap<T, Node<T>>();
     private LinkedList<Node<T>> sorted;
     private LinkedList<Node<T>> cycle;
 
@@ -91,7 +83,7 @@ public final class DependencyGraph<T> {
     }
 
     private List<T> values(List<Node<T>> nodes) {
-        List<T> list = new ArrayList<>(nodes.size());
+        List<T> list = new ArrayList<T>(nodes.size());
         for (Node<T> node : nodes) {
             list.add(node.value);
         }
@@ -99,7 +91,7 @@ public final class DependencyGraph<T> {
     }
 
     private void sort() {
-        sorted = new LinkedList<>();
+        sorted = new LinkedList<Node<T>>();
         for (Node<T> n : nodes.values()) {
             if (visit(n)) {
                 return;
@@ -112,7 +104,7 @@ public final class DependencyGraph<T> {
         if (n.mark == Mark.PERMANENT) {
             return false;
         } else if (n.mark == Mark.TEMPORARY) {
-            cycle = new LinkedList<>();
+            cycle = new LinkedList<Node<T>>();
             cycle.add(n);
             return true;
         } else {

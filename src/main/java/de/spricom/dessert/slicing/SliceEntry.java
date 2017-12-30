@@ -1,32 +1,27 @@
 package de.spricom.dessert.slicing;
 
+import de.spricom.dessert.classfile.ClassFile;
+import de.spricom.dessert.resolve.ClassFileEntry;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import de.spricom.dessert.classfile.ClassFile;
-import de.spricom.dessert.resolve.ClassFileEntry;
+import java.util.*;
 
 /**
  * For each class belonging to a {@link Slice} there is a SliceEntry.
  */
 public final class SliceEntry {
     public static final SliceEntry UNDEFINED = new SliceEntry();
-    
+
     private final SliceContext context;
     private final String classname;
     private final ClassFile classfile;
     private final ClassFileEntry resolverEntry;
     private Class<?> clazz;
-    
+
     private SliceEntry superclass;
     private List<SliceEntry> implementedInterfaces;
     private Set<SliceEntry> usedClasses;
@@ -42,10 +37,10 @@ public final class SliceEntry {
         usedClasses = Collections.emptySet();
         alternatives = Collections.emptySet();
     }
-    
+
     SliceEntry(SliceContext context, ClassFileEntry resolverEntry) {
-        Objects.requireNonNull(context, "context");
-        Objects.requireNonNull(resolverEntry, "resolverEntry");
+        assert context != null : "context == null";
+        assert resolverEntry != null : "resolverEntry == null";
         this.context = context;
         this.resolverEntry = resolverEntry;
         this.classfile = resolverEntry.getClassfile();
@@ -53,8 +48,8 @@ public final class SliceEntry {
     }
 
     SliceEntry(SliceContext context, Class<?> clazz) throws IOException {
-        Objects.requireNonNull(context, "context");
-        Objects.requireNonNull(clazz, "clazz");
+        assert context != null : "context == null";
+        assert clazz != null : "clazz == null";
         this.context = context;
         this.clazz = clazz;
         this.resolverEntry = null;
@@ -63,8 +58,8 @@ public final class SliceEntry {
     }
 
     SliceEntry(SliceContext context, String classname) {
-        Objects.requireNonNull(context, "context");
-        Objects.requireNonNull(classname, "classname");
+        assert context != null : "context == null";
+        assert classname != null : "classname == null";
         this.context = context;
         this.resolverEntry = null;
         this.classfile = null;
@@ -84,16 +79,15 @@ public final class SliceEntry {
             return null;
         }
     }
-    
-    private File getRootFile(Class<?> clazz) {
+
+    public static final File getRootFile(Class<?> clazz) {
         String filename = "/" + clazz.getName().replace('.', '/') + ".class";
         URL url = clazz.getResource(filename);
-        Objects.requireNonNull(url, "Resource " + filename + " not found! ");
-        switch (url.getProtocol()) {
-        case "file":
+        assert url != null : "Resource " + filename + " not found!";
+        if ("file".equals(url.getProtocol())) {
             assert url.getFile().endsWith(filename) : url + " does not end with " + filename;
             return new File(url.getFile().substring(0, url.getFile().length() - filename.length()));
-        case "jar":
+        } else if ("jar".equals(url.getProtocol())) {
             assert url.getFile().startsWith("file:") : url + " does not start with jar:file";
             assert url.getFile().endsWith(".jar!" + filename) : url + " does not end with .jar!" + filename;
             try {
@@ -101,11 +95,11 @@ public final class SliceEntry {
             } catch (UnsupportedEncodingException ex) {
                 throw new IllegalStateException("UTF-8 encoding not supported!", ex);
             }
-        default:
+        } else {
             throw new IllegalArgumentException("Unknown protocol in " + url);
         }
     }
- 
+
     public String getPackageName() {
         if (resolverEntry != null) {
             return resolverEntry.getPackage().getPackageName();
@@ -119,7 +113,7 @@ public final class SliceEntry {
             return classname.substring(0, index);
         }
     }
-    
+
     public String getFilename() {
         if (resolverEntry != null) {
             return resolverEntry.getFilename();
@@ -147,7 +141,8 @@ public final class SliceEntry {
         if (!classname.equals(other.classname)) {
             return false;
         }
-        if (!Objects.equals(getRootFile(), other.getRootFile())) {
+        if (!(getRootFile() == other.getRootFile()
+                || getRootFile() != null && getRootFile().equals(other.getRootFile()))) {
             return false;
         }
         return true;
@@ -157,11 +152,11 @@ public final class SliceEntry {
     public String toString() {
         return classname;
     }
-    
+
     public boolean isUndefined() {
         return classfile == null;
     }
-    
+
     public Class<?> getClazz() throws ClassNotFoundException {
         if (clazz == null && this != UNDEFINED) {
             clazz = Class.forName(classname);

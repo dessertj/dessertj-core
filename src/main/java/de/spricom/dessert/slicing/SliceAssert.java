@@ -5,13 +5,13 @@ import java.util.Set;
 
 public class SliceAssert {
     private final Slice slice;
-    
+
     public SliceAssert(Slice slice) {
         this.slice = slice;
     }
 
     public void doesNotUse(Slice pckg) {
-        Set<SliceEntry> deps = new HashSet<>();
+        Set<SliceEntry> deps = new HashSet<SliceEntry>();
         for (SliceEntry entry : slice.getEntries()) {
             deps.addAll(entry.getUsedClasses());
         }

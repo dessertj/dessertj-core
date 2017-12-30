@@ -1,13 +1,13 @@
 package de.spricom.dessert.slicing;
 
+import de.spricom.dessert.resolve.ClassContainer;
+import de.spricom.dessert.resolve.ClassPackage;
+import de.spricom.dessert.resolve.ClassPredicate;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import de.spricom.dessert.resolve.ClassContainer;
-import de.spricom.dessert.resolve.ClassPackage;
-import de.spricom.dessert.resolve.ClassPredicate;
 
 /**
  * A SliceSet is as Set of the slices for which the elements of each
@@ -19,11 +19,11 @@ public class SliceSet implements Iterable<Slice> {
     private final Set<Slice> slices;
 
     SliceSet() {
-        slices = new HashSet<>();
+        slices = new HashSet<Slice>();
     }
 
     SliceSet(int expectedSize) {
-        slices = new HashSet<>(expectedSize);
+        slices = new HashSet<Slice>(expectedSize);
     }
 
     SliceSet(Slice slice) {

@@ -1,20 +1,16 @@
 package de.spricom.dessert.duplicates;
 
+import de.spricom.dessert.traversal.ClassVisitor;
+import de.spricom.dessert.traversal.PathProcessor;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import de.spricom.dessert.traversal.ClassVisitor;
-import de.spricom.dessert.traversal.PathProcessor;
 
 public class DuplicateClassFinder implements ClassVisitor {
     private static final Logger logger = Logger.getLogger(DuplicateClassFinder.class.getName());
@@ -26,26 +22,21 @@ public class DuplicateClassFinder implements ClassVisitor {
     private boolean initialized;
     private MessageDigest digest;
 
-    private Map<String, ClassInfo> scannedClasses = new HashMap<>();
-    private Map<String, List<ClassInfo>> duplicates = new HashMap<>();
+    private Map<String, ClassInfo> scannedClasses = new HashMap<String, ClassInfo>();
+    private Map<String, List<ClassInfo>> duplicates = new HashMap<String, List<ClassInfo>>();
 
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
         DuplicateClassFinder finder = new DuplicateClassFinder();
         String path = System.getProperty("java.class.path");
         for (int i = 0; i < args.length; i++) {
-            switch (args[i]) {
-            case "-hashAlgorithm":
+            if ("-hashAlgorithm".equals(args[i])) {
                 finder.setHashAlgorithm(args[++i]);
-                break;
-            case "-ignoreEqualDuplicates":
+            } else if ("-ignoreEqualDuplicates".equals(args[i])) {
                 finder.setIgnoreEqualDuplicates(true);
-                break;
-            case "-continueOnDuplicate":
+            } else if ("-continueOnDuplicate".equals(args[i])) {
                 finder.setContinueOnDuplicate(true);
-                break;
-            case "-scanPath":
+            } else if ("-scanPath".equals(args[i])) {
                 path = args[++i];
-                break;
             }
         }
         logger.info("Processing " + path.replace(File.pathSeparator, File.pathSeparator + System.getProperty("line.separator")));
@@ -87,7 +78,7 @@ public class DuplicateClassFinder implements ClassVisitor {
         }
         List<ClassInfo> list = duplicates.get(info.getClassname());
         if (list == null) {
-            list = new ArrayList<>();
+            list = new ArrayList<ClassInfo>();
             duplicates.put(info.getClassname(), list);
             list.add(previous);
         }

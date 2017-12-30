@@ -1,5 +1,7 @@
 package de.spricom.dessert.resolve;
 
+import de.spricom.dessert.classfile.ClassFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,12 +10,11 @@ import java.util.LinkedList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import de.spricom.dessert.classfile.ClassFile;
-
 public class JarRoot extends ClassRoot {
     public JarRoot(ClassResolver resolver, File file) throws IOException {
         super(resolver, file);
-        try (JarFile jarFile = new JarFile(getRootFile())) {
+        JarFile jarFile = new JarFile(getRootFile());
+        try {
             Enumeration<JarEntry> entries = jarFile.entries();
             String lastPackageName = "";
             ClassPackage lastPackage = null;
@@ -31,19 +32,28 @@ public class JarRoot extends ClassRoot {
                         addClass(lastPackage, entry.getName().substring(index + 1), entry, jarFile);
                     }
                 }
-             }
+            }
+        } finally {
+            if (jarFile != null) {
+                jarFile.close();
+            }
         }
     }
 
     private void addClass(ClassContainer cc, String filename, JarEntry entry, JarFile jarFile) throws IOException {
         if (cc.getClasses() == null) {
-            cc.setClasses(new LinkedList<>());
+            cc.setClasses(new LinkedList<ClassFileEntry>());
         }
-        try (InputStream is = jarFile.getInputStream(entry)) {
+        InputStream is = jarFile.getInputStream(entry);
+        try {
             ClassFile cf = new ClassFile(is);
             ClassFileEntry cfe = new ClassFileEntry(cc, filename, cf);
             addClass(cfe);
             cc.getClasses().add(cfe);
-        } 
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+        }
     }
 }

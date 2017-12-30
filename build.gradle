@@ -1,6 +1,11 @@
 apply plugin: 'java'
 apply plugin: 'jacoco'
 
+group 'com.github.hajo70'
+version '0.3-SNAPSHOT'
+
+sourceCompatibility = 1.6
+
 repositories {
     jcenter()
 }
@@ -8,6 +13,10 @@ repositories {
 dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.easytesting:fest-assert:1.4'
+}
+
+test {
+    maxHeapSize = "1024m"
 }
 
 build.dependsOn jacocoTestReport
