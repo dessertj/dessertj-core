@@ -1,11 +1,13 @@
 package de.spricom.dessert.test.classfile;
 
-import static org.fest.assertions.Assertions.assertThat;
-
+import de.spricom.dessert.classfile.attribute.SignatureParser;
 import org.junit.Test;
 
-import de.spricom.dessert.classfile.attribute.SignatureParser;
+import static org.fest.assertions.Assertions.assertThat;
 
+/**
+ * Test the {@link SignatureParser}.
+ */
 public class SignatureParserTest {
 	
 	@Test

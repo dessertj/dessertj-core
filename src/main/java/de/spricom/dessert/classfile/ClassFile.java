@@ -48,7 +48,7 @@ public class ClassFile {
         this(open(clazz));
     }
 
-    private static InputStream open(Class<?> clazz) throws IOException {
+    private static InputStream open(Class<?> clazz) {
         if (clazz.getDeclaringClass() != null) {
             clazz = clazz.getDeclaringClass();
         }
@@ -78,9 +78,7 @@ public class ClassFile {
                 throw new IOException("EOF not reached!");
             }
         } finally {
-            if (bi != null) {
-                bi.close();
-            }
+            bi.close();
         }
     }
 
