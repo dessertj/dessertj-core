@@ -3,7 +3,6 @@ package de.spricom.dessert.test.classfile;
 import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.traversal.ClassVisitor;
 import de.spricom.dessert.traversal.PathProcessor;
-import org.fest.assertions.Assertions;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -13,8 +12,10 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 public class CheckAllDependenciesTest implements ClassVisitor {
-    private static final Pattern JDEPS_REGEX = Pattern.compile("^\\s+-> ([\\w.$]+)\\s*(\\S+)?$");
+    private static final Pattern JDEPS_REGEX = Pattern.compile("^\\s+-> ([\\w.$]+)\\s*(\\S+)?(not found)?$");
 
     @Ignore
     @Test
@@ -31,6 +32,22 @@ public class CheckAllDependenciesTest implements ClassVisitor {
         check(proc);
     }
 
+    @Test
+    public void testDessert() throws IOException {
+        StringBuilder sb = new StringBuilder();
+        for (String pathElement : System.getProperty("java.class.path").split(File.pathSeparator)) {
+            if (!pathElement.endsWith(".jar")) {
+                if (sb.length() > 0) {
+                    sb.append(File.pathSeparator);
+                }
+                sb.append(pathElement);
+            }
+        }
+        PathProcessor proc = new PathProcessor();
+        proc.setPath(sb.toString());
+        check(proc);
+    }
+
     private void check(PathProcessor proc) throws IOException {
         proc.traverseAllClasses(this);
     }
@@ -41,12 +58,7 @@ public class CheckAllDependenciesTest implements ClassVisitor {
             ClassFile cf = new ClassFile(content);
             Set<String> deps1 = cf.getDependentClasses();
             Set<String> deps2 = getDependenciesUsingJDeps(root, classname);
-            TreeSet<String> diff = new TreeSet<String>(deps2);
-            diff.removeAll(deps1);
-            if (!diff.isEmpty()) {
-                System.out.println(classname + ": " + diff);
-            }
-            Assertions.assertThat(diff).as(classname).isEmpty();
+            assertThat(deps1).as("Dependencies of " + classname).isEqualTo(deps2);
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
         } catch (IOException ex) {

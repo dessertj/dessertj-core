@@ -1,8 +1,8 @@
 package de.spricom.dessert.classfile.constpool;
 
-import java.util.Set;
-
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
+
+import java.util.Set;
 
 abstract class ConstantPoolEntry implements DependencyHolder {
 	private ConstantPool constantPool;
@@ -22,5 +22,9 @@ abstract class ConstantPoolEntry implements DependencyHolder {
 
 	void setConstantPool(ConstantPool constantPool) {
 		this.constantPool = constantPool;
+	}
+
+	public String toString() {
+		return dump();
 	}
 }

@@ -2,6 +2,8 @@ package de.spricom.dessert.classfile;
 
 import de.spricom.dessert.classfile.attribute.AttributeInfo;
 import de.spricom.dessert.classfile.attribute.AttributeInfo.AttributeContext;
+import de.spricom.dessert.classfile.attribute.InnerClass;
+import de.spricom.dessert.classfile.attribute.InnerClassesAttribute;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 
 import java.io.BufferedInputStream;
@@ -49,11 +51,8 @@ public class ClassFile {
     }
 
     private static InputStream open(Class<?> clazz) {
-        if (clazz.getDeclaringClass() != null) {
-            clazz = clazz.getDeclaringClass();
-        }
-        InputStream is = clazz.getResourceAsStream(clazz.getSimpleName() + ".class");
-        assert is != null : "No class file found for " + clazz;
+        InputStream is = clazz.getResourceAsStream("/" + clazz.getName().replace('.', '/') + ".class");
+        assert is != null : "No file found for " + clazz;
         return is;
     }
 
@@ -132,7 +131,20 @@ public class ClassFile {
             attribute.addDependentClassNames(classNames);
         }
         classNames.remove(thisClass);
+        removeOuterClassForStaticInnerClasses(classNames);
         return classNames;
+    }
+
+    private void removeOuterClassForStaticInnerClasses(Set<String> classNames) {
+        for (AttributeInfo attribute : attributes) {
+            if (attribute instanceof InnerClassesAttribute) {
+                for (InnerClass innerClass : ((InnerClassesAttribute) attribute).getInnerClasses()) {
+                    if (innerClass.isStatic() && thisClass.equals(innerClass.getInnerClassName())) {
+                        classNames.remove(innerClass.getOuterClassName());
+                    }
+                }
+            }
+        }
     }
 
     public String dumpConstantPool() {

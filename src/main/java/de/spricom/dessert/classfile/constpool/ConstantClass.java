@@ -26,7 +26,6 @@ class ConstantClass extends ConstantPoolEntry {
 		return getConstantPool().getUtf8String(nameIndex).replace('/', '.');
 	}
 
-	@Override
 	public void addDependentClassNames(Set<String> classNames) {
 		String name = getName();
 		Matcher matcher = classArrayPattern.matcher(name);

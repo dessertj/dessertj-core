@@ -27,6 +27,8 @@ public abstract class AttributeInfo implements DependencyHolder {
                 attributes[i] = new SignatureAttribute(name, is, constantPool);
             } else if ("EnclosingMethod".equals(name)) {
                 attributes[i] = new EnclosingMethodAttribute(name, is, constantPool);
+            } else if ("InnerClasses".equals(name)) {
+                attributes[i] = new InnerClassesAttribute(name, is, constantPool);
             } else {
                 attributes[i] = new UnknownAttribute(name, is);
             }
