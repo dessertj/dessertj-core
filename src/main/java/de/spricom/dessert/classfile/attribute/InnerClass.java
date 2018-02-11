@@ -36,6 +36,10 @@ public class InnerClass implements DependencyHolder {
     public void addDependentClassNames(Set<String> classNames) {
     }
 
+    public boolean isIndependetOfOuterClass(String thisClass) {
+        return isStatic() && thisClass.equals(innerClassName);
+    }
+
     public boolean isStatic() {
         return (accessFlags & ACC_STATIC) != 0;
     }

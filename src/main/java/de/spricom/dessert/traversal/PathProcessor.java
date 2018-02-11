@@ -23,23 +23,38 @@ public class PathProcessor implements ClassProcessor {
 
     private void process(String filename, ClassVisitor visitor) {
         File file = new File(filename);
+        if (!filter(file)) {
+            return;
+        }
         if (!file.exists()) {
             log.warning("Does not exist: " + filename);
         } else if (file.isDirectory()) {
             try {
-                new DirectoryProcessor(file).traverseAllClasses(visitor);
+                processDirectory(file, visitor);
             } catch (IOException ex) {
                 log.log(Level.WARNING, "Cannot process: " + file, ex);
             }
         } else if (file.isFile() && file.getName().endsWith(".jar")) {
             try {
-                new JarProcessor(file).traverseAllClasses(visitor);
+                processJar(file, visitor);
             } catch (IOException ex) {
                 log.log(Level.WARNING, "Cannot process: " + file, ex);
             }
         } else {
             log.warning("Don't know how to process: " + filename);
         }
+    }
+
+    protected boolean filter(File file) {
+        return true;
+    }
+
+    protected void processJar(File file, ClassVisitor visitor) throws IOException {
+        new JarProcessor(file).traverseAllClasses(visitor);
+    }
+
+    protected void processDirectory(File file, ClassVisitor visitor) throws IOException {
+        new DirectoryProcessor(file).traverseAllClasses(visitor);
     }
 
     public String getPath() {

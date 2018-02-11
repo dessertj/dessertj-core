@@ -44,3 +44,10 @@ is everthing represented by a separate class file:
 
 --
 
+---
+
+# Using jDeps
+
+    jdeps -verbose:class -filter:none -cp build/classes ^
+    build/classes/java/test/de/spricom/dessert/test/classfile/InnerClassesDependenciesTest* ^
+    > build\jdeps.txt

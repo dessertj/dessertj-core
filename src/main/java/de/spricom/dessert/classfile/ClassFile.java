@@ -131,7 +131,6 @@ public class ClassFile {
             attribute.addDependentClassNames(classNames);
         }
         classNames.remove(thisClass);
-        removeOuterClassForStaticInnerClasses(classNames);
         return classNames;
     }
 
@@ -139,7 +138,7 @@ public class ClassFile {
         for (AttributeInfo attribute : attributes) {
             if (attribute instanceof InnerClassesAttribute) {
                 for (InnerClass innerClass : ((InnerClassesAttribute) attribute).getInnerClasses()) {
-                    if (innerClass.isStatic() && thisClass.equals(innerClass.getInnerClassName())) {
+                    if (innerClass.isIndependetOfOuterClass(thisClass)) {
                         classNames.remove(innerClass.getOuterClassName());
                     }
                 }
