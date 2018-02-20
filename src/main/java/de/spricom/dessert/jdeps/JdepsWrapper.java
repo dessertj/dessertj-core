@@ -1,4 +1,4 @@
-package de.spricom.dessert.test.classfile;
+package de.spricom.dessert.jdeps;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,7 +13,8 @@ import java.util.regex.Pattern;
  * Supports both the jdeps command of JDK-8 and of JDK-9.
  */
 public class JdepsWrapper {
-    private static final Pattern SRC_REGEX = Pattern.compile("^\\s+([\\w.$]+)\\s+.*");
+    // The '-' appears in package-info.class, '$' is required for inner classes.
+    private static final Pattern SRC_REGEX = Pattern.compile("^\\s+([\\w.$-]+)\\s+.*");
     private static final Pattern DEST_REGEX = Pattern.compile("^.*-> ([\\w.$]+)\\s+.*$");
 
     private String classPath = System.getProperty("java.class.path");
