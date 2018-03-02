@@ -1,6 +1,9 @@
 package de.spricom.dessert.test.classfile;
 
 import de.spricom.dessert.classfile.ClassFile;
+import de.spricom.dessert.classfile.FieldInfo;
+import de.spricom.dessert.classfile.MethodInfo;
+import de.spricom.dessert.classfile.attribute.*;
 import de.spricom.dessert.jdeps.JdepsWrapper;
 import de.spricom.dessert.traversal.ClassVisitor;
 import de.spricom.dessert.traversal.PathProcessor;
@@ -11,9 +14,11 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 
 public class JdepsCompatibilityTest implements ClassVisitor {
@@ -90,23 +95,32 @@ public class JdepsCompatibilityTest implements ClassVisitor {
             ClassFile cf = new ClassFile(content);
             Set<String> cfdeps = cf.getDependentClasses();
             Set<String> jdeps = wrapper.getDependencies(classname);
-            assertDependenciesMatch(root, classname, cfdeps, jdeps);
+            assertDependenciesMatch(root, classname, cfdeps, jdeps, cf);
         } catch (IOException ex) {
             throw new RuntimeException("Processing " + classname + " in " + root.getAbsolutePath() + " failed.", ex);
         }
     }
 
-    @Deprecated
-    private void assertDependenciesMatch(File root, String classname, Set<String> cfdeps, Set<String> jdeps) {
+    private void assertDependenciesMatch(File root, String classname, Set<String> cfdeps, Set<String> jdeps, ClassFile cf) {
         if (cfdeps.equals(jdeps)) {
             return;
         }
         if (!SetHelper.containsAll(cfdeps, jdeps)) {
-            fail("Dependencies of " + classname + " in " + root + " don't contain " + SetHelper.subtract(jdeps, cfdeps) + ", expected:\n" + dump(jdeps));
+            fail("Dependencies of " + classname + " in " + root + " don't contain " + SetHelper.subtract(jdeps, cfdeps)
+                    + "\ndessert: " + cfdeps
+                    + "\n  jdeps: " + jdeps);
         }
         // See https://bugs.openjdk.java.net/browse/JDK-8134625.
-        logger.warning("Additional dependencies detected for " + classname + " in " + root + ": " +
-                SetHelper.subtract(cfdeps, jdeps));
+        Set<String> diff = SetHelper.subtract(cfdeps, jdeps);
+        logger.info("Additional dependencies detected for " + classname + " in " + root + ": " + diff
+                + "\ndessert: " + cfdeps
+                + "\n  jdeps: " + jdeps);
+        Set<String> additionalDependencies = determineDependenciesNotDetectedByJDeps(cf);
+        if (!SetHelper.containsAll(additionalDependencies, diff)) {
+            fail("Dependencies of " + classname + " in " + root + " has unexpected additional dependencies " + SetHelper.subtract(additionalDependencies, diff)
+                    + "\ndessert: " + cfdeps
+                    + "\n  jdeps: " + jdeps);
+        }
     }
 
     private String dump(Set<String> deps) {
@@ -115,5 +129,51 @@ public class JdepsCompatibilityTest implements ClassVisitor {
             sb.append("\"").append(cn).append("\",\n");
         }
         return sb.toString();
+    }
+
+    private Set<String> determineDependenciesNotDetectedByJDeps(ClassFile cf) {
+        Set<String> referencedClasses = new HashSet<String>();
+        determineClassesReferencedByRuntimeAnnotations(referencedClasses, cf);
+        determineClassesReferencedBySignatureAttribute(referencedClasses, cf);
+        return referencedClasses;
+    }
+
+    private void determineClassesReferencedBySignatureAttribute(Set<String> referencedClasses, ClassFile cf) {
+        for (AttributeInfo attribute : cf.getAttributes()) {
+            if (attribute instanceof SignatureAttribute) {
+                attribute.addDependentClassNames(referencedClasses);
+            }
+        }
+    }
+
+    private void determineClassesReferencedByRuntimeAnnotations(Set<String> referencedClasses, ClassFile cf) {
+        collectReferencedClasses(referencedClasses, cf.getAttributes());
+        for (FieldInfo fieldInfo : cf.getFields()) {
+            collectReferencedClasses(referencedClasses, fieldInfo.getAttributes());
+        }
+        for (MethodInfo methodInfo : cf.getMethods()) {
+            collectReferencedClasses(referencedClasses, methodInfo.getAttributes());
+        }
+    }
+
+    private void collectReferencedClasses(Set<String> referencedClasses, AttributeInfo[] attributes) {
+        for (AttributeInfo attribute : attributes) {
+            if (attribute instanceof RuntimeVisibleAnnotationsAttribute) {
+                collectReferencedClasses(referencedClasses, ((RuntimeVisibleAnnotationsAttribute) attribute).getAnnotations());
+            }
+            if (attribute instanceof RuntimeVisibleParameterAnnotationsAttribute) {
+                for (ParameterAnnotation parameterAnnotation : ((RuntimeVisibleParameterAnnotationsAttribute) attribute).getParameterAnnotations()) {
+                    collectReferencedClasses(referencedClasses, parameterAnnotation.getAnnotations());
+                }
+            }
+        }
+    }
+
+    private void collectReferencedClasses(Set<String> referencedClasses, Annotation[] annotations) {
+        for (Annotation annotation : annotations) {
+            for (ElementValuePair elementValuePair : annotation.getElementValuePairs()) {
+                elementValuePair.addDependentClassNames(referencedClasses);
+            }
+        }
     }
 }

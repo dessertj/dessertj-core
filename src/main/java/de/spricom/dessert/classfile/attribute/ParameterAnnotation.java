@@ -17,6 +17,10 @@ public class ParameterAnnotation implements DependencyHolder {
         }
     }
 
+    public Annotation[] getAnnotations() {
+        return annotations;
+    }
+
     @Override
     public void addDependentClassNames(Set<String> classNames) {
         for (Annotation annotation : annotations) {

@@ -46,4 +46,21 @@ public class SpecialClassesDependenciesTest {
                 "javafx.util.Duration"
         );
     }
+
+    @Test
+    public void testMappingChange() throws IOException {
+        ClassFile cf = new ClassFile(com.sun.javafx.collections.MappingChange.class);
+        assertThat(cf.getDependentClasses()).containsOnly(
+                "com.sun.javafx.collections.ChangeHelper",
+                "com.sun.javafx.collections.MappingChange$1",
+                "com.sun.javafx.collections.MappingChange$2",
+                "com.sun.javafx.collections.MappingChange$Map",
+                "java.lang.String",
+                "java.lang.StringBuilder",
+                "java.util.List",
+                "javafx.collections.ListChangeListener",
+                "javafx.collections.ListChangeListener$Change",
+                "javafx.collections.ObservableList"
+        );
+    }
 }
