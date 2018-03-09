@@ -3,7 +3,7 @@ package de.spricom.dessert.slicing;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SliceAssert {
+public final class SliceAssert {
     private final Slice slice;
 
     public SliceAssert(Slice slice) {

@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class SliceSetAssert {
-    private final SliceSet set;
+    private final ManifestSliceSet set;
 
-    public SliceSetAssert(SliceSet set) {
+    public SliceSetAssert(ManifestSliceSet set) {
         this.set = set;
     }
 
@@ -37,13 +37,17 @@ public class SliceSetAssert {
         return this;
     }
 
-    public SliceSetAssert usesOnly(SliceSet... other) {
-        Set<SliceEntry> allowedEntries = entries(other);
-        allowedEntries.addAll(entries(set));
+    public SliceSetAssert usesOnly(SliceSet... others) {
         Map<Slice, Set<SliceEntry>> illegalDependencies = new HashMap<Slice, Set<SliceEntry>>();
-        for (Slice s : set) {
-            if (!SetHelper.containsAll(allowedEntries, s.getUsedClasses())) {
-                illegalDependencies.put(s, SetHelper.subtract(s.getUsedClasses(), allowedEntries));
+        for (Slice slice : set) {
+            Set<SliceEntry> illegals = new HashSet<SliceEntry>();
+            for (SliceEntry entry : slice.getUsedClasses()) {
+                if (!set.contains(entry) && !containedByAny(entry, others)) {
+                    illegals.add(entry);
+                }
+            }
+            if (!illegals.isEmpty()) {
+                illegalDependencies.put(slice, illegals);
             }
         }
         if (!illegalDependencies.isEmpty()) {
@@ -52,32 +56,36 @@ public class SliceSetAssert {
         return this;
     }
 
-    public SliceSetAssert doesNotUse(SliceSet... other) {
-        Set<SliceEntry> disallowedEntries = entries(other);
+    public SliceSetAssert doesNotUse(SliceSet... others) {
         Map<Slice, Set<SliceEntry>> illegalDependencies = new HashMap<Slice, Set<SliceEntry>>();
-        for (Slice s : set) {
-            if (SetHelper.containsAny(s.getUsedClasses(), disallowedEntries)) {
-                illegalDependencies.put(s, SetHelper.intersect(s.getUsedClasses(), disallowedEntries));
+        for (Slice slice : set) {
+            Set<SliceEntry> illegals = new HashSet<SliceEntry>();
+            for (SliceEntry entry : slice.getUsedClasses()) {
+                if (containedByAny(entry, others)) {
+                    illegals.add(entry);
+                }
+            }
+            if (!illegals.isEmpty()) {
+                illegalDependencies.put(slice, illegals);
             }
         }
         if (!illegalDependencies.isEmpty()) {
             throw new AssertionError("Illegal Dependencies:\n" + renderDependencies(illegalDependencies));
         }
         return this;
+    }
+
+    private boolean containedByAny(SliceEntry entry, SliceSet[] sets) {
+        for (SliceSet sliceSet : sets) {
+            if (sliceSet.contains(entry)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public SliceSetUsage uses(SliceSet other) {
         return new SliceSetUsage(this, other);
-    }
-
-    private Set<SliceEntry> entries(SliceSet... sliceSets) {
-        HashSet<SliceEntry> entries = new HashSet<SliceEntry>();
-        for (SliceSet sliceSet : sliceSets) {
-            for (Slice s : sliceSet) {
-                entries.addAll(s.getEntries());
-            }
-        }
-        return entries;
     }
 
     private String renderDependencies(Map<Slice, Set<SliceEntry>> deps) {

@@ -67,7 +67,7 @@ public class Slice {
     }
 
     public SliceSet asSliceSet() {
-        return new SliceSet(this);
+        return new ManifestSliceSet(this);
     }
 
     public String getPackageName() {

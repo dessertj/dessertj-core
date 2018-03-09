@@ -1,9 +1,6 @@
 package de.spricom.dessert.slicing;
 
-import de.spricom.dessert.resolve.ClassFileEntry;
-import de.spricom.dessert.resolve.ClassPackage;
-import de.spricom.dessert.resolve.ClassResolver;
-import de.spricom.dessert.resolve.ClassRoot;
+import de.spricom.dessert.resolve.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +10,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SliceContext {
+public final class SliceContext {
     private static Logger log = Logger.getLogger(SliceContext.class.getName());
     private static ClassResolver defaultResolver;
 
@@ -76,21 +73,44 @@ public class SliceContext {
         return subPackagesOf(pkg.getName());
     }
 
-    public SliceSet subPackagesOf(String packageName) {
-        SliceSet ss = new SliceSet();
+    public SliceSet subPackagesOf(final String packageName) {
         ClassPackage cp = resolver.getPackage(packageName);
         if (cp != null) {
-            ss.addRecursive(cp, this);
-            while (cp.getAlternative() != null) {
-                cp = cp.getAlternative();
-                ss.addRecursive(cp, this);
+            return manifested(cp);
+        }
+        ClassPredicate<SliceEntry> predicate = new ClassPredicate<SliceEntry>() {
+            @Override
+            public boolean test(SliceEntry sliceEntry) {
+                return sliceEntry.getClassname().startsWith(packageName);
             }
+        };
+        return new LazySliceSet(predicate);
+    }
+
+    public ManifestSliceSet subPackagesOfManifested(Package pkg) {
+        return subPackagesOfManifested(pkg.getName());
+    }
+
+    public ManifestSliceSet subPackagesOfManifested(final String packageName) {
+        ClassPackage cp = resolver.getPackage(packageName);
+        if (cp == null) {
+            throw new IllegalArgumentException("Cannot resolve " + packageName);
+        }
+        return manifested(cp);
+    }
+
+    private ManifestSliceSet manifested(ClassPackage cp) {
+        ManifestSliceSet ss = new ManifestSliceSet();
+        ss.addRecursive(cp, this);
+        while (cp.getAlternative() != null) {
+            cp = cp.getAlternative();
+            ss.addRecursive(cp, this);
         }
         return ss;
     }
 
-    public SliceSet packagesOf(Set<File> rootFiles) {
-        SliceSet ss = new SliceSet();
+    public ManifestSliceSet packagesOf(Set<File> rootFiles) {
+        ManifestSliceSet ss = new ManifestSliceSet();
         for (File rootFile : rootFiles) {
             ClassRoot cr = resolver.getRoot(rootFile);
             if (cr != null) {
@@ -100,7 +120,7 @@ public class SliceContext {
         return ss;
     }
 
-    public Slice packageOf(String packageName) {
+    private Slice packageOf(String packageName) {
         ClassPackage cp = resolver.getPackage(packageName);
         if (cp == null) {
             return null;

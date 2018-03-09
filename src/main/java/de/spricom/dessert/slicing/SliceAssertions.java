@@ -4,11 +4,11 @@ public final class SliceAssertions {
     private SliceAssertions() {
     }
 
-    public static SliceSetAssert dessert(SliceSet set) {
+    public static SliceSetAssert dessert(ManifestSliceSet set) {
         return assertThat(set);
     }
 
-    public static SliceSetAssert assertThat(SliceSet set) {
+    public static SliceSetAssert assertThat(ManifestSliceSet set) {
         return new SliceSetAssert(set);
     }
 
