@@ -52,7 +52,11 @@ public final class ClassResolver {
     }
 
     public void addBootClassPath() throws IOException {
-        add(System.getProperty("sun.boot.class.path"));
+        String path = System.getProperty("sun.boot.class.path");
+        // For JDK 9 there is no sun.boot.class.path property
+        if (path != null) {
+            add(path);
+        }
     }
 
     public void add(String path) throws IOException {
