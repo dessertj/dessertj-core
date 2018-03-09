@@ -1,5 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'jacoco'
+apply plugin: 'maven'
 
 group 'com.github.hajo70'
 version '0.3-SNAPSHOT'

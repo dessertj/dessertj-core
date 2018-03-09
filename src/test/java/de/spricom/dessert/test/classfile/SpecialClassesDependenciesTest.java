@@ -63,4 +63,42 @@ public class SpecialClassesDependenciesTest {
                 "javafx.collections.ObservableList"
         );
     }
+
+    @Test
+    public void testBehaviorBase() throws IOException {
+        ClassFile cf = new ClassFile(com.sun.javafx.scene.control.behavior.BehaviorBase.class);
+        // 144: methodType: "(Ljavafx/event/Event;)V"
+        System.out.println(com.sun.javafx.scene.control.behavior.BehaviorBase.class.getResource("BehaviorBase.class"));
+        System.out.println(cf.dumpConstantPool());
+        assertThat(cf.getDependentClasses()).containsOnly(
+                "com.sun.javafx.scene.control.behavior.KeyBinding",
+                "com.sun.javafx.scene.traversal.Direction",
+                "java.lang.NullPointerException",
+                "java.lang.Object",
+                "java.lang.String",
+                "java.lang.invoke.CallSite",
+                "java.lang.invoke.LambdaMetafactory",
+                "java.lang.invoke.MethodHandle",
+                "java.lang.invoke.MethodHandles",
+                "java.lang.invoke.MethodHandles$Lookup",
+                "java.lang.invoke.MethodType",
+                "java.util.ArrayList",
+                "java.util.Collection",
+                "java.util.Collections",
+                "java.util.List",
+                "javafx.application.ConditionalFeature",
+                "javafx.application.Platform",
+                "javafx.beans.InvalidationListener",
+                "javafx.beans.Observable",
+                "javafx.beans.property.ReadOnlyBooleanProperty",
+                "javafx.event.EventHandler",
+                "javafx.event.EventType",
+                "javafx.scene.Node",
+                "javafx.scene.control.Control",
+                "javafx.scene.input.ContextMenuEvent",
+                "javafx.scene.input.KeyCode",
+                "javafx.scene.input.KeyEvent",
+                "javafx.scene.input.MouseEvent"
+        );
+    }
 }

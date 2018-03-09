@@ -118,8 +118,19 @@ public class ClassFile {
         return constantPool.getUtf8String(is.readUnsignedShort());
     }
 
+    static class FilteringTreeSet extends TreeSet<String> {
+        @Override
+        public boolean add(String classname) {
+            if ("javafx.event.Event".equals(classname)) {
+                new Throwable("Adding " + classname).printStackTrace();
+            }
+            return super.add(classname);
+        }
+    }
+
     public Set<String> getDependentClasses() {
-        Set<String> classNames = new TreeSet<String>();
+        Set<String> classNames = new FilteringTreeSet();
+//        Set<String> classNames = new TreeSet<String>();
         constantPool.addDependentClassNames(classNames);
         for (FieldInfo fieldInfo : fields) {
             fieldInfo.addDependentClassNames(classNames);

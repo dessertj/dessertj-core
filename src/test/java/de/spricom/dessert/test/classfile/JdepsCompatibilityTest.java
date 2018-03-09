@@ -35,7 +35,7 @@ public class JdepsCompatibilityTest implements ClassVisitor {
         } else if (JDK_8_HOME.exists()) {
             wrapper.setJdepsCommand(new File(JDK_8_HOME, "bin/jdeps").getAbsolutePath());
         }
-        // The default is to use jdeps on path if neither JDK-8/JDK-9 is on path.
+        // The default is to use jdeps on path if neither JDK-8 nor JDK-9 has been found in the dirs above.
         wrapper.setVerbose(false);
     }
 
@@ -106,6 +106,7 @@ public class JdepsCompatibilityTest implements ClassVisitor {
             return;
         }
         if (!SetHelper.containsAll(cfdeps, jdeps)) {
+            logger.info("Dump of jdeps-dependencies:\n" + dump(jdeps));
             fail("Dependencies of " + classname + " in " + root + " don't contain " + SetHelper.subtract(jdeps, cfdeps)
                     + "\ndessert: " + cfdeps
                     + "\n  jdeps: " + jdeps);
@@ -117,9 +118,11 @@ public class JdepsCompatibilityTest implements ClassVisitor {
                 + "\n  jdeps: " + jdeps);
         Set<String> additionalDependencies = determineDependenciesNotDetectedByJDeps(cf);
         if (!SetHelper.containsAll(additionalDependencies, diff)) {
-            fail("Dependencies of " + classname + " in " + root + " has unexpected additional dependencies " + SetHelper.subtract(additionalDependencies, diff)
+            logger.info("Dump of jdeps-dependencies:\n" + dump(jdeps));
+            fail("Dependencies of " + classname + " in " + root + " has unexpected additional dependencies " + SetHelper.subtract(diff, additionalDependencies)
                     + "\ndessert: " + cfdeps
-                    + "\n  jdeps: " + jdeps);
+                    + "\n  jdeps: " + jdeps
+                    + "\n   diff: " + diff);
         }
     }
 
