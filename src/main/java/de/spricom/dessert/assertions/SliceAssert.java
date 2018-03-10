@@ -48,7 +48,7 @@ public class SliceAssert {
 
     public SliceAssert usesOnly(Slice... others) {
         IllegalDependencies illegalDependencies = new IllegalDependencies();
-        for (SliceEntry entry : getSliceEntries()) {
+        for (SliceEntry entry : slice.getSliceEntries()) {
             for (SliceEntry dependency : entry.getUsedClasses()) {
                 if (!slice.contains(dependency) && !containedByAny(dependency, others)) {
                     illegalDependencies.add(entry, dependency);
@@ -63,7 +63,7 @@ public class SliceAssert {
 
     public SliceAssert doesNotUse(Slice... others) {
         IllegalDependencies illegalDependencies = new IllegalDependencies();
-        for (SliceEntry entry : getSliceEntries()) {
+        for (SliceEntry entry : slice.getSliceEntries()) {
             for (SliceEntry dependency : entry.getUsedClasses()) {
                 if (containedByAny(dependency, others)) {
                     illegalDependencies.add(entry, dependency);
@@ -74,14 +74,6 @@ public class SliceAssert {
             throw new AssertionError(violationsRenderer.render(illegalDependencies));
         }
         return this;
-    }
-
-    private Set<SliceEntry> getSliceEntries() {
-        Set<SliceEntry> entries = new HashSet<SliceEntry>();
-        for (PackageSlice packageSlice : slice) {
-            entries.addAll(packageSlice.getEntries());
-        }
-        return entries;
     }
 
     private boolean containedByAny(SliceEntry entry, Slice[] sets) {

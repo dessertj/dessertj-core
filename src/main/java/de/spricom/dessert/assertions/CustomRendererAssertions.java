@@ -3,10 +3,10 @@ package de.spricom.dessert.assertions;
 import de.spricom.dessert.slicing.Slice;
 
 public class CustomRendererAssertions {
-    private final IllegalDependenciesRenderer violationsRenderer;
+    private final IllegalDependenciesRenderer illegalDependenciesRenderer;
 
-    CustomRendererAssertions(IllegalDependenciesRenderer violationsRenderer) {
-        this.violationsRenderer = violationsRenderer;
+    CustomRendererAssertions(IllegalDependenciesRenderer illegalDependenciesRenderer) {
+        this.illegalDependenciesRenderer = illegalDependenciesRenderer;
     }
 
     public SliceAssert dessert(Slice slice) {
@@ -14,6 +14,6 @@ public class CustomRendererAssertions {
     }
 
     public SliceAssert assertThat(Slice slice) {
-        return new SliceAssert(slice.materialize()).renderWith(violationsRenderer);
+        return new SliceAssert(slice.materialize()).renderWith(illegalDependenciesRenderer);
     }
 }

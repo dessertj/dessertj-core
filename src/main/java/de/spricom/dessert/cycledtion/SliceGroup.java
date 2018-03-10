@@ -1,5 +1,6 @@
 package de.spricom.dessert.cycledtion;
 
+import de.spricom.dessert.slicing.ConcreteSlice;
 import de.spricom.dessert.slicing.Slice;
 
 import java.util.Iterator;
@@ -11,11 +12,11 @@ import java.util.Set;
  * package, the same root, implement the same interface, comply with the same
  * naming convention etc.
  */
-public final class SliceGroup implements Iterable<Slice> {
-    private Set<Slice> slices;
+public final class SliceGroup implements Iterable<ConcreteSlice> {
+    private Set<ConcreteSlice> slices;
 
     @Override
-    public Iterator<Slice> iterator() {
+    public Iterator<ConcreteSlice> iterator() {
         return slices.iterator();
     }
 

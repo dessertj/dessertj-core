@@ -93,6 +93,14 @@ public final class ConcreteSlice implements Iterable<PackageSlice>, Slice {
         return this;
     }
 
+    public Set<SliceEntry> getSliceEntries() {
+        Set<SliceEntry> entries = new HashSet<SliceEntry>();
+        for (PackageSlice packageSlice : this) {
+            entries.addAll(packageSlice.getEntries());
+        }
+        return entries;
+    }
+
     void add(ClassContainer cc, SliceContext context) {
         if (cc == null || cc.getClasses() == null || cc.getClasses().isEmpty()) {
             return;
