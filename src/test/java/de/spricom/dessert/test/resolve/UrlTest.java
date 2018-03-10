@@ -31,9 +31,12 @@ public class UrlTest {
         System.out.println(url.getProtocol());
         System.out.println(url.getFile());
         System.out.println(url.toURI().getPath());
-        File root = getRootFile(IOException.class);
-        assertThat(root).isFile();
-        assertThat(root.getName()).isEqualTo("rt.jar");
+        if (!"jrt".equals(url.getProtocol())) {
+            // Cannot determine rt.jar for Java 9 modules.
+            File root = getRootFile(IOException.class);
+            assertThat(root).isFile();
+            assertThat(root.getName()).isEqualTo("rt.jar");
+        }
     }
 
     private File getRootFile(Class<?> clazz) {

@@ -129,8 +129,8 @@ public class ClassFile {
     }
 
     public Set<String> getDependentClasses() {
-        Set<String> classNames = new FilteringTreeSet();
-//        Set<String> classNames = new TreeSet<String>();
+//        Set<String> classNames = new FilteringTreeSet();
+        Set<String> classNames = new TreeSet<String>();
         constantPool.addDependentClassNames(classNames);
         for (FieldInfo fieldInfo : fields) {
             fieldInfo.addDependentClassNames(classNames);

@@ -36,30 +36,6 @@ public class ClassResolverTest {
         return defaultResolver;
     }
 
-    /**
-     * Reads all jars on the class-path and searches for a not existing package.
-     */
-    @Test
-    public void testPerformance() throws IOException {
-        long ts = System.currentTimeMillis();
-        assertThat(getDefaultResolver().getPackage("bla.blub")).isNull();
-        assertThat(System.currentTimeMillis() - ts).isLessThan(10000);
-        assertThat(getDefaultResolver().getRootFiles().size()).isGreaterThan(10);
-        assertThat(getDefaultResolver().getClassCount()).isGreaterThan(15000);
-    }
-
-    @Test
-    public void testResolvingUniquePackages() throws IOException {
-        ClassResolver resolver = getDefaultResolver();
-        assertThat(resolver.getPackage("java.lang")).isNotNull().is(hasNoAlternative);
-        assertThat(resolver.getPackage(getClass().getPackage().getName())).isNotNull().is(hasNoAlternative);
-    }
-
-    @Test
-    public void testResolvingIOException() throws IOException {
-        assertThat(getDefaultResolver().getClassFile(java.io.IOException.class.getName())).isNotNull();
-    }
-
     @Test
     public void testClassPathWithoutJars() throws IOException {
         ClassResolver resolver = ClassResolver.ofClassPathWithoutJars();

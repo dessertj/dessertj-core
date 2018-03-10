@@ -18,7 +18,7 @@ import java.io.IOException;
  * This test checks the dependencies of the dessert library. It's an example on how
  * to use it.
  */
-public class DessertDependenciesTest {
+public class DependenciesTest {
 
     /**
      * The same SliceContext is used for all tests.
@@ -33,7 +33,6 @@ public class DessertDependenciesTest {
     @BeforeClass
     public static void init() throws IOException {
         ClassResolver resolver = ClassResolver.ofClassPathWithoutJars();
-        resolver.addBootClassPath();
         sc = new SliceContext(resolver);
     }
 
@@ -120,7 +119,7 @@ public class DessertDependenciesTest {
         ManifestSliceSet util = sc.subPackagesOfManifested(SetHelper.class.getPackage());
 
         SliceAssertions.assertThat(util).usesOnly(javaCore);
-        SliceAssertions.assertThat(resolve).usesOnly(javaCore, javaIO, classfile);
+        SliceAssertions.assertThat(resolve).usesOnly(javaCore, javaIO, classfile, util);
         SliceAssertions.assertThat(slicing)
                 .uses(javaCore).and(javaIO).and(resolve).and(util).and(classfile)
                 .and(sc.subPackagesOf("java.net"))
