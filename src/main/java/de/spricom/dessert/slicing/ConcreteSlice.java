@@ -88,6 +88,11 @@ public final class ConcreteSlice implements Iterable<PackageSlice>, Slice {
         return false;
     }
 
+    @Override
+    public ConcreteSlice materialize() {
+        return this;
+    }
+
     void add(ClassContainer cc, SliceContext context) {
         if (cc == null || cc.getClasses() == null || cc.getClasses().isEmpty()) {
             return;

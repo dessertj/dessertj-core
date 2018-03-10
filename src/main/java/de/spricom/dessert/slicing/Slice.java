@@ -10,4 +10,6 @@ public interface Slice {
     Slice slice(Predicate<SliceEntry> predicate);
 
     boolean contains(SliceEntry entry);
+
+    ConcreteSlice materialize();
 }

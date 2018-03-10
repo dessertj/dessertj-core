@@ -1,15 +1,15 @@
 package de.spricom.dessert.slicing;
 
-public final class PackageSliceAssertions {
-    private PackageSliceAssertions() {
+public final class SliceAssertions {
+    private SliceAssertions() {
     }
 
-    public static SliceAssert dessert(ConcreteSlice set) {
-        return assertThat(set);
+    public static SliceAssert dessert(Slice slice) {
+        return assertThat(slice);
     }
 
-    public static SliceAssert assertThat(ConcreteSlice set) {
-        return new SliceAssert(set);
+    public static SliceAssert assertThat(Slice slice) {
+        return new SliceAssert(slice.materialize());
     }
 
     public static PackageSliceAssert dessert(PackageSlice packageSlice) {

@@ -77,30 +77,17 @@ public final class SliceContext {
     public Slice subPackagesOf(final String packageName) {
         ClassPackage cp = resolver.getPackage(packageName);
         if (cp != null) {
-            return manifested(cp);
+            return materialized(cp);
         }
-        Predicate<SliceEntry> predicate = new Predicate<SliceEntry>() {
+        return new DerivedSlice(new Predicate<SliceEntry>() {
             @Override
             public boolean test(SliceEntry sliceEntry) {
                 return sliceEntry.getClassname().startsWith(packageName);
             }
-        };
-        return new DerivedSlice(predicate);
+        });
     }
 
-    public ConcreteSlice subPackagesOfManifested(Package pkg) {
-        return subPackagesOfManifested(pkg.getName());
-    }
-
-    public ConcreteSlice subPackagesOfManifested(final String packageName) {
-        ClassPackage cp = resolver.getPackage(packageName);
-        if (cp == null) {
-            throw new IllegalArgumentException("Cannot resolve " + packageName);
-        }
-        return manifested(cp);
-    }
-
-    private ConcreteSlice manifested(ClassPackage cp) {
+    private ConcreteSlice materialized(ClassPackage cp) {
         ConcreteSlice ss = new ConcreteSlice();
         ss.addRecursive(cp, this);
         while (cp.getAlternative() != null) {
