@@ -4,9 +4,9 @@ import de.spricom.dessert.slicing.SliceEntry;
 
 import java.util.*;
 
-public class DefaultDependencyViolationsRenderer implements DependencyViolationsRenderer {
+public class DefaultIllegalDependenciesRenderer implements IllegalDependenciesRenderer {
     @Override
-    public String render(DependencyViolations violations) {
+    public String render(IllegalDependencies violations) {
         Map<SliceEntry, Set<SliceEntry>> dependecyViolations = violations.getViolations();
         StringBuilder sb = new StringBuilder("Illegal Dependencies:\n");
         for (SliceEntry entry : sort(dependecyViolations.keySet())) {

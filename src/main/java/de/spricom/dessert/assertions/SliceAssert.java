@@ -13,13 +13,13 @@ import java.util.Set;
 
 public class SliceAssert {
     private final ConcreteSlice slice;
-    private DependencyViolationsRenderer violationsRenderer = new DefaultDependencyViolationsRenderer();
+    private IllegalDependenciesRenderer violationsRenderer = new DefaultIllegalDependenciesRenderer();
 
     SliceAssert(ConcreteSlice slice) {
         this.slice = slice;
     }
 
-    public SliceAssert renderWith(DependencyViolationsRenderer renderer) {
+    public SliceAssert renderWith(IllegalDependenciesRenderer renderer) {
         this.violationsRenderer = renderer;
         return this;
     }
@@ -47,31 +47,31 @@ public class SliceAssert {
     }
 
     public SliceAssert usesOnly(Slice... others) {
-        DependencyViolations dependencyViolations = new DependencyViolations();
+        IllegalDependencies illegalDependencies = new IllegalDependencies();
         for (SliceEntry entry : getSliceEntries()) {
             for (SliceEntry dependency : entry.getUsedClasses()) {
                 if (!slice.contains(dependency) && !containedByAny(dependency, others)) {
-                    dependencyViolations.add(entry, dependency);
+                    illegalDependencies.add(entry, dependency);
                 }
             }
         }
-        if (!dependencyViolations.isEmpty()) {
-            throw new AssertionError(violationsRenderer.render(dependencyViolations));
+        if (!illegalDependencies.isEmpty()) {
+            throw new AssertionError(violationsRenderer.render(illegalDependencies));
         }
         return this;
     }
 
     public SliceAssert doesNotUse(Slice... others) {
-        DependencyViolations dependencyViolations = new DependencyViolations();
+        IllegalDependencies illegalDependencies = new IllegalDependencies();
         for (SliceEntry entry : getSliceEntries()) {
             for (SliceEntry dependency : entry.getUsedClasses()) {
                 if (containedByAny(dependency, others)) {
-                    dependencyViolations.add(entry, dependency);
+                    illegalDependencies.add(entry, dependency);
                 }
             }
         }
-        if (!dependencyViolations.isEmpty()) {
-            throw new AssertionError(violationsRenderer.render(dependencyViolations));
+        if (!illegalDependencies.isEmpty()) {
+            throw new AssertionError(violationsRenderer.render(illegalDependencies));
         }
         return this;
     }

@@ -3,9 +3,9 @@ package de.spricom.dessert.assertions;
 import de.spricom.dessert.slicing.Slice;
 
 public class CustomRendererAssertions {
-    private final DependencyViolationsRenderer violationsRenderer;
+    private final IllegalDependenciesRenderer violationsRenderer;
 
-    CustomRendererAssertions(DependencyViolationsRenderer violationsRenderer) {
+    CustomRendererAssertions(IllegalDependenciesRenderer violationsRenderer) {
         this.violationsRenderer = violationsRenderer;
     }
 

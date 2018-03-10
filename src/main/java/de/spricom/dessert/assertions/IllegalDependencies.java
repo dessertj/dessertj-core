@@ -4,7 +4,7 @@ import de.spricom.dessert.slicing.SliceEntry;
 
 import java.util.*;
 
-public class DependencyViolations {
+public class IllegalDependencies {
     private final Map<SliceEntry, Set<SliceEntry>> violations = new HashMap<SliceEntry, Set<SliceEntry>>();
 
     public void add(SliceEntry entry, SliceEntry illegalDependency) {

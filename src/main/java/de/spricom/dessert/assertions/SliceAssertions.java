@@ -8,7 +8,7 @@ public final class SliceAssertions {
     private SliceAssertions() {
     }
 
-    public static CustomRendererAssertions renderWith(DependencyViolationsRenderer renderer) {
+    public static CustomRendererAssertions renderWith(IllegalDependenciesRenderer renderer) {
         return new CustomRendererAssertions(renderer);
     }
 
