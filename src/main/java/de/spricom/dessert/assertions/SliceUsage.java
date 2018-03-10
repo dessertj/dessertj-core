@@ -1,4 +1,6 @@
-package de.spricom.dessert.slicing;
+package de.spricom.dessert.assertions;
+
+import de.spricom.dessert.slicing.Slice;
 
 import java.util.ArrayList;
 import java.util.List;

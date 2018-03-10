@@ -1,7 +1,15 @@
-package de.spricom.dessert.slicing;
+package de.spricom.dessert.assertions;
+
+import de.spricom.dessert.slicing.PackageSlice;
+import de.spricom.dessert.slicing.PackageSliceAssert;
+import de.spricom.dessert.slicing.Slice;
 
 public final class SliceAssertions {
     private SliceAssertions() {
+    }
+
+    public static CustomRendererAssertions renderWith(DependencyViolationsRenderer renderer) {
+        return new CustomRendererAssertions(renderer);
     }
 
     public static SliceAssert dessert(Slice slice) {

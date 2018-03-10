@@ -1,5 +1,7 @@
 package de.spricom.dessert.test.slicing;
 
+import de.spricom.dessert.slicing.Slice;
+import de.spricom.dessert.assertions.SliceAssertions;
 import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.dependency.DependencyHolder;

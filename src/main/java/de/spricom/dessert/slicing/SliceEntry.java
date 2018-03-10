@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * For each class belonging to a {@link PackageSlice} there is a SliceEntry.
  */
-public final class SliceEntry {
+public final class SliceEntry implements Comparable<SliceEntry> {
     public static final SliceEntry UNDEFINED = new SliceEntry();
 
     private final SliceContext context;
@@ -146,6 +146,11 @@ public final class SliceEntry {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int compareTo(SliceEntry o) {
+        return getClassname().compareTo(o.getClassname());
     }
 
     @Override

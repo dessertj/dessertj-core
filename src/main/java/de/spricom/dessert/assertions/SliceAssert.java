@@ -1,24 +1,33 @@
-package de.spricom.dessert.slicing;
+package de.spricom.dessert.assertions;
 
+import de.spricom.dessert.slicing.ConcreteSlice;
+import de.spricom.dessert.slicing.PackageSlice;
+import de.spricom.dessert.slicing.Slice;
+import de.spricom.dessert.slicing.SliceEntry;
 import de.spricom.dessert.util.DependencyGraph;
 import de.spricom.dessert.util.SetHelper;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class SliceAssert {
-    private final ConcreteSlice set;
+    private final ConcreteSlice slice;
+    private DependencyViolationsRenderer violationsRenderer = new DefaultDependencyViolationsRenderer();
 
-    public SliceAssert(ConcreteSlice set) {
-        this.set = set;
+    SliceAssert(ConcreteSlice slice) {
+        this.slice = slice;
+    }
+
+    public SliceAssert renderWith(DependencyViolationsRenderer renderer) {
+        this.violationsRenderer = renderer;
+        return this;
     }
 
     public SliceAssert isCycleFree() {
         DependencyGraph<PackageSlice> dag = new DependencyGraph<PackageSlice>();
-        for (PackageSlice n : set) {
-            for (PackageSlice m : set) {
+        for (PackageSlice n : slice) {
+            for (PackageSlice m : slice) {
                 if (n != m && n.isUsing(m)) {
                     dag.addDependency(n, m);
                 }
@@ -38,41 +47,41 @@ public class SliceAssert {
     }
 
     public SliceAssert usesOnly(Slice... others) {
-        Map<PackageSlice, Set<SliceEntry>> illegalDependencies = new HashMap<PackageSlice, Set<SliceEntry>>();
-        for (PackageSlice packageSlice : set) {
-            Set<SliceEntry> illegals = new HashSet<SliceEntry>();
-            for (SliceEntry entry : packageSlice.getUsedClasses()) {
-                if (!set.contains(entry) && !containedByAny(entry, others)) {
-                    illegals.add(entry);
+        DependencyViolations dependencyViolations = new DependencyViolations();
+        for (SliceEntry entry : getSliceEntries()) {
+            for (SliceEntry dependency : entry.getUsedClasses()) {
+                if (!slice.contains(dependency) && !containedByAny(dependency, others)) {
+                    dependencyViolations.add(entry, dependency);
                 }
             }
-            if (!illegals.isEmpty()) {
-                illegalDependencies.put(packageSlice, illegals);
-            }
         }
-        if (!illegalDependencies.isEmpty()) {
-            throw new AssertionError("Illegal Dependencies:\n" + renderDependencies(illegalDependencies));
+        if (!dependencyViolations.isEmpty()) {
+            throw new AssertionError(violationsRenderer.render(dependencyViolations));
         }
         return this;
     }
 
     public SliceAssert doesNotUse(Slice... others) {
-        Map<PackageSlice, Set<SliceEntry>> illegalDependencies = new HashMap<PackageSlice, Set<SliceEntry>>();
-        for (PackageSlice packageSlice : set) {
-            Set<SliceEntry> illegals = new HashSet<SliceEntry>();
-            for (SliceEntry entry : packageSlice.getUsedClasses()) {
-                if (containedByAny(entry, others)) {
-                    illegals.add(entry);
+        DependencyViolations dependencyViolations = new DependencyViolations();
+        for (SliceEntry entry : getSliceEntries()) {
+            for (SliceEntry dependency : entry.getUsedClasses()) {
+                if (containedByAny(dependency, others)) {
+                    dependencyViolations.add(entry, dependency);
                 }
             }
-            if (!illegals.isEmpty()) {
-                illegalDependencies.put(packageSlice, illegals);
-            }
         }
-        if (!illegalDependencies.isEmpty()) {
-            throw new AssertionError("Illegal Dependencies:\n" + renderDependencies(illegalDependencies));
+        if (!dependencyViolations.isEmpty()) {
+            throw new AssertionError(violationsRenderer.render(dependencyViolations));
         }
         return this;
+    }
+
+    private Set<SliceEntry> getSliceEntries() {
+        Set<SliceEntry> entries = new HashSet<SliceEntry>();
+        for (PackageSlice packageSlice : slice) {
+            entries.addAll(packageSlice.getEntries());
+        }
+        return entries;
     }
 
     private boolean containedByAny(SliceEntry entry, Slice[] sets) {
