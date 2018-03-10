@@ -11,7 +11,7 @@ import java.net.URLDecoder;
 import java.util.*;
 
 /**
- * For each class belonging to a {@link Slice} there is a SliceEntry.
+ * For each class belonging to a {@link PackageSlice} there is a SliceEntry.
  */
 public final class SliceEntry {
     public static final SliceEntry UNDEFINED = new SliceEntry();

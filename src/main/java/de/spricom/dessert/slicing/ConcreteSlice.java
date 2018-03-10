@@ -10,35 +10,35 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * A SliceSet is as Set of the slices for which the elements of each
- * {@link Slice} have common properties. I. e. they belong to the same parent
+ * A Slice is as Set of the packageSlices for which the elements of each
+ * {@link PackageSlice} have common properties. I. e. they belong to the same parent
  * package, the same root, implement the same interface, comply with the same
  * naming convention etc.
  */
-public final class ManifestSliceSet implements Iterable<Slice>, SliceSet {
-    private final Set<Slice> slices;
+public final class ConcreteSlice implements Iterable<PackageSlice>, Slice {
+    private final Set<PackageSlice> packageSlices;
 
-    ManifestSliceSet() {
-        slices = new HashSet<Slice>();
+    ConcreteSlice() {
+        packageSlices = new HashSet<PackageSlice>();
     }
 
-    ManifestSliceSet(int expectedSize) {
-        slices = new HashSet<Slice>(expectedSize);
+    ConcreteSlice(int expectedSize) {
+        packageSlices = new HashSet<PackageSlice>(expectedSize);
     }
 
-    ManifestSliceSet(Slice slice) {
-        slices = Collections.singleton(slice);
-    }
-
-    @Override
-    public Iterator<Slice> iterator() {
-        return slices.iterator();
+    ConcreteSlice(PackageSlice packageSlice) {
+        packageSlices = Collections.singleton(packageSlice);
     }
 
     @Override
-    public SliceSet with(final SliceSet other) {
-        if (other instanceof ManifestSliceSet) {
-            return with((ManifestSliceSet) other);
+    public Iterator<PackageSlice> iterator() {
+        return packageSlices.iterator();
+    }
+
+    @Override
+    public Slice with(final Slice other) {
+        if (other instanceof ConcreteSlice) {
+            return with((ConcreteSlice) other);
         }
         Predicate<SliceEntry> combined = new Predicate<SliceEntry>() {
             @Override
@@ -46,33 +46,33 @@ public final class ManifestSliceSet implements Iterable<Slice>, SliceSet {
                 return contains(sliceEntry) || other.contains(sliceEntry);
             }
         };
-        return new LazySliceSet(combined);
+        return new DerivedSlice(combined);
     }
 
-    public ManifestSliceSet with(final ManifestSliceSet other) {
-        ManifestSliceSet ss = new ManifestSliceSet(slices.size() + other.slices.size());
-        ss.slices.addAll(slices);
-        ss.slices.addAll(other.slices);
+    public ConcreteSlice with(final ConcreteSlice other) {
+        ConcreteSlice ss = new ConcreteSlice(packageSlices.size() + other.packageSlices.size());
+        ss.packageSlices.addAll(packageSlices);
+        ss.packageSlices.addAll(other.packageSlices);
         return ss;
     }
 
-    public ManifestSliceSet without(final SliceSet other) {
+    public ConcreteSlice without(final Slice other) {
         Predicate<SliceEntry> excluded = new Predicate<SliceEntry>() {
             @Override
             public boolean test(SliceEntry sliceEntry) {
                 return !other.contains(sliceEntry);
             }
         };
-        return (ManifestSliceSet) slice(excluded);
+        return (ConcreteSlice) slice(excluded);
     }
 
     @Override
-    public ManifestSliceSet slice(Predicate<SliceEntry> predicate) {
-        ManifestSliceSet ss = new ManifestSliceSet(slices.size());
-        for (Slice s : slices) {
-            Slice filtered = s.slice(predicate);
+    public ConcreteSlice slice(Predicate<SliceEntry> predicate) {
+        ConcreteSlice ss = new ConcreteSlice(packageSlices.size());
+        for (PackageSlice s : packageSlices) {
+            PackageSlice filtered = s.slice(predicate);
             if (!filtered.getEntries().isEmpty()) {
-                ss.slices.add(filtered);
+                ss.packageSlices.add(filtered);
             }
         }
         return ss;
@@ -80,7 +80,7 @@ public final class ManifestSliceSet implements Iterable<Slice>, SliceSet {
 
     @Override
     public boolean contains(SliceEntry entry) {
-        for (Slice s : slices) {
+        for (PackageSlice s : packageSlices) {
             if (s.getEntries().contains(entry)) {
                 return true;
             }
@@ -92,7 +92,7 @@ public final class ManifestSliceSet implements Iterable<Slice>, SliceSet {
         if (cc == null || cc.getClasses() == null || cc.getClasses().isEmpty()) {
             return;
         }
-        slices.add(new Slice(cc, context));
+        packageSlices.add(new PackageSlice(cc, context));
     }
 
     void addRecursive(ClassContainer cc, SliceContext context) {

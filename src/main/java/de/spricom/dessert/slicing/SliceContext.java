@@ -70,11 +70,11 @@ public final class SliceContext {
         return new SliceEntry(this, classname);
     }
 
-    public SliceSet subPackagesOf(Package pkg) {
+    public Slice subPackagesOf(Package pkg) {
         return subPackagesOf(pkg.getName());
     }
 
-    public SliceSet subPackagesOf(final String packageName) {
+    public Slice subPackagesOf(final String packageName) {
         ClassPackage cp = resolver.getPackage(packageName);
         if (cp != null) {
             return manifested(cp);
@@ -85,14 +85,14 @@ public final class SliceContext {
                 return sliceEntry.getClassname().startsWith(packageName);
             }
         };
-        return new LazySliceSet(predicate);
+        return new DerivedSlice(predicate);
     }
 
-    public ManifestSliceSet subPackagesOfManifested(Package pkg) {
+    public ConcreteSlice subPackagesOfManifested(Package pkg) {
         return subPackagesOfManifested(pkg.getName());
     }
 
-    public ManifestSliceSet subPackagesOfManifested(final String packageName) {
+    public ConcreteSlice subPackagesOfManifested(final String packageName) {
         ClassPackage cp = resolver.getPackage(packageName);
         if (cp == null) {
             throw new IllegalArgumentException("Cannot resolve " + packageName);
@@ -100,8 +100,8 @@ public final class SliceContext {
         return manifested(cp);
     }
 
-    private ManifestSliceSet manifested(ClassPackage cp) {
-        ManifestSliceSet ss = new ManifestSliceSet();
+    private ConcreteSlice manifested(ClassPackage cp) {
+        ConcreteSlice ss = new ConcreteSlice();
         ss.addRecursive(cp, this);
         while (cp.getAlternative() != null) {
             cp = cp.getAlternative();
@@ -110,8 +110,8 @@ public final class SliceContext {
         return ss;
     }
 
-    public ManifestSliceSet packagesOf(Set<File> rootFiles) {
-        ManifestSliceSet ss = new ManifestSliceSet();
+    public ConcreteSlice packagesOf(Set<File> rootFiles) {
+        ConcreteSlice ss = new ConcreteSlice();
         for (File rootFile : rootFiles) {
             ClassRoot cr = resolver.getRoot(rootFile);
             if (cr != null) {
@@ -121,12 +121,12 @@ public final class SliceContext {
         return ss;
     }
 
-    private Slice packageOf(String packageName) {
+    private PackageSlice packageOf(String packageName) {
         ClassPackage cp = resolver.getPackage(packageName);
         if (cp == null) {
             return null;
         }
-        return new Slice(cp, this);
+        return new PackageSlice(cp, this);
     }
 
     public boolean isUseClassLoader() {

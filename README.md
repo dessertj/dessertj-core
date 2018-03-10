@@ -85,7 +85,7 @@ some dependency belongs to a `SliceSet` is very fast. For performance reasons al
 the same `SliceContext`.
 
 The `SliceContext` provides some methods (`packagesOf`, `subPackagesOf`) to create an initial `SliceSet`
-whos slices contain all classes. The `slice` method of the intial `SliceSet` can be used with a corresponding
+whos slices contain all classes. The `packageSlice` method of the intial `SliceSet` can be used with a corresponding
 `ClassPredicate` to create smaller `SliceSet` objects. For the actual dependency checking between such
 `SliceSet` objects the `SliceAssertions` class provides a fluent API.
 

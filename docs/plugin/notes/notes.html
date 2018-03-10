@@ -513,7 +513,7 @@
 					var slides = Reveal.getSlides();
 					var allocated = 0;
 					var currentSlide = Reveal.getSlidePastCount();
-					for (var i in slides.slice(0, currentSlide + 1)) {
+					for (var i in slides.packageSlice(0, currentSlide + 1)) {
 						allocated += timings[i];
 					}
 					return allocated;
