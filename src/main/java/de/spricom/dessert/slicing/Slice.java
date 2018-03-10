@@ -3,7 +3,7 @@ package de.spricom.dessert.slicing;
 import de.spricom.dessert.resolve.ClassContainer;
 import de.spricom.dessert.resolve.ClassFileEntry;
 import de.spricom.dessert.resolve.ClassPackage;
-import de.spricom.dessert.resolve.ClassPredicate;
+import de.spricom.dessert.util.Predicate;
 import de.spricom.dessert.util.SetHelper;
 
 import java.io.File;
@@ -40,7 +40,7 @@ public class Slice {
         }
     }
 
-    private Slice(Slice slice, ClassPredicate<SliceEntry> predicate) {
+    private Slice(Slice slice, Predicate<SliceEntry> predicate) {
         container = slice.container;
         context = slice.context;
         entries = new HashSet<SliceEntry>(slice.entries.size());
@@ -62,7 +62,7 @@ public class Slice {
         return entries;
     }
 
-    public Slice slice(ClassPredicate<SliceEntry> predicate) {
+    public Slice slice(Predicate<SliceEntry> predicate) {
         return new Slice(this, predicate);
     }
 

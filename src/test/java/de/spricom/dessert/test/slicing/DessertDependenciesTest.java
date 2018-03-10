@@ -4,7 +4,7 @@ import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
 import de.spricom.dessert.duplicates.DuplicateClassFinder;
-import de.spricom.dessert.resolve.ClassPredicate;
+import de.spricom.dessert.util.Predicate;
 import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.slicing.*;
 import de.spricom.dessert.traversal.ClassVisitor;
@@ -109,7 +109,7 @@ public class DessertDependenciesTest {
         // The ClassFile class is the facade for the classfile package. Nothing but
         // this class should be used outside this package.
         SliceSet classfile = sc.subPackagesOf(ClassFile.class.getPackage().getName())
-                .slice(new ClassPredicate<SliceEntry>() {
+                .slice(new Predicate<SliceEntry>() {
                     @Override
                     public boolean test(SliceEntry sliceEntry) {
                         return sliceEntry.getClassname().equals(ClassFile.class.getName());

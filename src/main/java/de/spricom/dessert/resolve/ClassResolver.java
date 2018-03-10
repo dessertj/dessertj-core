@@ -1,5 +1,7 @@
 package de.spricom.dessert.resolve;
 
+import de.spricom.dessert.util.Predicate;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -137,7 +139,7 @@ public final class ClassResolver {
     }
 
     public Set<File> getRootFiles() {
-        return getRootFiles(new ClassPredicate<File>() {
+        return getRootFiles(new Predicate<File>() {
 
             @Override
             public boolean test(File t) {
@@ -147,7 +149,7 @@ public final class ClassResolver {
     }
 
     public Set<File> getRootJars() {
-        return getRootFiles(new ClassPredicate<File>() {
+        return getRootFiles(new Predicate<File>() {
 
             @Override
             public boolean test(File t) {
@@ -157,7 +159,7 @@ public final class ClassResolver {
     }
 
     public Set<File> getRootDirs() {
-        return getRootFiles(new ClassPredicate<File>() {
+        return getRootFiles(new Predicate<File>() {
 
             @Override
             public boolean test(File t) {
@@ -166,7 +168,7 @@ public final class ClassResolver {
         });
     }
 
-    public Set<File> getRootFiles(ClassPredicate<File> predicate) {
+    public Set<File> getRootFiles(Predicate<File> predicate) {
         Set<File> files = new HashSet<File>();
         for (ClassRoot cr : path) {
             if (predicate.test(cr.getRootFile())) {

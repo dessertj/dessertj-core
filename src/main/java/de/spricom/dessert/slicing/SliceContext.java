@@ -1,6 +1,7 @@
 package de.spricom.dessert.slicing;
 
 import de.spricom.dessert.resolve.*;
+import de.spricom.dessert.util.Predicate;
 
 import java.io.File;
 import java.io.IOException;
@@ -78,7 +79,7 @@ public final class SliceContext {
         if (cp != null) {
             return manifested(cp);
         }
-        ClassPredicate<SliceEntry> predicate = new ClassPredicate<SliceEntry>() {
+        Predicate<SliceEntry> predicate = new Predicate<SliceEntry>() {
             @Override
             public boolean test(SliceEntry sliceEntry) {
                 return sliceEntry.getClassname().startsWith(packageName);

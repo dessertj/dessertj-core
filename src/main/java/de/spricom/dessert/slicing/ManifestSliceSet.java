@@ -2,7 +2,7 @@ package de.spricom.dessert.slicing;
 
 import de.spricom.dessert.resolve.ClassContainer;
 import de.spricom.dessert.resolve.ClassPackage;
-import de.spricom.dessert.resolve.ClassPredicate;
+import de.spricom.dessert.util.Predicate;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -40,7 +40,7 @@ public final class ManifestSliceSet implements Iterable<Slice>, SliceSet {
         if (other instanceof ManifestSliceSet) {
             return with((ManifestSliceSet) other);
         }
-        ClassPredicate<SliceEntry> combined = new ClassPredicate<SliceEntry>() {
+        Predicate<SliceEntry> combined = new Predicate<SliceEntry>() {
             @Override
             public boolean test(SliceEntry sliceEntry) {
                 return contains(sliceEntry) || other.contains(sliceEntry);
@@ -57,7 +57,7 @@ public final class ManifestSliceSet implements Iterable<Slice>, SliceSet {
     }
 
     public ManifestSliceSet without(final SliceSet other) {
-        ClassPredicate<SliceEntry> excluded = new ClassPredicate<SliceEntry>() {
+        Predicate<SliceEntry> excluded = new Predicate<SliceEntry>() {
             @Override
             public boolean test(SliceEntry sliceEntry) {
                 return !other.contains(sliceEntry);
@@ -67,7 +67,7 @@ public final class ManifestSliceSet implements Iterable<Slice>, SliceSet {
     }
 
     @Override
-    public ManifestSliceSet slice(ClassPredicate<SliceEntry> predicate) {
+    public ManifestSliceSet slice(Predicate<SliceEntry> predicate) {
         ManifestSliceSet ss = new ManifestSliceSet(slices.size());
         for (Slice s : slices) {
             Slice filtered = s.slice(predicate);

@@ -1,21 +1,21 @@
 package de.spricom.dessert.slicing;
 
-import de.spricom.dessert.resolve.ClassPredicate;
+import de.spricom.dessert.util.Predicate;
 
 import java.util.HashSet;
 import java.util.Set;
 
 final class LazySliceSet implements SliceSet {
-    private final ClassPredicate<SliceEntry> predicate;
+    private final Predicate<SliceEntry> predicate;
     private final Set<SliceEntry> cache = new HashSet<SliceEntry>();
 
-    LazySliceSet(ClassPredicate<SliceEntry> predicate) {
+    LazySliceSet(Predicate<SliceEntry> predicate) {
         this.predicate = predicate;
     }
 
     @Override
     public SliceSet with(final SliceSet other) {
-        return new LazySliceSet(new ClassPredicate<SliceEntry>() {
+        return new LazySliceSet(new Predicate<SliceEntry>() {
             @Override
             public boolean test(SliceEntry sliceEntry) {
                 return contains(sliceEntry) || other.contains(sliceEntry);
@@ -25,7 +25,7 @@ final class LazySliceSet implements SliceSet {
 
     @Override
     public SliceSet without(final SliceSet other) {
-        return new LazySliceSet(new ClassPredicate<SliceEntry>() {
+        return new LazySliceSet(new Predicate<SliceEntry>() {
             @Override
             public boolean test(SliceEntry sliceEntry) {
                 return contains(sliceEntry) && !other.contains(sliceEntry);
@@ -34,8 +34,8 @@ final class LazySliceSet implements SliceSet {
     }
 
     @Override
-    public SliceSet slice(final ClassPredicate<SliceEntry> predicate) {
-        return new LazySliceSet(new ClassPredicate<SliceEntry>() {
+    public SliceSet slice(final Predicate<SliceEntry> predicate) {
+        return new LazySliceSet(new Predicate<SliceEntry>() {
             @Override
             public boolean test(SliceEntry sliceEntry) {
                 return contains(sliceEntry) && predicate.test(sliceEntry);
