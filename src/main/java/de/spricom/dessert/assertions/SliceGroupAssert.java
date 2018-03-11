@@ -1,5 +1,6 @@
-package de.spricom.dessert.cycles;
+package de.spricom.dessert.assertions;
 
+import de.spricom.dessert.slicing.SliceGroup;
 import de.spricom.dessert.slicing.ConcreteSlice;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.slicing.SliceEntry;
@@ -12,9 +13,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class SliceGroupAssert<S extends ConcreteSlice> {
+    private final SliceAssert sliceAssert;
     private final SliceGroup<S> sliceGroup;
 
-    public SliceGroupAssert(SliceGroup<S> sliceGroup) {
+    public SliceGroupAssert(SliceAssert sliceAssert, SliceGroup<S> sliceGroup) {
+        this.sliceAssert = sliceAssert;
         this.sliceGroup = sliceGroup;
     }
 
@@ -60,5 +63,9 @@ public class SliceGroupAssert<S extends ConcreteSlice> {
             count++;
         }
         return sb.toString();
+    }
+
+    public SliceAssert end() {
+        return sliceAssert;
     }
 }

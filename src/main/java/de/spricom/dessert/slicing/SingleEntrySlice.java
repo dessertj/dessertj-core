@@ -1,4 +1,4 @@
-package de.spricom.dessert.cycles;
+package de.spricom.dessert.slicing;
 
 import de.spricom.dessert.slicing.ConcreteSlice;
 import de.spricom.dessert.slicing.SliceEntry;

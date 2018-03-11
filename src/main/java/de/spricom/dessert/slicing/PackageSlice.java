@@ -1,7 +1,4 @@
-package de.spricom.dessert.cycles;
-
-import de.spricom.dessert.slicing.ConcreteSlice;
-import de.spricom.dessert.slicing.SliceEntry;
+package de.spricom.dessert.slicing;
 
 import java.util.Collections;
 import java.util.Set;

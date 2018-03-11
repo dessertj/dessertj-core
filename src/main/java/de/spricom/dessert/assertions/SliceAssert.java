@@ -1,8 +1,7 @@
 package de.spricom.dessert.assertions;
 
-import de.spricom.dessert.slicing.ConcreteSlice;
-import de.spricom.dessert.slicing.Slice;
-import de.spricom.dessert.slicing.SliceEntry;
+import de.spricom.dessert.slicing.SliceGroup;
+import de.spricom.dessert.slicing.*;
 
 public class SliceAssert {
     private final ConcreteSlice slice;
@@ -58,5 +57,13 @@ public class SliceAssert {
 
     public SliceUsage uses(Slice other) {
         return new SliceUsage(this, other);
+    }
+
+    public SliceGroupAssert<PackageSlice> splitByPackage() {
+        return new SliceGroupAssert<PackageSlice>(this, SliceGroup.splitByPackage(slice));
+    }
+
+    public SliceGroupAssert<SingleEntrySlice> splitByClass() {
+        return new SliceGroupAssert<SingleEntrySlice>(this, SliceGroup.splitByEntry(slice));
     }
 }

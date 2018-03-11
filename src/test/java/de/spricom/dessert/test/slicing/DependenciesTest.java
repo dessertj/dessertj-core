@@ -4,8 +4,8 @@ import de.spricom.dessert.assertions.SliceAssertions;
 import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
-import de.spricom.dessert.cycles.PackageSlice;
-import de.spricom.dessert.cycles.SliceGroup;
+import de.spricom.dessert.slicing.PackageSlice;
+import de.spricom.dessert.slicing.SliceGroup;
 import de.spricom.dessert.duplicates.DuplicateClassFinder;
 import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.slicing.Slice;
@@ -47,8 +47,7 @@ public class DependenciesTest {
     @Test
     public void testPackagesAreCycleFree() {
         Slice subPackages = sc.subPackagesOf("de.spricom.dessert");
-        SliceGroup<PackageSlice> group = SliceGroup.splitByPackage(subPackages);
-        SliceAssertions.dessert(group).isCycleFree();
+        SliceAssertions.dessert(subPackages).splitByPackage().isCycleFree();
     }
 
     /**
