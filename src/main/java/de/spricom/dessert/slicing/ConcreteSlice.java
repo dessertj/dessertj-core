@@ -1,8 +1,10 @@
 package de.spricom.dessert.slicing;
 
 import de.spricom.dessert.resolve.ClassContainer;
+import de.spricom.dessert.resolve.ClassFileEntry;
 import de.spricom.dessert.resolve.ClassPackage;
 import de.spricom.dessert.util.Predicate;
+import de.spricom.dessert.util.SetHelper;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -15,30 +17,15 @@ import java.util.Set;
  * package, the same root, implement the same interface, comply with the same
  * naming convention etc.
  */
-public class ConcreteSlice implements Iterable<PackageSlice>, Slice {
-    private final Set<PackageSlice> packageSlices;
-    Set<SliceEntry> entries;
+public class ConcreteSlice implements Slice {
+    private final Set<SliceEntry> entries;
 
     protected ConcreteSlice(Set<SliceEntry> entries) {
         this.entries = entries;
-        packageSlices = null;
     }
 
     ConcreteSlice() {
-        packageSlices = new HashSet<PackageSlice>();
-    }
-
-    ConcreteSlice(int expectedSize) {
-        packageSlices = new HashSet<PackageSlice>(expectedSize);
-    }
-
-    ConcreteSlice(PackageSlice packageSlice) {
-        packageSlices = Collections.singleton(packageSlice);
-    }
-
-    @Override
-    public Iterator<PackageSlice> iterator() {
-        return packageSlices.iterator();
+        entries = new HashSet<SliceEntry>();
     }
 
     @Override
@@ -56,10 +43,8 @@ public class ConcreteSlice implements Iterable<PackageSlice>, Slice {
     }
 
     public ConcreteSlice with(final ConcreteSlice other) {
-        ConcreteSlice ss = new ConcreteSlice(packageSlices.size() + other.packageSlices.size());
-        ss.packageSlices.addAll(packageSlices);
-        ss.packageSlices.addAll(other.packageSlices);
-        return ss;
+        ConcreteSlice slice = new ConcreteSlice(SetHelper.unite(entries, other.getSliceEntries()));
+        return slice;
     }
 
     public ConcreteSlice without(final Slice other) {
@@ -74,19 +59,18 @@ public class ConcreteSlice implements Iterable<PackageSlice>, Slice {
 
     @Override
     public ConcreteSlice slice(Predicate<SliceEntry> predicate) {
-        ConcreteSlice ss = new ConcreteSlice(packageSlices.size());
-        for (PackageSlice s : packageSlices) {
-            PackageSlice filtered = s.slice(predicate);
-            if (!filtered.getEntries().isEmpty()) {
-                ss.packageSlices.add(filtered);
+        Set<SliceEntry> filtered = new HashSet<SliceEntry>();
+        for (SliceEntry entry : entries) {
+            if (predicate.test(entry)) {
+                filtered.add(entry);
             }
         }
-        return ss;
+        return new ConcreteSlice(filtered);
     }
 
     @Override
     public boolean contains(SliceEntry entry) {
-        return getSliceEntries().contains(entry);
+        return entries.contains(entry);
     }
 
     @Override
@@ -95,24 +79,20 @@ public class ConcreteSlice implements Iterable<PackageSlice>, Slice {
     }
 
     public Set<SliceEntry> getSliceEntries() {
-        if (entries == null) {
-            entries = new HashSet<SliceEntry>();
-            for (PackageSlice packageSlice : this) {
-                entries.addAll(packageSlice.getEntries());
-            }
-        }
         return entries;
     }
 
     public String toString() {
-        return getSliceEntries().toString();
+        return entries.toString();
     }
 
     void add(ClassContainer cc, SliceContext context) {
         if (cc == null || cc.getClasses() == null || cc.getClasses().isEmpty()) {
             return;
         }
-        packageSlices.add(new PackageSlice(cc, context));
+        for (ClassFileEntry cf : cc.getClasses()) {
+            entries.add(new SliceEntry(context, cf));
+        }
     }
 
     void addRecursive(ClassContainer cc, SliceContext context) {

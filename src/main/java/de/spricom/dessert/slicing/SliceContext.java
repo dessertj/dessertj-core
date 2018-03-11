@@ -1,6 +1,9 @@
 package de.spricom.dessert.slicing;
 
-import de.spricom.dessert.resolve.*;
+import de.spricom.dessert.resolve.ClassFileEntry;
+import de.spricom.dessert.resolve.ClassPackage;
+import de.spricom.dessert.resolve.ClassResolver;
+import de.spricom.dessert.resolve.ClassRoot;
 import de.spricom.dessert.util.Predicate;
 
 import java.io.File;
@@ -106,14 +109,6 @@ public final class SliceContext {
             }
         }
         return ss;
-    }
-
-    private PackageSlice packageOf(String packageName) {
-        ClassPackage cp = resolver.getPackage(packageName);
-        if (cp == null) {
-            return null;
-        }
-        return new PackageSlice(cp, this);
     }
 
     public boolean isUseClassLoader() {

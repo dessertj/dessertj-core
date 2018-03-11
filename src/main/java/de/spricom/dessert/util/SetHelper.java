@@ -36,4 +36,10 @@ public final class SetHelper {
         r.retainAll(t);
         return r;
     }
+
+    public static <T> Set<T> unite(Set<T> s, Set<T> t) {
+        HashSet<T> r = new HashSet<T>(s);
+        r.addAll(t);
+        return r;
+    }
 }

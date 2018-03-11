@@ -1,13 +1,8 @@
 package de.spricom.dessert.assertions;
 
 import de.spricom.dessert.slicing.ConcreteSlice;
-import de.spricom.dessert.slicing.PackageSlice;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.slicing.SliceEntry;
-import de.spricom.dessert.util.SetHelper;
-
-import java.util.Map;
-import java.util.Set;
 
 public class SliceAssert {
     private final ConcreteSlice slice;
@@ -63,21 +58,5 @@ public class SliceAssert {
 
     public SliceUsage uses(Slice other) {
         return new SliceUsage(this, other);
-    }
-
-    private String renderDependencies(Map<PackageSlice, Set<SliceEntry>> deps) {
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<PackageSlice, Set<SliceEntry>> entry : deps.entrySet()) {
-            for (SliceEntry sliceEntry : entry.getKey().getEntries()) {
-                if (SetHelper.containsAny(entry.getValue(), sliceEntry.getUsedClasses())) {
-                    sb.append(sliceEntry.getClassname()).append("\n");
-                    Set<SliceEntry> illegal = SetHelper.intersect(sliceEntry.getUsedClasses(), entry.getValue());
-                    for (SliceEntry illegalDependency : illegal) {
-                        sb.append(" -> ").append(illegalDependency).append("\n");
-                    }
-                }
-            }
-        }
-        return sb.toString();
     }
 }
