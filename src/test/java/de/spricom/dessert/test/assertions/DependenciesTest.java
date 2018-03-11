@@ -1,4 +1,4 @@
-package de.spricom.dessert.test.slicing;
+package de.spricom.dessert.test.assertions;
 
 import de.spricom.dessert.assertions.SliceAssertions;
 import de.spricom.dessert.classfile.ClassFile;

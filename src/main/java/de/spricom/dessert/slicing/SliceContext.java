@@ -9,6 +9,7 @@ import de.spricom.dessert.util.Predicate;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -49,12 +50,29 @@ public final class SliceContext {
         return se;
     }
 
+    private SliceEntry getSliceEntry(Class<?> clazz) {
+        SliceEntry se = entries.get(clazz.getName());
+        if (se == null) {
+            se = createEntry(clazz);
+            entries.put(clazz.getName(), se);
+        }
+        return se;
+    }
+
     private SliceEntry resolveEntry(String classname) {
         ClassFileEntry resolverEntry = resolver.getClassFile(classname);
         if (resolverEntry == null) {
             return null;
         }
         return new SliceEntry(this, resolverEntry);
+    }
+
+    private SliceEntry createEntry(Class<?> clazz) {
+        try {
+            return new SliceEntry(this, clazz);
+        } catch (IOException ex) {
+            throw new ResolveException("Cannot analyze " + clazz, ex);
+        }
     }
 
     private SliceEntry loadClass(String classname) {
@@ -109,6 +127,14 @@ public final class SliceContext {
             }
         }
         return ss;
+    }
+
+    public ConcreteSlice sliceOf(Class<?>... classes) {
+        Set<SliceEntry> sliceEntries = new HashSet<SliceEntry>();
+        for (Class<?> clazz : classes) {
+            sliceEntries.add(getSliceEntry(clazz));
+        }
+        return new ConcreteSlice(sliceEntries);
     }
 
     public boolean isUseClassLoader() {
