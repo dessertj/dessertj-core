@@ -1,15 +1,18 @@
 package de.spricom.dessert.test.slicing;
 
-import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.assertions.SliceAssertions;
 import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
+import de.spricom.dessert.cycles.PackageSlice;
+import de.spricom.dessert.cycles.SliceGroup;
 import de.spricom.dessert.duplicates.DuplicateClassFinder;
-import de.spricom.dessert.util.Predicate;
 import de.spricom.dessert.resolve.ClassResolver;
-import de.spricom.dessert.slicing.*;
+import de.spricom.dessert.slicing.Slice;
+import de.spricom.dessert.slicing.SliceContext;
+import de.spricom.dessert.slicing.SliceEntry;
 import de.spricom.dessert.traversal.ClassVisitor;
+import de.spricom.dessert.util.Predicate;
 import de.spricom.dessert.util.SetHelper;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,7 +47,8 @@ public class DependenciesTest {
     @Test
     public void testPackagesAreCycleFree() {
         Slice subPackages = sc.subPackagesOf("de.spricom.dessert");
-        SliceAssertions.dessert(subPackages).isCycleFree();
+        SliceGroup<PackageSlice> group = SliceGroup.splitByPackage(subPackages);
+        SliceAssertions.dessert(group).isCycleFree();
     }
 
     /**
@@ -54,9 +58,9 @@ public class DependenciesTest {
      */
     @Test
     public void testNestedPackagesShouldNotUseOuterPackages() {
-        ConcreteSlice subPackages = sc.subPackagesOf("de.spricom.dessert").materialize();
-        for (PackageSlice pckg : subPackages) {
-            SliceAssertions.assertThat(pckg).doesNotUse(pckg.getParentPackage());
+        SliceGroup<PackageSlice> group = SliceGroup.splitByPackage(sc.subPackagesOf("de.spricom.dessert"));
+        for (PackageSlice pckg : group) {
+            SliceAssertions.assertThat(pckg).doesNotUse(pckg.getParentPackage(group));
         }
     }
 

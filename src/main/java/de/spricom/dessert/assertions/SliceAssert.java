@@ -4,10 +4,8 @@ import de.spricom.dessert.slicing.ConcreteSlice;
 import de.spricom.dessert.slicing.PackageSlice;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.slicing.SliceEntry;
-import de.spricom.dessert.util.DependencyGraph;
 import de.spricom.dessert.util.SetHelper;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,28 +19,6 @@ public class SliceAssert {
 
     public SliceAssert renderWith(IllegalDependenciesRenderer renderer) {
         this.violationsRenderer = renderer;
-        return this;
-    }
-
-    public SliceAssert isCycleFree() {
-        DependencyGraph<PackageSlice> dag = new DependencyGraph<PackageSlice>();
-        for (PackageSlice n : slice) {
-            for (PackageSlice m : slice) {
-                if (n != m && n.isUsing(m)) {
-                    dag.addDependency(n, m);
-                }
-            }
-        }
-        if (!dag.isCycleFree()) {
-            StringBuilder sb = new StringBuilder("Cycle:\n");
-            int count = 0;
-            for (PackageSlice n : dag.getCycle()) {
-                sb.append(count == 0 ? "" : ",\n");
-                sb.append(n.getPackageName());
-                count++;
-            }
-            throw new AssertionError(sb.toString());
-        }
         return this;
     }
 

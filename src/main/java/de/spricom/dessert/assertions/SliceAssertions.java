@@ -1,7 +1,7 @@
 package de.spricom.dessert.assertions;
 
-import de.spricom.dessert.slicing.PackageSlice;
-import de.spricom.dessert.slicing.PackageSliceAssert;
+import de.spricom.dessert.cycles.SliceGroup;
+import de.spricom.dessert.cycles.SliceGroupAssert;
 import de.spricom.dessert.slicing.Slice;
 
 public final class SliceAssertions {
@@ -20,11 +20,11 @@ public final class SliceAssertions {
         return new SliceAssert(slice.materialize());
     }
 
-    public static PackageSliceAssert dessert(PackageSlice packageSlice) {
-        return assertThat(packageSlice);
+    public static SliceGroupAssert dessert(SliceGroup group) {
+        return assertThat(group);
     }
 
-    public static PackageSliceAssert assertThat(PackageSlice packageSlice) {
-        return new PackageSliceAssert(packageSlice);
+    public static SliceGroupAssert assertThat(SliceGroup group) {
+        return new SliceGroupAssert(group);
     }
 }

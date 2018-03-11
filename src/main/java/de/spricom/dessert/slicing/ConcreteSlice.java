@@ -15,8 +15,14 @@ import java.util.Set;
  * package, the same root, implement the same interface, comply with the same
  * naming convention etc.
  */
-public final class ConcreteSlice implements Iterable<PackageSlice>, Slice {
+public class ConcreteSlice implements Iterable<PackageSlice>, Slice {
     private final Set<PackageSlice> packageSlices;
+    Set<SliceEntry> entries;
+
+    protected ConcreteSlice(Set<SliceEntry> entries) {
+        this.entries = entries;
+        packageSlices = null;
+    }
 
     ConcreteSlice() {
         packageSlices = new HashSet<PackageSlice>();
@@ -80,12 +86,7 @@ public final class ConcreteSlice implements Iterable<PackageSlice>, Slice {
 
     @Override
     public boolean contains(SliceEntry entry) {
-        for (PackageSlice s : packageSlices) {
-            if (s.getEntries().contains(entry)) {
-                return true;
-            }
-        }
-        return false;
+        return getSliceEntries().contains(entry);
     }
 
     @Override
@@ -94,11 +95,17 @@ public final class ConcreteSlice implements Iterable<PackageSlice>, Slice {
     }
 
     public Set<SliceEntry> getSliceEntries() {
-        Set<SliceEntry> entries = new HashSet<SliceEntry>();
-        for (PackageSlice packageSlice : this) {
-            entries.addAll(packageSlice.getEntries());
+        if (entries == null) {
+            entries = new HashSet<SliceEntry>();
+            for (PackageSlice packageSlice : this) {
+                entries.addAll(packageSlice.getEntries());
+            }
         }
         return entries;
+    }
+
+    public String toString() {
+        return getSliceEntries().toString();
     }
 
     void add(ClassContainer cc, SliceContext context) {
