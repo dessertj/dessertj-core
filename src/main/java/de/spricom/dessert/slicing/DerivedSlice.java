@@ -56,7 +56,7 @@ final class DerivedSlice implements Slice {
     }
 
     @Override
-    public ConcreteSlice materialize() {
+    public Set<SliceEntry> getSliceEntries() {
         throw new IllegalStateException("Cannot materialize DerivedSlice");
     }
 }

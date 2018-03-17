@@ -8,12 +8,12 @@ import java.util.*;
  * package, the same root, implement the same interface, comply with the same
  * naming convention etc.
  */
-public final class SliceGroup<S extends ConcreteSlice> implements Iterable<S> {
+public final class SliceGroup<S extends Slice> implements Iterable<S> {
     private final Map<String, S> slices;
 
     public static SliceGroup<SingleEntrySlice> splitByEntry(Slice slice) {
         Set<SingleEntrySlice> entries = new HashSet<SingleEntrySlice>();
-        for (SliceEntry entry : slice.materialize().getSliceEntries()) {
+        for (SliceEntry entry : slice.getSliceEntries()) {
             entries.add(new SingleEntrySlice(entry));
         }
         return new SliceGroup(entries);
@@ -21,7 +21,7 @@ public final class SliceGroup<S extends ConcreteSlice> implements Iterable<S> {
 
     public static SliceGroup<PackageSlice> splitByPackage(Slice slice) {
         Map<String, Set<SliceEntry>> packages = new HashMap<String, Set<SliceEntry>>();
-        for (SliceEntry entry : slice.materialize().getSliceEntries()) {
+        for (SliceEntry entry : slice.getSliceEntries()) {
             Set<SliceEntry> packageEntries = packages.get(entry.getPackageName());
             if (packageEntries == null) {
                 packageEntries = new HashSet<SliceEntry>();

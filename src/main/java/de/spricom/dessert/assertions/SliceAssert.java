@@ -4,10 +4,10 @@ import de.spricom.dessert.slicing.SliceGroup;
 import de.spricom.dessert.slicing.*;
 
 public class SliceAssert {
-    private final ConcreteSlice slice;
+    private final Slice slice;
     private IllegalDependenciesRenderer violationsRenderer = new DefaultIllegalDependenciesRenderer();
 
-    SliceAssert(ConcreteSlice slice) {
+    SliceAssert(Slice slice) {
         this.slice = slice;
     }
 

@@ -16,6 +16,6 @@ public final class SliceAssertions {
     }
 
     public static SliceAssert assertThat(Slice slice) {
-        return new SliceAssert(slice.materialize());
+        return new SliceAssert(slice);
     }
 }

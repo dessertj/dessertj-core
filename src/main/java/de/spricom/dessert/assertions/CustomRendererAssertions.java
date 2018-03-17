@@ -14,6 +14,6 @@ public class CustomRendererAssertions {
     }
 
     public SliceAssert assertThat(Slice slice) {
-        return new SliceAssert(slice.materialize()).renderWith(illegalDependenciesRenderer);
+        return new SliceAssert(slice).renderWith(illegalDependenciesRenderer);
     }
 }

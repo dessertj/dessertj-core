@@ -2,6 +2,8 @@ package de.spricom.dessert.slicing;
 
 import de.spricom.dessert.util.Predicate;
 
+import java.util.Set;
+
 public interface Slice {
     Slice with(Slice other);
 
@@ -11,5 +13,5 @@ public interface Slice {
 
     boolean contains(SliceEntry entry);
 
-    ConcreteSlice materialize();
+    Set<SliceEntry> getSliceEntries();
 }

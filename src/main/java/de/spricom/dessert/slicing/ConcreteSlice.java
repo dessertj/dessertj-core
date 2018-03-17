@@ -73,11 +73,6 @@ public class ConcreteSlice implements Slice {
         return entries.contains(entry);
     }
 
-    @Override
-    public ConcreteSlice materialize() {
-        return this;
-    }
-
     public Set<SliceEntry> getSliceEntries() {
         return entries;
     }

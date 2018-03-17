@@ -91,21 +91,22 @@ public final class SliceContext {
         return new SliceEntry(this, classname);
     }
 
+    public Slice packageTreeOf(Class<?> clazz) {
+        return subPackagesOf(clazz.getPackage());
+    }
+
     public Slice subPackagesOf(Package pkg) {
         return subPackagesOf(pkg.getName());
     }
 
     public Slice subPackagesOf(final String packageName) {
-        ClassPackage cp = resolver.getPackage(packageName);
-        if (cp != null) {
-            return materialized(cp);
-        }
-        return new DerivedSlice(new Predicate<SliceEntry>() {
+        return new DeferredSlice(new Predicate<SliceEntry>() {
             @Override
             public boolean test(SliceEntry sliceEntry) {
                 return sliceEntry.getClassname().startsWith(packageName);
             }
-        });
+        }, new SubTreeEntryResolver(this, resolver, packageName),
+                packageName + ".**");
     }
 
     private ConcreteSlice materialized(ClassPackage cp) {
