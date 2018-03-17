@@ -30,7 +30,7 @@ public abstract class ClassRoot extends ClassContainer {
         ClassPackage cp = alt;
         while (cp != null && !file.equals(cp.getRootFile())) {
             alt = cp;
-            cp = alt.getAlternative();
+            cp = alt.getNextAlternative();
         }
         if (cp == null) {
             cp = new ClassPackage(this, parent, packageName);
@@ -38,7 +38,7 @@ public abstract class ClassRoot extends ClassContainer {
             if (alt == null) {
                 resolver.addPackage(cp);
             } else {
-                alt.setAlternative(cp);
+                alt.setNextAlternative(cp);
             }
         }
         return cp;

@@ -1,14 +1,16 @@
 package de.spricom.dessert.test.resolve;
 
+import de.spricom.dessert.classfile.ClassFile;
+import de.spricom.dessert.resolve.ClassFileEntry;
 import de.spricom.dessert.resolve.ClassPackage;
 import de.spricom.dessert.resolve.ClassResolver;
 import org.fest.assertions.Condition;
+import org.junit.Assume;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -27,8 +29,40 @@ public class ClassResolverTest {
 
         ClassPackage cp = resolver.getPackage("de.spricom.dessert.classfile");
         assertThat(cp.getPackageName()).isEqualTo("de.spricom.dessert.classfile");
+        assertThat(cp.toString()).isEqualTo("de.spricom.dessert.classfile");
         assertThat(cp.getSubPackages()).hasSize(3);
         assertThat(cp.getParent().getPackageName()).isEqualTo("de.spricom.dessert");
+
+        assertThat(cp.getClasses()).hasSize(5);
+        ClassFileEntry cf = resolver.getClassFile(ClassFile.class.getName());
+        assertThat(System.getProperty("java.class.path").contains(cf.getFilename())).isTrue();
+        assertThat(cf.getClassfile().getThisClass()).isEqualTo(ClassFile.class.getName());
+        assertThat(cf.getPackage()).isSameAs(cp);
+        assertThat(cf.getAlternatives()).isNull();
+
+        ClassPackage parent = resolver.getPackage("de.spricom");
+        assertThat(parent.getSubPackages()).hasSize(1);
+
+        assertThat(resolver.getPackage("de.spricom.notthere")).isNull();
+        assertThat(resolver.getPackage("")).isNull();
+        assertThat(resolver.getRoot(resolver.getRootDirs().iterator().next()).getPackageName()).isEmpty();
+    }
+
+    @Test
+    public void testAlternativePackages() throws IOException {
+        ClassResolver resolver = ClassResolver.ofClassPath();
+        Assume.assumeTrue("There are separate directories for productive an test classes",
+                resolver.getRootDirs().size() == 2);
+
+        ClassPackage cp1 = resolver.getPackage("de.spricom.dessert");
+        ClassPackage cp2 = cp1.getNextAlternative();
+        assertThat(cp2).isNotNull();
+        assertThat(cp2.getNextAlternative()).isNull();
+
+        ClassFileEntry cf1 = resolver.getClassFile(this.getClass().getName());
+        assertThat(cf1.getClassfile().getThisClass()).isEqualTo(this.getClass().getName());
+        assertThat(resolver.getClassFile(cf1.getPackage().getRootFile(), this.getClass().getName())).isSameAs(cf1);
+        assertThat(resolver.getClassFile(resolver.getPackage(ClassFile.class.getPackage().getName()).getRootFile(), this.getClass().getName())).isNull();
     }
 
     @Test
@@ -37,7 +71,6 @@ public class ClassResolverTest {
         assertThat(resolver.getRootDirs()).isNotEmpty();
         assertThat(resolver.getRootJars()).isNotEmpty();
         assertThat(resolver.getRootDirs().size() + resolver.getRootJars().size()).isEqualTo(resolver.getRootFiles().size());
-        System.out.println(resolver.getRootJars());
         assertThat(resolver.getRootJars()).is(new ContainsFile("junit-4.12.jar"));
     }
 

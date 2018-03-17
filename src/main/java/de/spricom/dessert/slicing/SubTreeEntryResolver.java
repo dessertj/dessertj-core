@@ -35,8 +35,8 @@ public class SubTreeEntryResolver implements EntryResolver {
             throw new IllegalStateException("Cannot resolve " + packageName);
         }
         addRecursive(cp);
-        while (cp.getAlternative() != null) {
-            cp = cp.getAlternative();
+        while (cp.getNextAlternative() != null) {
+            cp = cp.getNextAlternative();
             addRecursive(cp);
         }
     }

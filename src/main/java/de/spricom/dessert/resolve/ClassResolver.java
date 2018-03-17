@@ -113,7 +113,7 @@ public class ClassResolver {
     public ClassPackage getPackage(File root, String packageName) {
         ClassPackage cp = getPackage(packageName);
         while (cp != null && !root.equals(cp.getRootFile())) {
-            cp = cp.getAlternative();
+            cp = cp.getNextAlternative();
         }
         return cp;
     }
