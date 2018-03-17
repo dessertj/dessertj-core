@@ -5,28 +5,26 @@ import de.spricom.dessert.classfile.ClassFile;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ClassFileEntry {
+public abstract class ClassFileEntry {
     private final ClassContainer pckg;
-    private final String filename;
-    private final ClassFile classfile;
     private List<ClassFileEntry> alternatives;
+    private ClassFile classFile;
 
-    public ClassFileEntry(ClassContainer pckg, String filename, ClassFile classfile) {
+    protected ClassFileEntry(ClassContainer pckg) {
         this.pckg = pckg;
-        this.filename = filename;
-        this.classfile = classfile;
-    }
-
-    public ClassContainer getPackage() {
-        return pckg;
     }
 
     public ClassFile getClassfile() {
-        return classfile;
+        if (classFile == null) {
+            classFile = resolveClassFile();
+        }
+        return classFile;
     }
 
-    public String getFilename() {
-        return filename;
+    protected abstract ClassFile resolveClassFile();
+
+    public ClassContainer getPackage() {
+        return pckg;
     }
 
     public List<ClassFileEntry> getAlternatives() {
@@ -42,5 +40,9 @@ public class ClassFileEntry {
         assert !alternatives.contains(alt) : "alternatives.contains(alt)";
         alternatives.add(alt);
         alt.alternatives = alternatives;
+    }
+
+    public String getFilename() {
+        return pckg.getRootFile().getName();
     }
 }

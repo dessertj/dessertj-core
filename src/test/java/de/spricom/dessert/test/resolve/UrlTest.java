@@ -25,18 +25,29 @@ public class UrlTest {
     }
 
     @Test
-    public void testJarUrl() throws URISyntaxException {
+    public void testJdkUrl() throws URISyntaxException {
         URL url = getClass().getResource("/java/io/IOException.class");
-        System.out.println(url);
-        System.out.println(url.getProtocol());
-        System.out.println(url.getFile());
-        System.out.println(url.toURI().getPath());
+        dump(url);
         if (!"jrt".equals(url.getProtocol())) {
             // Cannot determine rt.jar for Java 9 modules.
             File root = getRootFile(IOException.class);
             assertThat(root).isFile();
             assertThat(root.getName()).isEqualTo("rt.jar");
         }
+    }
+
+    @Test
+    public void testJarUrl() throws URISyntaxException {
+        URL url = getClass().getResource("/org/junit/Test.class");
+        dump(url);
+        File root = getRootFile(Test.class);
+        assertThat(root).isFile();
+        assertThat(root.getName()).isEqualTo("junit-4.12.jar");
+    }
+
+    private void dump(URL url) throws URISyntaxException {
+        System.out.println(url);
+        System.out.printf("protocol: %s, file: %s, URI.path: %s%n", url.getProtocol(), url.getFile(), url.toURI().getPath());
     }
 
     private File getRootFile(Class<?> clazz) {

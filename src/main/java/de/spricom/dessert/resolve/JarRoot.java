@@ -44,16 +44,8 @@ public class JarRoot extends ClassRoot {
         if (cc.getClasses() == null) {
             cc.setClasses(new LinkedList<ClassFileEntry>());
         }
-        InputStream is = jarFile.getInputStream(entry);
-        try {
-            ClassFile cf = new ClassFile(is);
-            ClassFileEntry cfe = new ClassFileEntry(cc, filename, cf);
-            addClass(cfe);
-            cc.getClasses().add(cfe);
-        } finally {
-            if (is != null) {
-                is.close();
-            }
-        }
+        ClassFileEntry cfe = new JarClassFileEntry(cc, jarFile, entry);
+        addClass(cfe);
+        cc.getClasses().add(cfe);
     }
 }

@@ -1,9 +1,6 @@
 package de.spricom.dessert.resolve;
 
-import de.spricom.dessert.classfile.ClassFile;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,16 +26,8 @@ public class DirectoryRoot extends ClassRoot {
     }
 
     private ClassFileEntry scanClass(ClassContainer cc, File file) throws IOException {
-        FileInputStream is = new FileInputStream(file);
-        try {
-            ClassFile cf = new ClassFile(is);
-            ClassFileEntry entry = new ClassFileEntry(cc, file.getName(), cf);
-            addClass(entry);
-            return entry;
-        } finally {
-            if (is != null) {
-                is.close();
-            }
-        }
+        ClassFileEntry entry = new DirectoryClassFileEntry(cc, file);
+        addClass(entry);
+        return entry;
     }
 }
