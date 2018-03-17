@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DirectoryRoot extends ClassRoot {
+final class DirectoryRoot extends ClassRoot {
     public DirectoryRoot(ClassResolver resolver, File file) throws IOException {
         super(resolver, file);
         scan(this, getRootFile(), "");

@@ -1,9 +1,6 @@
 package de.spricom.dessert.slicing;
 
-import de.spricom.dessert.resolve.ClassFileEntry;
-import de.spricom.dessert.resolve.ClassPackage;
-import de.spricom.dessert.resolve.ClassResolver;
-import de.spricom.dessert.resolve.ClassRoot;
+import de.spricom.dessert.resolve.*;
 import de.spricom.dessert.util.Predicate;
 
 import java.io.File;
@@ -122,7 +119,7 @@ public final class SliceContext {
     public ConcreteSlice packagesOf(Set<File> rootFiles) {
         ConcreteSlice ss = new ConcreteSlice();
         for (File rootFile : rootFiles) {
-            ClassRoot cr = resolver.getRoot(rootFile);
+            ClassContainer cr = resolver.getRoot(rootFile);
             if (cr != null) {
                 ss.addRecursive(cr, this);
             }

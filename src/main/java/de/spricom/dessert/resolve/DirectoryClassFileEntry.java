@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public class DirectoryClassFileEntry extends ClassFileEntry{
+final class DirectoryClassFileEntry extends ClassFileEntry{
     private final File classFile;
 
     DirectoryClassFileEntry(ClassContainer pckg, File classFile) {

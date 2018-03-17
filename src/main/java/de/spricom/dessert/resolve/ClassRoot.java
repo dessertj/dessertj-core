@@ -11,10 +11,6 @@ public abstract class ClassRoot extends ClassContainer {
         this.file = file;
     }
 
-    final boolean containsPackage(String packageName) {
-        return resolver.getPackage(file, packageName) != null;
-    }
-    
     final ClassPackage addPackage(String packageName) {
         ClassPackage cp = resolver.getPackage(file, packageName);
         if (cp != null) {

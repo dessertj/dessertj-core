@@ -92,7 +92,7 @@ public class ConcreteSlice implements Slice {
 
     void addRecursive(ClassContainer cc, SliceContext context) {
         add(cc, context);
-        for (ClassPackage subp : cc.getSubPackages()) {
+        for (ClassContainer subp : cc.getSubPackages()) {
             addRecursive(subp, context);
         }
     }

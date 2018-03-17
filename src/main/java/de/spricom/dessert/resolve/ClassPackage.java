@@ -2,7 +2,7 @@ package de.spricom.dessert.resolve;
 
 import java.io.File;
 
-public class ClassPackage extends ClassContainer {
+public final class ClassPackage extends ClassContainer {
     private final ClassRoot root;
     private final String packageName;
     private final ClassContainer parent;

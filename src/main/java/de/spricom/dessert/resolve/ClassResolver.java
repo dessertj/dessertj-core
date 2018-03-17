@@ -7,12 +7,12 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
-public final class ClassResolver {
+public class ClassResolver {
     private static Logger log = Logger.getLogger(ClassResolver.class.getName());
 
-    public List<ClassRoot> path = new ArrayList<ClassRoot>(60);
-    public final Map<String, ClassPackage> packages = new HashMap<String, ClassPackage>(3000);
-    public final Map<String, ClassFileEntry> classes = new HashMap<String, ClassFileEntry>(60000);
+    private List<ClassRoot> path = new ArrayList<ClassRoot>(60);
+    private final Map<String, ClassPackage> packages = new HashMap<String, ClassPackage>(3000);
+    private final Map<String, ClassFileEntry> classes = new HashMap<String, ClassFileEntry>(60000);
 
     public static ClassResolver of(String path) throws IOException {
         ClassResolver r = new ClassResolver();

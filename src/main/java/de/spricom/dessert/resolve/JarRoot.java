@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public class JarRoot extends ClassRoot {
+final class JarRoot extends ClassRoot {
     public JarRoot(ClassResolver resolver, File file) throws IOException {
         super(resolver, file);
         JarFile jarFile = new JarFile(getRootFile());
