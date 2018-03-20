@@ -82,13 +82,18 @@ public class ClassResolver {
         }
     }
 
+    public void addRoot(ClassRoot root) {
+        path.add(root);
+    }
+
     void addPackage(ClassPackage cp) {
         ClassPackage previous = packages.put(cp.getPackageName(), cp);
         assert previous == null : "Added " + cp + " twice!";
     }
 
     void addClass(ClassFileEntry cf) {
-        String cn = cf.getClassfile().getThisClass();
+        String cn = cf.getClassname();
+        // assert cn.equals(cf.getClassfile().getThisClass()) : cn + " != " + cf.getClassfile().getThisClass();
         ClassFileEntry prev = classes.get(cn);
         if (prev == null) {
             classes.put(cn, cf);

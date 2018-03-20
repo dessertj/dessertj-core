@@ -2,6 +2,7 @@ package de.spricom.dessert.resolve;
 
 import de.spricom.dessert.classfile.ClassFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.jar.JarEntry;
@@ -12,9 +13,14 @@ final class JarClassFileEntry extends ClassFileEntry{
     private final JarEntry jarEntry;
 
     JarClassFileEntry(ClassContainer pckg, JarFile jarFile, JarEntry jarEntry) {
-        super(pckg);
+        super(cn(jarEntry), pckg);
         this.jarFile = jarFile;
         this.jarEntry = jarEntry;
+    }
+
+    private static String cn(JarEntry jarEntry) {
+        String cn = jarEntry.getName();
+        return cn.substring(0, cn.length() - ".class".length()).replace('/', '.');
     }
 
     @Override

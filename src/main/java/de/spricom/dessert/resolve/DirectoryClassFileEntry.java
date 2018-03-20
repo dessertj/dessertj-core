@@ -13,8 +13,12 @@ final class DirectoryClassFileEntry extends ClassFileEntry{
     private final File classFile;
 
     DirectoryClassFileEntry(ClassContainer pckg, File classFile) {
-        super(pckg);
+        super(pckg.getPackageName() + "." + simpleName(classFile), pckg);
         this.classFile = classFile;
+    }
+
+    private static String simpleName(File classFile) {
+        return classFile.getName().substring(0, classFile.getName().length() - ".class".length());
     }
 
     @Override

@@ -11,7 +11,7 @@ public abstract class ClassRoot extends ClassContainer {
         this.file = file;
     }
 
-    final ClassPackage addPackage(String packageName) {
+    protected final ClassPackage addPackage(String packageName) {
         ClassPackage cp = resolver.getPackage(file, packageName);
         if (cp != null) {
             return cp;
@@ -44,7 +44,7 @@ public abstract class ClassRoot extends ClassContainer {
         return cp;
     }
     
-    final void addClass(ClassFileEntry cf) {
+    protected final void addClass(ClassFileEntry cf) {
         resolver.addClass(cf);
     }
     

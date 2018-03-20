@@ -38,7 +38,7 @@ public abstract class ClassContainer {
         return classes;
     }
 
-    void setClasses(List<ClassFileEntry> classes) {
+    public void setClasses(List<ClassFileEntry> classes) {
         this.classes = classes;
     }
 }

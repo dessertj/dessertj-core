@@ -6,12 +6,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class ClassFileEntry {
+    private final String classname;
     private final ClassContainer pckg;
     private List<ClassFileEntry> alternatives;
     private ClassFile classFile;
 
-    protected ClassFileEntry(ClassContainer pckg) {
+    protected ClassFileEntry(String classname, ClassContainer pckg) {
+        this.classname = classname;
         this.pckg = pckg;
+    }
+
+    public String getClassname() {
+        return classname;
     }
 
     public ClassFile getClassfile() {
