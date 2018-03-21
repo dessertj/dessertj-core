@@ -36,9 +36,47 @@ public class ClassResolverFakeRootTest {
         ClassFileEntry cf = resolver.getClassFile("de.sample.Fake");
         assertThat(cf.getFilename()).isEqualTo("root");
         assertThat(cf.getClassname()).isEqualTo("de.sample.Fake");
-        assertThat(cf.getClassfile().getThisClass()).isEqualTo(FakeClassFileEntry.class.getName());
 
         assertThat(cf.getPackage()).isSameAs(cp);
         assertThat(cf.getAlternatives()).isNull();
+    }
+
+    @Test
+    public void testClashes() {
+        ClassResolver resolver = new ClassResolver();
+        FakeRoot root1 = new FakeRoot(resolver, new File("/root"));
+        resolver.addRoot(root1);
+        FakeRoot root2 = new FakeRoot(resolver, new File("/root"));
+        resolver.addRoot(root2);
+        FakeRoot root3 = new FakeRoot(resolver, new File("/root"));
+        resolver.addRoot(root3);
+
+        root1.add("de.sample_a.Fake1a");
+        root1.add("de.sample_a.Fake2a");
+        root1.add("de.sample_a.Fake3a");
+        root1.add("de.sample_b.Fake1b");
+        root1.add("de.sample_b.Fake2b");
+        root1.add("de.sample_b.Fake3b");
+        root1.add("de.sample_b.sub.FakeSub1");
+
+        root2.add("de.sample_c.Fake1c");
+        root2.add("de.sample_c.Fake2c");
+        root2.add("de.sample_c.Fake3c");
+        root2.add("de.sample_b.sub.FakeSub2");
+
+        root3.add("de.sample_d.Fake1d");
+        root3.add("de.sample_d.Fake2d");
+        root3.add("de.sample_d.Fake3d");
+        root3.add("de.sample_a.Fake2a");
+        root3.add("de.sample_a.Fake3a");
+        root3.add("de.sample_a.Fake4a");
+
+        assertThat(resolver.getPackageCount()).isEqualTo(6);
+        assertThat(resolver.getClassCount()).isEqualTo(15);
+
+        ClassPackage de1 = resolver.getPackage(root1.getRootFile(),"de");
+        assertThat(de1.getClasses()).isNull();
+        assertThat(de1.getSubPackages()).hasSize(2);
+        assertThat(de1.getAlternatives()).hasSize(3);
     }
 }

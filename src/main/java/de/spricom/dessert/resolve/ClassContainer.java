@@ -1,6 +1,7 @@
 package de.spricom.dessert.resolve;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
 public abstract class ClassContainer {
     private final LinkedList<ClassPackage> subPackages = new LinkedList<ClassPackage>();
     private List<ClassFileEntry> classes;
+    // Use linked list for alternatives
 
     /**
      * @return the package name of this container, an empty string if the package is the root package
@@ -38,6 +40,7 @@ public abstract class ClassContainer {
         return classes;
     }
 
+    // TODO: Replace by addClass
     public void setClasses(List<ClassFileEntry> classes) {
         this.classes = classes;
     }

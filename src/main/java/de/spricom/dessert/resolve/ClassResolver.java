@@ -7,13 +7,42 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
+/**
+ * The class resolver provides fast access to the classes and packages to analyze.
+ * Therefore it maintains of a list of all {@link ClassRoot} objects for which
+ * each represents a classes directory or a JAR file. And it has to HashMaps
+ * for all the packages and classes contained in any of these roots. The key
+ * used for theses HashMaps is the full qualified class or package name.
+ *
+ * <p>The {@link ClassPackage} has a collection of all classes subpackages it contains.
+ * Thus it provides direct access to all classes and subpackages of some package
+ * within some root.</p>
+ *
+ * <p>Each {@link ClassPackage} or {@link ClassFileEntry} belongs to one root. The
+ * same class or package name may appear within different roots. In that case the
+ * ClassPackage or ClassFileEntry has {@link LinkedList} of all entries with the
+ * same name. This lists can be accessed by {@link ClassPackage#getAlternatives()}
+ * or {@link ClassFileEntry#getAlternatives()} respectively. Each entry points
+ * to the same list of alternatives. If there are no alternatives the correspondig
+ * list is null.</p>
+ *
+ * <p>Typically one of the static <i>of</i> methods should be used to create
+ * a ClassResolver.</p>
+ */
 public class ClassResolver {
     private static Logger log = Logger.getLogger(ClassResolver.class.getName());
 
-    private List<ClassRoot> path = new ArrayList<ClassRoot>(60);
+    private final List<ClassRoot> path = new ArrayList<ClassRoot>(60);
     private final Map<String, ClassPackage> packages = new HashMap<String, ClassPackage>(3000);
     private final Map<String, ClassFileEntry> classes = new HashMap<String, ClassFileEntry>(60000);
 
+    /**
+     * Creates a ClassResolver for some arbitrary path.
+     *
+     * @param path the path to scan using the system specific classpath format
+     * @return a ClassResolver with the corresponding entries
+     * @throws IOException if a directory or jar file could not be read
+     */
     public static ClassResolver of(String path) throws IOException {
         ClassResolver r = new ClassResolver();
         r.add(path);
@@ -93,7 +122,6 @@ public class ClassResolver {
 
     void addClass(ClassFileEntry cf) {
         String cn = cf.getClassname();
-        // assert cn.equals(cf.getClassfile().getThisClass()) : cn + " != " + cf.getClassfile().getThisClass();
         ClassFileEntry prev = classes.get(cn);
         if (prev == null) {
             classes.put(cn, cf);

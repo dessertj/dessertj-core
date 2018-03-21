@@ -23,6 +23,7 @@ public abstract class ClassFileEntry {
     public ClassFile getClassfile() {
         if (classFile == null) {
             classFile = resolveClassFile();
+            assert classname.equals(classFile.getThisClass()) : classname + " != " + classFile.getThisClass();
         }
         return classFile;
     }
