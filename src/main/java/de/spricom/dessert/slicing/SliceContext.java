@@ -108,10 +108,12 @@ public final class SliceContext {
 
     private ConcreteSlice materialized(ClassPackage cp) {
         ConcreteSlice ss = new ConcreteSlice();
-        ss.addRecursive(cp, this);
-        while (cp.getNextAlternative() != null) {
-            cp = cp.getNextAlternative();
+        if (cp.getAlternatives() == null) {
             ss.addRecursive(cp, this);
+        } else {
+            for (ClassPackage alt : cp.getAlternatives()) {
+                ss.addRecursive(alt, this);
+            }
         }
         return ss;
     }

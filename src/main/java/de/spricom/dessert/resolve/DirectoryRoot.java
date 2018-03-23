@@ -2,36 +2,29 @@ package de.spricom.dessert.resolve;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 final class DirectoryRoot extends ClassRoot {
-    public DirectoryRoot(ClassResolver resolver, File file) throws IOException {
-        super(resolver, file);
-        scan(this, getRootFile(), "");
+    public DirectoryRoot(File dir) {
+        super(dir);
     }
 
     @Override
-    protected void scan(ClassCollector classCollector) {
-
+    protected void scan(ClassCollector collector) throws IOException {
+        scan(collector, this, getRootFile(), "");
     }
 
-    private void scan(ClassPackage cc, File dir, String prefix) throws IOException {
-        List<ClassEntry> classes = new LinkedList<ClassEntry>();
+    private void scan(ClassCollector collector, ClassPackage pckg, File dir, String prefix) throws IOException {
+        collector.addPackage(pckg);
         for (File file : dir.listFiles()) {
             if (file.isDirectory()) {
                 String packageName = prefix + file.getName();
-                scan(addPackage(cc, packageName), file, packageName + ".");
+                ClassPackage subPackage = new ClassPackage(pckg, packageName);
+                scan(collector, subPackage, file, packageName + ".");
             } else if (file.getName().endsWith(".class")) {
-                classes.add(scanClass(cc, file));
+                ClassEntry classEntry = new DirectoryClassEntry(pckg, file);
+                pckg.addClass(classEntry);
+                collector.addClass(classEntry);
             }
         }
-        cc.setClasses(classes);
-    }
-
-    private ClassEntry scanClass(ClassPackage cc, File file) throws IOException {
-        ClassEntry entry = new DirectoryClassEntry(cc, file);
-        addClass(entry);
-        return entry;
     }
 }

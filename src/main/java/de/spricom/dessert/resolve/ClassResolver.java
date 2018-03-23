@@ -102,24 +102,17 @@ public class ClassResolver {
         } else if (getRoot(file) != null) {
             log.warning("Already on path: " + filename);
         } else if (file.isDirectory()) {
-            path.add(new DirectoryRoot(this, file));
+            addRoot(new DirectoryRoot(file));
         } else if (file.isFile() && file.getName().endsWith(".jar")) {
-            path.add(new JarRoot(this, file));
+            addRoot(new JarRoot(file));
         } else {
             log.warning("Don't know how to process: " + filename);
         }
     }
 
-    public void addRoot(ClassRoot root) {
+    public void addRoot(ClassRoot root) throws IOException {
         path.add(root);
-    }
-
-    void addPackage(ClassPackage cp) {
-        cache.addPackage(cp);
-    }
-
-    void addClass(ClassEntry cf) {
-        cache.addClass(cf);
+        root.scan(cache);
     }
 
     public ClassRoot getRoot(File file) {

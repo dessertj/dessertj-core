@@ -4,6 +4,7 @@ import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.resolve.ClassPackage;
 import de.spricom.dessert.resolve.ClassResolver;
+import de.spricom.dessert.resolve.ClassRoot;
 import org.fest.assertions.Condition;
 import org.junit.Assume;
 import org.junit.Test;
@@ -44,7 +45,7 @@ public class ClassResolverTest {
         assertThat(parent.getSubPackages()).hasSize(1);
 
         assertThat(resolver.getPackage("de.spricom.notthere")).isNull();
-        assertThat(resolver.getPackage("")).isNull();
+        assertThat(resolver.getPackage("")).isNotNull().isInstanceOf(ClassRoot.class);
         assertThat(resolver.getRoot(resolver.getRootDirs().iterator().next()).getPackageName()).isEmpty();
     }
 
@@ -55,9 +56,7 @@ public class ClassResolverTest {
                 resolver.getRootDirs().size() == 2);
 
         ClassPackage cp1 = resolver.getPackage("de.spricom.dessert");
-        ClassPackage cp2 = cp1.getNextAlternative();
-        assertThat(cp2).isNotNull();
-        assertThat(cp2.getNextAlternative()).isNull();
+        assertThat(cp1.getAlternatives()).hasSize(2);
 
         ClassEntry cf1 = resolver.getClassEntry(this.getClass().getName());
         assertThat(cf1.getClassfile().getThisClass()).isEqualTo(this.getClass().getName());

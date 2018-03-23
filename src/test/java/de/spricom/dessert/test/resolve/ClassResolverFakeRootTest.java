@@ -6,6 +6,7 @@ import de.spricom.dessert.resolve.ClassResolver;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -16,9 +17,9 @@ import static org.fest.assertions.Assertions.assertThat;
 public class ClassResolverFakeRootTest {
 
     @Test
-    public void testSimpleFakeRoot() {
+    public void testSimpleFakeRoot() throws IOException {
         ClassResolver resolver = new ClassResolver();
-        FakeRoot root = new FakeRoot(resolver, new File("/root"));
+        FakeRoot root = new FakeRoot(new File("/root"));
         resolver.addRoot(root);
         root.add("de.sample.Fake");
 
@@ -41,13 +42,13 @@ public class ClassResolverFakeRootTest {
     }
 
     @Test
-    public void testClashes() {
+    public void testClashes() throws IOException {
         ClassResolver resolver = new ClassResolver();
-        FakeRoot root1 = new FakeRoot(resolver, new File("/root"));
+        FakeRoot root1 = new FakeRoot(new File("/root"));
         resolver.addRoot(root1);
-        FakeRoot root2 = new FakeRoot(resolver, new File("/root"));
+        FakeRoot root2 = new FakeRoot(new File("/root"));
         resolver.addRoot(root2);
-        FakeRoot root3 = new FakeRoot(resolver, new File("/root"));
+        FakeRoot root3 = new FakeRoot(new File("/root"));
         resolver.addRoot(root3);
 
         root1.add("de.sample_a.Fake1a");
@@ -70,7 +71,7 @@ public class ClassResolverFakeRootTest {
         root3.add("de.sample_a.Fake3a");
         root3.add("de.sample_a.Fake4a");
 
-        assertThat(resolver.getPackageCount()).isEqualTo(6);
+        assertThat(resolver.getPackageCount()).isEqualTo(7);
         assertThat(resolver.getClassCount()).isEqualTo(15);
 
         ClassPackage de1 = resolver.getPackage(root1.getRootFile(),"de");
