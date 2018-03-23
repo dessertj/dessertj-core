@@ -10,7 +10,7 @@ import java.io.InputStream;
 final class DirectoryClassEntry extends ClassEntry {
     private final File classFile;
 
-    DirectoryClassEntry(ClassContainer pckg, File classFile) {
+    DirectoryClassEntry(ClassPackage pckg, File classFile) {
         super(pckg.getPackageName() + "." + simpleName(classFile), pckg);
         this.classFile = classFile;
     }

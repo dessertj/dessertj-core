@@ -4,36 +4,41 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-public final class ClassPackage extends ClassContainer {
-    private final ClassRoot root;
+public class ClassPackage extends ClassContainer {
     private final String packageName;
-    private final ClassContainer parent;
+    private final ClassPackage parent;
     private ClassPackage nextAlternative;
     private List<ClassPackage> alternatives;
 
-    public ClassPackage(ClassRoot root, ClassContainer parent, String packageName) {
-        this.root = root;
+    protected ClassPackage() {
+        packageName = "";
+        parent = null;
+    }
+
+    public ClassPackage(ClassPackage parent, String packageName) {
         this.parent = parent;
         this.packageName = packageName;
     }
 
-    public ClassContainer getParent() {
+    public ClassPackage(ClassRoot root, ClassContainer parent, String packageName) {
+        this((ClassPackage)parent, packageName);
+    }
+
+    public ClassPackage getParent() {
         return parent;
     }
 
-    @Override
-    public String getPackageName() {
+    public final String getPackageName() {
         return packageName;
     }
 
     @Override
-    public File getRootFile() {
-        return root.getRootFile();
+    public ClassRoot getRoot() {
+        return parent.getRoot();
     }
 
-    @Override
-    public ClassRoot getRoot() {
-        return null;
+    public File getRootFile() {
+        return getRoot().getRootFile();
     }
 
     public ClassPackage getNextAlternative() {

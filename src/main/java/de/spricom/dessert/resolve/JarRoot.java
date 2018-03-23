@@ -37,7 +37,7 @@ final class JarRoot extends ClassRoot {
 
     }
 
-    private void addClass(ClassContainer cc, String filename, JarEntry entry, JarFile jarFile) throws IOException {
+    private void addClass(ClassPackage cc, String filename, JarEntry entry, JarFile jarFile) throws IOException {
         if (cc.getClasses() == null) {
             cc.setClasses(new LinkedList<ClassEntry>());
         }

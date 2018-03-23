@@ -46,18 +46,18 @@ may have dependencies to the set of JDK classes of package `java` but they must 
 to the JDK classes of package `sun`, because those are considered internal.
 
 A library for dependency checking needs some concept to specify a set of classes. Therefore we need to
-know what a class is: Physically a class is .class file located in some directory tree or a .jar file.
+know what a class is: Physically a class is .class rootFile located in some directory tree or a .jar rootFile.
 Within a directory tree a class is uniquely defined by its name and its position in the tree structure.
 This can be expressed by the fully qualified class name (fqcn), 
-i.e. `de.spricom.dessert.classfile.constpool.ConstantPool`. The same applies to a JAR file. But a class
+i.e. `de.spricom.dessert.classfile.constpool.ConstantPool`. The same applies to a JAR rootFile. But a class
 with the same fqcn can appear in different directories or JAR files. Thus we need
-besides the fqcn always it's container (directory or JAR file) to specify it
+besides the fqcn always it's container (directory or JAR rootFile) to specify it
 uniquely.
 
-For the following a container is a directory or JAR file that could be added to the CLASSPATH to include
-all classes within the container. A class is a concrete .class file uniquely defined by its fqcn name
+For the following a container is a directory or JAR rootFile that could be added to the CLASSPATH to include
+all classes within the container. A class is a concrete .class rootFile uniquely defined by its fqcn name
 and its container. Hence for the concepts below an interface or an inner class is a class because
-it has its own .class file.
+it has its own .class rootFile.
 
 To specify a set of classes we need the fqcns and the containers. It is obvious to use patterns to specify
 the class names. For example all classes of the `de.spricom.dessert.classfile` package and it's sub-packages
@@ -74,7 +74,7 @@ each `Slice` has a package name and a container. The same `Slice` object never b
 `SliceSet` objects.
 
 The classes belonging to a `Slice` are represented by `SliceEntry` objects. Each `SliceEntry` corresponds
-with a class file inside a container. The same `SliceEntry` object may belong to different `Slice` objects if
+with a class rootFile inside a container. The same `SliceEntry` object may belong to different `Slice` objects if
 it fulfills all the corresponding selection criteria. The `SliceEntry` provides an API to check selection
 criteria and to access all direct dependencies of a class.
 
@@ -120,7 +120,7 @@ DuplicateClassFinder
 ====================
 
 The DuplicateClassFinder is included in the dessert library. It checks if there are different implementations of
-the same class on the class-path. You can use it form a Gradle file like that:
+the same class on the class-path. You can use it form a Gradle rootFile like that:
 
 	apply plugin: 'java'
 	

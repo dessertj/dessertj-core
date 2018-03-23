@@ -24,7 +24,7 @@ public class FakeRoot extends ClassRoot {
         }
     }
 
-    private void addClass(ClassContainer cc, String classname) {
+    private void addClass(ClassPackage cc, String classname) {
         if (cc.getClasses() == null) {
             cc.setClasses(new LinkedList<ClassEntry>());
         }

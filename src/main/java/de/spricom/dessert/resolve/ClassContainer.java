@@ -8,15 +8,10 @@ import java.util.List;
 /**
  * A class container is either the root package or some named package.
  */
-public abstract class ClassContainer<A extends ClassContainer> {
+abstract class ClassContainer<A extends ClassContainer> {
     private final List<ClassPackage> subPackages = new ArrayList<ClassPackage>();
     private List<ClassEntry> classes = new ArrayList<ClassEntry>();
     private List<A> alternatives;
-
-     /**
-     * @return the package name of this container, an empty string if the package is the root package
-     */
-    public abstract String getPackageName();
 
     /**
      * The root file is the directory or jar file enlisted on the class-path that contains the package

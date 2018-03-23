@@ -1,14 +1,14 @@
 package de.spricom.dessert.test.resolve;
 
 import de.spricom.dessert.classfile.ClassFile;
-import de.spricom.dessert.resolve.ClassContainer;
 import de.spricom.dessert.resolve.ClassEntry;
+import de.spricom.dessert.resolve.ClassPackage;
 
 import java.io.IOException;
 
 public class FakeClassEntry extends ClassEntry {
 
-    FakeClassEntry(String classname, ClassContainer pckg) {
+    FakeClassEntry(String classname, ClassPackage pckg) {
         super(classname, pckg);
     }
 

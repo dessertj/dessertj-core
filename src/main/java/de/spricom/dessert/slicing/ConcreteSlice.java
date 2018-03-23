@@ -1,6 +1,6 @@
 package de.spricom.dessert.slicing;
 
-import de.spricom.dessert.resolve.ClassContainer;
+import de.spricom.dessert.resolve.ClassPackage;
 import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.util.Predicate;
 import de.spricom.dessert.util.SetHelper;
@@ -79,7 +79,7 @@ public class ConcreteSlice implements Slice {
         return entries.toString();
     }
 
-    void add(ClassContainer cc, SliceContext context) {
+    void add(ClassPackage cc, SliceContext context) {
         if (cc == null || cc.getClasses() == null || cc.getClasses().isEmpty()) {
             return;
         }
@@ -89,10 +89,10 @@ public class ConcreteSlice implements Slice {
         }
     }
 
-    void addRecursive(ClassContainer cc, SliceContext context) {
+    void addRecursive(ClassPackage cc, SliceContext context) {
         add(cc, context);
-        List<ClassContainer> subPackages = cc.getSubPackages();
-        for (ClassContainer subp : subPackages) {
+        List<ClassPackage> subPackages = cc.getSubPackages();
+        for (ClassPackage subp : subPackages) {
             addRecursive(subp, context);
         }
     }

@@ -11,7 +11,7 @@ final class JarClassEntry extends ClassEntry {
     private final JarFile jarFile;
     private final JarEntry jarEntry;
 
-    JarClassEntry(ClassContainer pckg, JarFile jarFile, JarEntry jarEntry) {
+    JarClassEntry(ClassPackage pckg, JarFile jarFile, JarEntry jarEntry) {
         super(cn(jarEntry), pckg);
         this.jarFile = jarFile;
         this.jarEntry = jarEntry;

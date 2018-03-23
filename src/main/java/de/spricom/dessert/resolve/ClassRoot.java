@@ -2,24 +2,19 @@ package de.spricom.dessert.resolve;
 
 import java.io.File;
 
-public abstract class ClassRoot extends ClassContainer {
-    @Override
-    public ClassRoot getRoot() {
-        return this;
-    }
-
+public abstract class ClassRoot extends ClassPackage {
     private final ClassResolver resolver;
-    private final File file;
+    private final File rootFile;
 
-    protected ClassRoot(ClassResolver resolver, File file) {
+    protected ClassRoot(ClassResolver resolver, File rootFile) {
         this.resolver = resolver;
-        this.file = file;
+        this.rootFile = rootFile;
     }
 
     protected abstract void scan(ClassCollector classCollector);
 
     protected final ClassPackage addPackage(String packageName) {
-        ClassPackage cp = resolver.getPackage(file, packageName);
+        ClassPackage cp = resolver.getPackage(rootFile, packageName);
         if (cp != null) {
             return cp;
         }
@@ -35,7 +30,7 @@ public abstract class ClassRoot extends ClassContainer {
     final ClassPackage addPackage(ClassContainer parent, String packageName) {
         ClassPackage alt = resolver.getPackage(packageName);
         ClassPackage cp = alt;
-        while (cp != null && !file.equals(cp.getRootFile())) {
+        while (cp != null && !rootFile.equals(cp.getRootFile())) {
             alt = cp;
             cp = alt.getNextAlternative();
         }
@@ -54,14 +49,13 @@ public abstract class ClassRoot extends ClassContainer {
     protected final void addClass(ClassEntry cf) {
         resolver.addClass(cf);
     }
-    
-    @Override
-    public final String getPackageName() {
-        return "";
-    }
 
     @Override
+    public final ClassRoot getRoot() {
+        return this;
+    }
+
     public final File getRootFile() {
-        return file;
+        return rootFile;
     }
 }

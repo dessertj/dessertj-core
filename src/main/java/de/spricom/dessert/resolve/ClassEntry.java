@@ -7,11 +7,11 @@ import java.util.List;
 
 public abstract class ClassEntry {
     private final String classname;
-    private final ClassContainer pckg;
+    private final ClassPackage pckg;
     private List<ClassEntry> alternatives;
     private ClassFile classFile;
 
-    protected ClassEntry(String classname, ClassContainer pckg) {
+    protected ClassEntry(String classname, ClassPackage pckg) {
         this.classname = classname;
         this.pckg = pckg;
     }
@@ -30,7 +30,7 @@ public abstract class ClassEntry {
 
     protected abstract ClassFile resolveClassFile();
 
-    public ClassContainer getPackage() {
+    public ClassPackage getPackage() {
         return pckg;
     }
 

@@ -12,7 +12,7 @@
 
 ## In this context a 'class' is
 
-is everthing represented by a separate class file:
+is everthing represented by a separate class rootFile:
 
 - traditional java class
 - interface

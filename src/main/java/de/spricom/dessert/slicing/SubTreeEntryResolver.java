@@ -1,6 +1,5 @@
 package de.spricom.dessert.slicing;
 
-import de.spricom.dessert.resolve.ClassContainer;
 import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.resolve.ClassPackage;
 import de.spricom.dessert.resolve.ClassResolver;
@@ -42,7 +41,7 @@ public class SubTreeEntryResolver implements EntryResolver {
         }
     }
 
-    private void addRecursive(ClassContainer cc) {
+    private void addRecursive(ClassPackage cc) {
         add(cc);
         List<ClassPackage> subPackages = cc.getSubPackages();
         for (ClassPackage subp : subPackages) {
@@ -50,7 +49,7 @@ public class SubTreeEntryResolver implements EntryResolver {
         }
     }
 
-    private void add(ClassContainer cc) {
+    private void add(ClassPackage cc) {
         if (cc == null || cc.getClasses() == null || cc.getClasses().isEmpty()) {
             return;
         }

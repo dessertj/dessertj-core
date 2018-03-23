@@ -16,7 +16,7 @@ final class DirectoryRoot extends ClassRoot {
 
     }
 
-    private void scan(ClassContainer cc, File dir, String prefix) throws IOException {
+    private void scan(ClassPackage cc, File dir, String prefix) throws IOException {
         List<ClassEntry> classes = new LinkedList<ClassEntry>();
         for (File file : dir.listFiles()) {
             if (file.isDirectory()) {
@@ -29,7 +29,7 @@ final class DirectoryRoot extends ClassRoot {
         cc.setClasses(classes);
     }
 
-    private ClassEntry scanClass(ClassContainer cc, File file) throws IOException {
+    private ClassEntry scanClass(ClassPackage cc, File file) throws IOException {
         ClassEntry entry = new DirectoryClassEntry(cc, file);
         addClass(entry);
         return entry;

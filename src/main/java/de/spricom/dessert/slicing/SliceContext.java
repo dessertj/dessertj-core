@@ -119,7 +119,7 @@ public final class SliceContext {
     public ConcreteSlice packagesOf(Set<File> rootFiles) {
         ConcreteSlice ss = new ConcreteSlice();
         for (File rootFile : rootFiles) {
-            ClassContainer cr = resolver.getRoot(rootFile);
+            ClassRoot cr = resolver.getRoot(rootFile);
             if (cr != null) {
                 ss.addRecursive(cr, this);
             }
