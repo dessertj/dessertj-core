@@ -5,13 +5,13 @@ import de.spricom.dessert.classfile.ClassFile;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class ClassFileEntry {
+public abstract class ClassEntry {
     private final String classname;
     private final ClassContainer pckg;
-    private List<ClassFileEntry> alternatives;
+    private List<ClassEntry> alternatives;
     private ClassFile classFile;
 
-    protected ClassFileEntry(String classname, ClassContainer pckg) {
+    protected ClassEntry(String classname, ClassContainer pckg) {
         this.classname = classname;
         this.pckg = pckg;
     }
@@ -34,14 +34,14 @@ public abstract class ClassFileEntry {
         return pckg;
     }
 
-    public List<ClassFileEntry> getAlternatives() {
+    public List<ClassEntry> getAlternatives() {
         return alternatives;
     }
 
-    void addAlternative(ClassFileEntry alt) {
+    void addAlternative(ClassEntry alt) {
         assert alt.alternatives == null : "alt.alternatives != null";
         if (alternatives == null) {
-            alternatives = new LinkedList<ClassFileEntry>();
+            alternatives = new LinkedList<ClassEntry>();
             alternatives.add(this);
         }
         assert !alternatives.contains(alt) : "alternatives.contains(alt)";

@@ -57,7 +57,7 @@ public final class SliceContext {
     }
 
     private SliceEntry resolveEntry(String classname) {
-        ClassFileEntry resolverEntry = resolver.getClassFile(classname);
+        ClassEntry resolverEntry = resolver.getClassEntry(classname);
         if (resolverEntry == null) {
             return null;
         }

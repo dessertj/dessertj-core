@@ -18,11 +18,11 @@ import java.util.logging.Logger;
  * Thus it provides direct access to all classes and subpackages of some package
  * within some root.</p>
  *
- * <p>Each {@link ClassPackage} or {@link ClassFileEntry} belongs to one root. The
+ * <p>Each {@link ClassPackage} or {@link ClassEntry} belongs to one root. The
  * same class or package name may appear within different roots. In that case the
- * ClassPackage or ClassFileEntry has {@link LinkedList} of all entries with the
+ * ClassPackage or ClassEntry has {@link LinkedList} of all entries with the
  * same name. This lists can be accessed by {@link ClassPackage#getAlternatives()}
- * or {@link ClassFileEntry#getAlternatives()} respectively. Each entry points
+ * or {@link ClassEntry#getAlternatives()} respectively. Each entry points
  * to the same list of alternatives. If there are no alternatives the correspondig
  * list is null.</p>
  *
@@ -33,8 +33,7 @@ public class ClassResolver {
     private static Logger log = Logger.getLogger(ClassResolver.class.getName());
 
     private final List<ClassRoot> path = new ArrayList<ClassRoot>(60);
-    private final Map<String, ClassPackage> packages = new HashMap<String, ClassPackage>(3000);
-    private final Map<String, ClassFileEntry> classes = new HashMap<String, ClassFileEntry>(60000);
+    private final ClassResolverCache cache = new ClassResolverCache();
 
     /**
      * Creates a ClassResolver for some arbitrary path.
@@ -116,18 +115,11 @@ public class ClassResolver {
     }
 
     void addPackage(ClassPackage cp) {
-        ClassPackage previous = packages.put(cp.getPackageName(), cp);
-        assert previous == null : "Added " + cp + " twice!";
+        cache.addPackage(cp);
     }
 
-    void addClass(ClassFileEntry cf) {
-        String cn = cf.getClassname();
-        ClassFileEntry prev = classes.get(cn);
-        if (prev == null) {
-            classes.put(cn, cf);
-        } else {
-            prev.addAlternative(cf);
-        }
+    void addClass(ClassEntry cf) {
+        cache.addClass(cf);
     }
 
     public ClassRoot getRoot(File file) {
@@ -140,32 +132,44 @@ public class ClassResolver {
     }
 
     public ClassPackage getPackage(String packageName) {
-        return packages.get(packageName);
+        return cache.getPackage(packageName);
     }
 
     public ClassPackage getPackage(File root, String packageName) {
-        ClassPackage cp = getPackage(packageName);
-        while (cp != null && !root.equals(cp.getRootFile())) {
-            cp = cp.getNextAlternative();
-        }
-        return cp;
-    }
-
-    public ClassFileEntry getClassFile(String classname) {
-        return classes.get(classname);
-    }
-
-    public ClassFileEntry getClassFile(File root, String classname) {
-        ClassFileEntry cf = getClassFile(classname);
-        if (root.equals(cf.getPackage().getRootFile())) {
-            return cf;
-        }
-        if (cf.getAlternatives() == null) {
+        ClassPackage pckg = getPackage(packageName);
+        if (pckg == null) {
             return null;
         }
-        for (ClassFileEntry alt : cf.getAlternatives()) {
-            if (root.equals(alt.getPackage().getRootFile())) {
-                return alt;
+        if (root.equals(pckg.getRootFile())) {
+            return pckg;
+        }
+        if (pckg.getAlternatives() != null) {
+            for (ClassPackage alt : pckg.getAlternatives()) {
+                if (root.equals(alt.getRootFile())) {
+                    return alt;
+                }
+            }
+        }
+        return null;
+    }
+
+    public ClassEntry getClassEntry(String classname) {
+        return cache.getClassEntry(classname);
+    }
+
+    public ClassEntry getClassEntry(File root, String classname) {
+        ClassEntry ce = getClassEntry(classname);
+        if (ce == null) {
+            return null;
+        }
+        if (root.equals(ce.getPackage().getRootFile())) {
+            return ce;
+        }
+        if (ce.getAlternatives() != null) {
+            for (ClassEntry alt : ce.getAlternatives()) {
+                if (root.equals(alt.getPackage().getRootFile())) {
+                    return alt;
+                }
             }
         }
         return null;
@@ -212,10 +216,10 @@ public class ClassResolver {
     }
 
     public int getPackageCount() {
-        return packages.size();
+        return cache.getPackageCount();
     }
 
     public int getClassCount() {
-        return classes.size();
+        return cache.getClassCount();
     }
 }

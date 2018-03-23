@@ -3,6 +3,11 @@ package de.spricom.dessert.resolve;
 import java.io.File;
 
 public abstract class ClassRoot extends ClassContainer {
+    @Override
+    public ClassRoot getRoot() {
+        return this;
+    }
+
     private final ClassResolver resolver;
     private final File file;
 
@@ -10,6 +15,8 @@ public abstract class ClassRoot extends ClassContainer {
         this.resolver = resolver;
         this.file = file;
     }
+
+    protected abstract void scan(ClassCollector classCollector);
 
     protected final ClassPackage addPackage(String packageName) {
         ClassPackage cp = resolver.getPackage(file, packageName);
@@ -44,7 +51,7 @@ public abstract class ClassRoot extends ClassContainer {
         return cp;
     }
     
-    protected final void addClass(ClassFileEntry cf) {
+    protected final void addClass(ClassEntry cf) {
         resolver.addClass(cf);
     }
     

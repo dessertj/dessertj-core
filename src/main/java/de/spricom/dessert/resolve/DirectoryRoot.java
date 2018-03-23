@@ -11,9 +11,13 @@ final class DirectoryRoot extends ClassRoot {
         scan(this, getRootFile(), "");
     }
 
+    @Override
+    protected void scan(ClassCollector classCollector) {
+
+    }
+
     private void scan(ClassContainer cc, File dir, String prefix) throws IOException {
-        assert cc.getClasses() == null : "Classes for " + cc + " already scanned.";
-        List<ClassFileEntry> classes = new LinkedList<ClassFileEntry>();
+        List<ClassEntry> classes = new LinkedList<ClassEntry>();
         for (File file : dir.listFiles()) {
             if (file.isDirectory()) {
                 String packageName = prefix + file.getName();
@@ -25,8 +29,8 @@ final class DirectoryRoot extends ClassRoot {
         cc.setClasses(classes);
     }
 
-    private ClassFileEntry scanClass(ClassContainer cc, File file) throws IOException {
-        ClassFileEntry entry = new DirectoryClassFileEntry(cc, file);
+    private ClassEntry scanClass(ClassContainer cc, File file) throws IOException {
+        ClassEntry entry = new DirectoryClassEntry(cc, file);
         addClass(entry);
         return entry;
     }

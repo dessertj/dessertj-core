@@ -6,13 +6,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
-final class DirectoryClassFileEntry extends ClassFileEntry{
+final class DirectoryClassEntry extends ClassEntry {
     private final File classFile;
 
-    DirectoryClassFileEntry(ClassContainer pckg, File classFile) {
+    DirectoryClassEntry(ClassContainer pckg, File classFile) {
         super(pckg.getPackageName() + "." + simpleName(classFile), pckg);
         this.classFile = classFile;
     }

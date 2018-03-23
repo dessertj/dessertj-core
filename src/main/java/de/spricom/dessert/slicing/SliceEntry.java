@@ -1,7 +1,7 @@
 package de.spricom.dessert.slicing;
 
 import de.spricom.dessert.classfile.ClassFile;
-import de.spricom.dessert.resolve.ClassFileEntry;
+import de.spricom.dessert.resolve.ClassEntry;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ public final class SliceEntry implements Comparable<SliceEntry> {
     private final SliceContext context;
     private final String classname;
     private final ClassFile classfile;
-    private final ClassFileEntry resolverEntry;
+    private final ClassEntry resolverEntry;
     private Class<?> clazz;
 
     private SliceEntry superclass;
@@ -38,7 +38,7 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         alternatives = Collections.emptySet();
     }
 
-    SliceEntry(SliceContext context, ClassFileEntry resolverEntry) {
+    SliceEntry(SliceContext context, ClassEntry resolverEntry) {
         assert context != null : "context == null";
         assert resolverEntry != null : "resolverEntry == null";
         this.context = context;
@@ -202,7 +202,7 @@ public final class SliceEntry implements Comparable<SliceEntry> {
                 alternatives = Collections.emptySet();
             } else {
                 alternatives = new HashSet<SliceEntry>(resolverEntry.getAlternatives().size());
-                for (ClassFileEntry cf : resolverEntry.getAlternatives()) {
+                for (ClassEntry cf : resolverEntry.getAlternatives()) {
                     usedClasses.add(new SliceEntry(context, cf));
                 }
             }

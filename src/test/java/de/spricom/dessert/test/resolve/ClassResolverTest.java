@@ -1,7 +1,7 @@
 package de.spricom.dessert.test.resolve;
 
 import de.spricom.dessert.classfile.ClassFile;
-import de.spricom.dessert.resolve.ClassFileEntry;
+import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.resolve.ClassPackage;
 import de.spricom.dessert.resolve.ClassResolver;
 import org.fest.assertions.Condition;
@@ -34,7 +34,7 @@ public class ClassResolverTest {
         assertThat(cp.getParent().getPackageName()).isEqualTo("de.spricom.dessert");
 
         assertThat(cp.getClasses()).hasSize(5);
-        ClassFileEntry cf = resolver.getClassFile(ClassFile.class.getName());
+        ClassEntry cf = resolver.getClassEntry(ClassFile.class.getName());
         assertThat(System.getProperty("java.class.path").contains(cf.getFilename())).isTrue();
         assertThat(cf.getClassfile().getThisClass()).isEqualTo(ClassFile.class.getName());
         assertThat(cf.getPackage()).isSameAs(cp);
@@ -59,10 +59,10 @@ public class ClassResolverTest {
         assertThat(cp2).isNotNull();
         assertThat(cp2.getNextAlternative()).isNull();
 
-        ClassFileEntry cf1 = resolver.getClassFile(this.getClass().getName());
+        ClassEntry cf1 = resolver.getClassEntry(this.getClass().getName());
         assertThat(cf1.getClassfile().getThisClass()).isEqualTo(this.getClass().getName());
-        assertThat(resolver.getClassFile(cf1.getPackage().getRootFile(), this.getClass().getName())).isSameAs(cf1);
-        assertThat(resolver.getClassFile(resolver.getPackage(ClassFile.class.getPackage().getName()).getRootFile(), this.getClass().getName())).isNull();
+        assertThat(resolver.getClassEntry(cf1.getPackage().getRootFile(), this.getClass().getName())).isSameAs(cf1);
+        assertThat(resolver.getClassEntry(resolver.getPackage(ClassFile.class.getPackage().getName()).getRootFile(), this.getClass().getName())).isNull();
     }
 
     @Test

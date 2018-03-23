@@ -32,11 +32,16 @@ final class JarRoot extends ClassRoot {
         // JarFile must not be closed to be able to access the content of each JarEntry.
     }
 
+    @Override
+    protected void scan(ClassCollector classCollector) {
+
+    }
+
     private void addClass(ClassContainer cc, String filename, JarEntry entry, JarFile jarFile) throws IOException {
         if (cc.getClasses() == null) {
-            cc.setClasses(new LinkedList<ClassFileEntry>());
+            cc.setClasses(new LinkedList<ClassEntry>());
         }
-        ClassFileEntry cfe = new JarClassFileEntry(cc, jarFile, entry);
+        ClassEntry cfe = new JarClassEntry(cc, jarFile, entry);
         addClass(cfe);
         cc.getClasses().add(cfe);
     }

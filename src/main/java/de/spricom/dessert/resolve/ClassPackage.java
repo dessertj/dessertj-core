@@ -31,6 +31,11 @@ public final class ClassPackage extends ClassContainer {
         return root.getRootFile();
     }
 
+    @Override
+    public ClassRoot getRoot() {
+        return null;
+    }
+
     public ClassPackage getNextAlternative() {
         return nextAlternative;
     }

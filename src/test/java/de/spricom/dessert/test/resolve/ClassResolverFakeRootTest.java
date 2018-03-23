@@ -1,7 +1,6 @@
 package de.spricom.dessert.test.resolve;
 
-import de.spricom.dessert.classfile.ClassFile;
-import de.spricom.dessert.resolve.ClassFileEntry;
+import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.resolve.ClassPackage;
 import de.spricom.dessert.resolve.ClassResolver;
 import org.junit.Test;
@@ -33,7 +32,7 @@ public class ClassResolverFakeRootTest {
         assertThat(cp.getParent().getPackageName()).isEqualTo("de");
 
         assertThat(cp.getClasses()).hasSize(1);
-        ClassFileEntry cf = resolver.getClassFile("de.sample.Fake");
+        ClassEntry cf = resolver.getClassEntry("de.sample.Fake");
         assertThat(cf.getFilename()).isEqualTo("root");
         assertThat(cf.getClassname()).isEqualTo("de.sample.Fake");
 
@@ -75,7 +74,7 @@ public class ClassResolverFakeRootTest {
         assertThat(resolver.getClassCount()).isEqualTo(15);
 
         ClassPackage de1 = resolver.getPackage(root1.getRootFile(),"de");
-        assertThat(de1.getClasses()).isNull();
+        assertThat(de1.getClasses()).isEmpty();
         assertThat(de1.getSubPackages()).hasSize(2);
         assertThat(de1.getAlternatives()).hasSize(3);
     }

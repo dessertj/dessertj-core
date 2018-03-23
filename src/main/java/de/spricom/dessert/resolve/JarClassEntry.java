@@ -2,17 +2,16 @@ package de.spricom.dessert.resolve;
 
 import de.spricom.dessert.classfile.ClassFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-final class JarClassFileEntry extends ClassFileEntry{
+final class JarClassEntry extends ClassEntry {
     private final JarFile jarFile;
     private final JarEntry jarEntry;
 
-    JarClassFileEntry(ClassContainer pckg, JarFile jarFile, JarEntry jarEntry) {
+    JarClassEntry(ClassContainer pckg, JarFile jarFile, JarEntry jarEntry) {
         super(cn(jarEntry), pckg);
         this.jarFile = jarFile;
         this.jarEntry = jarEntry;
