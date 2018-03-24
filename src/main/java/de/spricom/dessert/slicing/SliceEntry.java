@@ -1,6 +1,7 @@
 package de.spricom.dessert.slicing;
 
 import de.spricom.dessert.classfile.ClassFile;
+import de.spricom.dessert.groups.PackageSlice;
 import de.spricom.dessert.resolve.ClassEntry;
 
 import java.io.File;

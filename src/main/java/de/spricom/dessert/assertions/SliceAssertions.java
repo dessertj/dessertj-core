@@ -1,6 +1,5 @@
 package de.spricom.dessert.assertions;
 
-import de.spricom.dessert.slicing.SliceGroup;
 import de.spricom.dessert.slicing.Slice;
 
 public final class SliceAssertions {

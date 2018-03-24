@@ -1,7 +1,7 @@
 package de.spricom.dessert.assertions;
 
-import de.spricom.dessert.slicing.SliceGroup;
-import de.spricom.dessert.slicing.ConcreteSlice;
+import de.spricom.dessert.groups.PartSlice;
+import de.spricom.dessert.groups.SliceGroup;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.slicing.SliceEntry;
 import de.spricom.dessert.util.DependencyGraph;
@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class SliceGroupAssert<S extends ConcreteSlice> {
+public class SliceGroupAssert<S extends PartSlice> {
     private final SliceAssert sliceAssert;
     private final SliceGroup<S> sliceGroup;
 

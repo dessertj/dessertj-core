@@ -13,6 +13,15 @@ public class DeferredSlice implements Slice {
     private boolean derived;
     private boolean resolved;
 
+    protected DeferredSlice(Set<SliceEntry> sliceEntries, String description) {
+        assert sliceEntries != null : "sliceEntries == null";
+        predicate = null;
+        resolver = null;
+        this.description = description;
+        this.sliceEntries = sliceEntries;
+        resolved = true;
+    }
+
     DeferredSlice(Predicate<SliceEntry> predicate, EntryResolver resolver, String description) {
         this.predicate = predicate;
         this.resolver = resolver;
@@ -64,8 +73,11 @@ public class DeferredSlice implements Slice {
     public boolean contains(SliceEntry entry) {
         if (sliceEntries == null) {
             sliceEntries = new HashSet<SliceEntry>();
-        } else        if (sliceEntries.contains(entry)) {
+        } else if (sliceEntries.contains(entry)) {
             return true;
+        }
+        if (resolved) {
+            return false;
         }
         boolean member = predicate.test(entry);
         if (member) {

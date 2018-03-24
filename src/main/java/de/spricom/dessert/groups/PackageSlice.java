@@ -1,4 +1,6 @@
-package de.spricom.dessert.slicing;
+package de.spricom.dessert.groups;
+
+import de.spricom.dessert.slicing.SliceEntry;
 
 import java.util.Collections;
 import java.util.Set;
@@ -13,19 +15,18 @@ import java.util.Set;
  * package, for example all interfaces, all classes complying some naming
  * convention, all classes implementing some interfaces, all inner classes etc.
  */
-public class PackageSlice extends ConcreteSlice {
-    private final String packageName;
+public class PackageSlice extends PartSlice {
 
     PackageSlice(String packageName, Set<SliceEntry> entries) {
-        super(entries);
-        this.packageName = packageName;
+        super(entries, packageName);
     }
 
-    public String toString() {
-        return "package " + packageName;
+    public String getPackageName() {
+        return getPartKey();
     }
 
     public String getParentPackageName() {
+        String packageName = getPackageName();
         int pos = packageName.lastIndexOf('.');
         if (pos == -1) {
             return "";
@@ -34,7 +35,7 @@ public class PackageSlice extends ConcreteSlice {
     }
 
     public PackageSlice getParentPackage(SliceGroup<PackageSlice> group) {
-        PackageSlice parentPackage = group.getByName(getParentPackageName());
+        PackageSlice parentPackage = group.getByPartKey(getParentPackageName());
         if (parentPackage == null) {
             parentPackage = new PackageSlice(getParentPackageName(), Collections.<SliceEntry>emptySet());
         }

@@ -1,5 +1,6 @@
 package de.spricom.dessert.slicing;
 
+import de.spricom.dessert.groups.PackageSlice;
 import de.spricom.dessert.resolve.ClassPackage;
 import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.util.Predicate;
