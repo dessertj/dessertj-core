@@ -12,12 +12,12 @@ final class JarClassEntry extends ClassEntry {
     private final JarEntry jarEntry;
 
     JarClassEntry(ClassPackage pckg, JarFile jarFile, JarEntry jarEntry) {
-        super(cn(jarEntry), pckg);
+        super(classname(jarEntry), pckg);
         this.jarFile = jarFile;
         this.jarEntry = jarEntry;
     }
 
-    private static String cn(JarEntry jarEntry) {
+    private static String classname(JarEntry jarEntry) {
         String cn = jarEntry.getName();
         return cn.substring(0, cn.length() - ".class".length()).replace('/', '.');
     }

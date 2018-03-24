@@ -114,16 +114,6 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         }
     }
 
-    public String getFilename() {
-        if (classEntry != null) {
-            return classEntry.getFilename();
-        } else if (clazz != null) {
-            return clazz.getSimpleName() + ".class";
-        } else {
-            return classname.substring(classname.lastIndexOf('.') + 1);
-        }
-    }
-
     @Override
     public int hashCode() {
         return classname.hashCode();

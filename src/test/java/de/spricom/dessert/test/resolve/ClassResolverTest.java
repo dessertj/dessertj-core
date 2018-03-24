@@ -36,7 +36,6 @@ public class ClassResolverTest {
 
         assertThat(cp.getClasses()).hasSize(5);
         ClassEntry cf = resolver.getClassEntry(ClassFile.class.getName());
-        assertThat(System.getProperty("java.class.path").contains(cf.getFilename())).isTrue();
         assertThat(cf.getClassfile().getThisClass()).isEqualTo(ClassFile.class.getName());
         assertThat(cf.getPackage()).isSameAs(cp);
         assertThat(cf.getAlternatives()).isNull();

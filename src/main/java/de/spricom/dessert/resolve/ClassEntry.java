@@ -48,8 +48,4 @@ public abstract class ClassEntry {
         alternatives.add(alt);
         alt.alternatives = alternatives;
     }
-
-    public String getFilename() {
-        return pckg.getRootFile().getName();
-    }
 }

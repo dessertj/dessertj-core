@@ -33,12 +33,11 @@ public class ClassResolverFakeRootTest {
         assertThat(cp.getParent().getPackageName()).isEqualTo("de");
 
         assertThat(cp.getClasses()).hasSize(1);
-        ClassEntry cf = resolver.getClassEntry("de.sample.Fake");
-        assertThat(cf.getFilename()).isEqualTo("root");
-        assertThat(cf.getClassname()).isEqualTo("de.sample.Fake");
+        ClassEntry ce = resolver.getClassEntry("de.sample.Fake");
+        assertThat(ce.getClassname()).isEqualTo("de.sample.Fake");
 
-        assertThat(cf.getPackage()).isSameAs(cp);
-        assertThat(cf.getAlternatives()).isNull();
+        assertThat(ce.getPackage()).isSameAs(cp);
+        assertThat(ce.getAlternatives()).isNull();
     }
 
     @Test
