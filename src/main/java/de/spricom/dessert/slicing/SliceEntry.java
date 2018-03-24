@@ -26,7 +26,7 @@ public final class SliceEntry implements Comparable<SliceEntry> {
     private SliceEntry superclass;
     private List<SliceEntry> implementedInterfaces;
     private Set<SliceEntry> usedClasses;
-    private Set<SliceEntry> alternatives;
+    private List<SliceEntry> alternatives;
 
     private SliceEntry() {
         context = null;
@@ -36,7 +36,7 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         superclass = this;
         implementedInterfaces = Collections.emptyList();
         usedClasses = Collections.emptySet();
-        alternatives = Collections.emptySet();
+        alternatives = Collections.emptyList();
     }
 
     SliceEntry(SliceContext context, ClassEntry classEntry) {
@@ -46,6 +46,7 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         this.classEntry = classEntry;
         this.classfile = classEntry.getClassfile();
         this.classname = classfile.getThisClass();
+        setAlternatives(classEntry);
     }
 
     SliceEntry(SliceContext context, Class<?> clazz) throws IOException {
@@ -68,17 +69,7 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         superclass = UNDEFINED;
         implementedInterfaces = Collections.emptyList();
         usedClasses = Collections.emptySet();
-        alternatives = Collections.emptySet();
-    }
-
-    public File getRootFile() {
-        if (classEntry != null) {
-            return classEntry.getPackage().getRootFile();
-        } else if (clazz != null) {
-            return getRootFile(clazz);
-        } else {
-            return null;
-        }
+        alternatives = Collections.emptyList();
     }
 
     public static final File getRootFile(Class<?> clazz) {
@@ -96,8 +87,19 @@ public final class SliceEntry implements Comparable<SliceEntry> {
             } catch (UnsupportedEncodingException ex) {
                 throw new IllegalStateException("UTF-8 encoding not supported!", ex);
             }
+            // TODO: Handle Java 9 runtime modules
         } else {
             throw new IllegalArgumentException("Unknown protocol in " + url);
+        }
+    }
+
+    public File getRootFile() {
+        if (classEntry != null) {
+            return classEntry.getPackage().getRootFile();
+        } else if (clazz != null) {
+            return getRootFile(clazz);
+        } else {
+            return null;
         }
     }
 
@@ -187,18 +189,61 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         return usedClasses;
     }
 
-    public Set<SliceEntry> getAlternatives() {
+    public List<SliceEntry> getAlternatives() {
         if (alternatives == null) {
-            if (classEntry.getAlternatives() == null) {
-                alternatives = Collections.emptySet();
-            } else {
-                alternatives = new HashSet<SliceEntry>(classEntry.getAlternatives().size());
-                for (ClassEntry cf : classEntry.getAlternatives()) {
-                    usedClasses.add(new SliceEntry(context, cf));
+            return Collections.emptyList();
+        }
+        return alternatives;
+    }
+
+    SliceEntry getAlternative(ClassEntry ce) {
+        if (merge(ce)) {
+            return this;
+        }
+        if (alternatives == null) {
+            return null;
+        }
+        for (SliceEntry alt : alternatives) {
+            if (alt.merge(ce)) {
+                return alt;
+            }
+        }
+        return null;
+    }
+
+    private boolean merge(ClassEntry ce) {
+        if (classEntry == ce) {
+            return true;
+        }
+        if (ce.getPackage().getRootFile().equals(getRootFile())) {
+            assert classEntry == null : "classEntry for " + ce.getClassname() + " has already been set";
+            setAlternatives(ce);
+            return true;
+        }
+        return false;
+    }
+
+    private void setAlternatives(ClassEntry ce) {
+        if (ce.getAlternatives() != null) {
+            assert alternatives == null : "alternatives hav already been set for " + ce.getClassname();
+            alternatives = new ArrayList<SliceEntry>(ce.getAlternatives().size());
+            for (ClassEntry alt : ce.getAlternatives()) {
+                if (alt != ce) {
+                    addAlternative(new SliceEntry(context, alt));
                 }
             }
         }
-        return alternatives;
+    }
+
+    void addAlternative(SliceEntry alt) {
+        assert alt.alternatives == null : "alt.alternatives != null";
+        if (alternatives == null) {
+            alternatives = new LinkedList<SliceEntry>();
+            alternatives.add(this);
+        }
+        assert !alternatives.contains(alt) : "alternatives.contains(alt)";
+        alternatives.add(alt);
+        alt.alternatives = alternatives;
     }
 
     public String getClassname() {

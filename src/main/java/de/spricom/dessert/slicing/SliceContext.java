@@ -1,6 +1,9 @@
 package de.spricom.dessert.slicing;
 
-import de.spricom.dessert.resolve.*;
+import de.spricom.dessert.resolve.ClassEntry;
+import de.spricom.dessert.resolve.ClassPackage;
+import de.spricom.dessert.resolve.ClassResolver;
+import de.spricom.dessert.resolve.ClassRoot;
 import de.spricom.dessert.util.Predicate;
 
 import java.io.File;
@@ -30,6 +33,22 @@ public final class SliceContext {
 
     public SliceContext(ClassResolver resolver) throws IOException {
         this.resolver = resolver;
+    }
+
+    SliceEntry getSliceEntry(ClassEntry ce) {
+        SliceEntry se = entries.get(ce.getClassname());
+        if (se == null) {
+            se = new SliceEntry(this, ce);
+            entries.put(ce.getClassname(), se);
+        } else {
+            SliceEntry alt = se.getAlternative(ce);
+            if (alt == null) {
+                alt = new SliceEntry(this, ce);
+                alt.addAlternative(se);
+            }
+            se = alt;
+        }
+        return se;
     }
 
     SliceEntry getSliceEntry(String classname) {
@@ -102,31 +121,39 @@ public final class SliceContext {
             public boolean test(SliceEntry sliceEntry) {
                 return sliceEntry.getClassname().startsWith(packageName);
             }
-        }, new SubTreeEntryResolver(this, resolver, packageName),
+        }, new AbstractTreeResolver(this) {
+            @Override
+            protected void resolve() {
+                ClassPackage cp = resolver.getPackage(packageName);
+                if (cp == null) {
+                    throw new IllegalStateException("Cannot resolve " + packageName);
+                }
+                addRecursiveWithAlternatives(cp);
+            }
+        },
                 packageName + ".**");
     }
 
-    private ConcreteSlice materialized(ClassPackage cp) {
-        ConcreteSlice ss = new ConcreteSlice();
-        if (cp.getAlternatives() == null) {
-            ss.addRecursive(cp, this);
-        } else {
-            for (ClassPackage alt : cp.getAlternatives()) {
-                ss.addRecursive(alt, this);
+    public Slice packagesOf(final Set<File> rootFiles) {
+        StringBuilder sb = new StringBuilder();
+        for (File file : rootFiles) {
+            if (sb.length() != 0) {
+                sb.append(File.pathSeparator);
             }
+            sb.append(file.getPath());
         }
-        return ss;
-    }
-
-    public ConcreteSlice packagesOf(Set<File> rootFiles) {
-        ConcreteSlice ss = new ConcreteSlice();
-        for (File rootFile : rootFiles) {
-            ClassRoot cr = resolver.getRoot(rootFile);
-            if (cr != null) {
-                ss.addRecursive(cr, this);
+        AbstractTreeResolver resolver = new AbstractTreeResolver(this) {
+            @Override
+            protected void resolve() {
+                for (File file : rootFiles) {
+                    ClassRoot cr = SliceContext.this.resolver.getRoot(file);
+                    if (cr != null) {
+                        addRecursive(cr);
+                    }
+                }
             }
-        }
-        return ss;
+        };
+        return new ConcreteSlice(resolver.getSliceEntries());
     }
 
     public ConcreteSlice sliceOf(Class<?>... classes) {
