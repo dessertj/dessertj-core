@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  * <p>Typically one of the static <i>of</i> methods should be used to create
  * a ClassResolver.</p>
  */
-public class ClassResolver {
+public final class ClassResolver {
     private static Logger log = Logger.getLogger(ClassResolver.class.getName());
 
     private final List<ClassRoot> path = new ArrayList<ClassRoot>(60);
@@ -96,17 +96,20 @@ public class ClassResolver {
     }
 
     private void addFile(String filename) throws IOException {
-        File file = new File(filename);
+        add(new File(filename));
+    }
+
+    public void add(File file) throws IOException {
         if (!file.exists()) {
-            log.warning("Does not exist: " + filename);
+            log.warning("Does not exist: " + file.getAbsolutePath());
         } else if (getRoot(file) != null) {
-            log.warning("Already on path: " + filename);
+            log.warning("Already on path: " + file.getAbsolutePath());
         } else if (file.isDirectory()) {
             addRoot(new DirectoryRoot(file));
         } else if (file.isFile() && file.getName().endsWith(".jar")) {
             addRoot(new JarRoot(file));
         } else {
-            log.warning("Don't know how to process: " + filename);
+            log.warning("Don't know how to process: " + file.getAbsolutePath());
         }
     }
 

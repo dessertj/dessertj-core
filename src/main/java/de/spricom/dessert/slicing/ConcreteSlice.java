@@ -1,13 +1,10 @@
 package de.spricom.dessert.slicing;
 
 import de.spricom.dessert.groups.PackageSlice;
-import de.spricom.dessert.resolve.ClassPackage;
-import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.util.Predicate;
 import de.spricom.dessert.util.SetHelper;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -23,14 +20,11 @@ public class ConcreteSlice implements Slice {
         this.entries = entries;
     }
 
-    ConcreteSlice() {
-        entries = new HashSet<SliceEntry>();
-    }
-
     @Override
     public Slice with(final Slice other) {
         if (other instanceof ConcreteSlice) {
-            return with((ConcreteSlice) other);
+            ConcreteSlice slice = new ConcreteSlice(SetHelper.unite(entries, other.getSliceEntries()));
+            return slice;
         }
         Predicate<SliceEntry> combined = new Predicate<SliceEntry>() {
             @Override
@@ -72,29 +66,16 @@ public class ConcreteSlice implements Slice {
         return entries.contains(entry);
     }
 
+    @Override
+    public boolean canResolveSliceEntries() {
+        return true;
+    }
+
     public Set<SliceEntry> getSliceEntries() {
         return entries;
     }
 
     public String toString() {
         return entries.toString();
-    }
-
-    void add(ClassPackage cc, SliceContext context) {
-        if (cc == null || cc.getClasses() == null || cc.getClasses().isEmpty()) {
-            return;
-        }
-        List<ClassEntry> classes = cc.getClasses();
-        for (ClassEntry cf : classes) {
-            entries.add(new SliceEntry(context, cf));
-        }
-    }
-
-    void addRecursive(ClassPackage cc, SliceContext context) {
-        add(cc, context);
-        List<ClassPackage> subPackages = cc.getSubPackages();
-        for (ClassPackage subp : subPackages) {
-            addRecursive(subp, context);
-        }
     }
 }

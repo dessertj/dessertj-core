@@ -25,10 +25,7 @@ public abstract class AbstractTreeResolver implements EntryResolver {
     protected abstract void resolve();
 
     protected final void addRecursiveWithAlternatives(ClassPackage cp) {
-        addRecursiveWithAlternatives(cp.getAlternatives() == null ? Collections.singleton(cp) : cp.getAlternatives());
-    }
-
-    private void addRecursiveWithAlternatives(Collection<ClassPackage> alternatives) {
+        Collection<ClassPackage> alternatives = cp.getAlternatives() == null ? Collections.singleton(cp) : cp.getAlternatives();
         for (ClassPackage alt : alternatives) {
             add(alt);
             List<ClassPackage> subPackages = alt.getSubPackages();
@@ -50,6 +47,13 @@ public abstract class AbstractTreeResolver implements EntryResolver {
         List<ClassEntry> classes = cp.getClasses();
         for (ClassEntry ce : classes) {
             add(ce);
+        }
+    }
+
+    protected final void addWithAlternatives(ClassPackage cp) {
+        Collection<ClassPackage> alternatives = cp.getAlternatives() == null ? Collections.singleton(cp) : cp.getAlternatives();
+        for (ClassPackage alt : alternatives) {
+            add(alt);
         }
     }
 

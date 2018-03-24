@@ -13,5 +13,7 @@ public interface Slice {
 
     boolean contains(SliceEntry entry);
 
+    boolean canResolveSliceEntries();
+
     Set<SliceEntry> getSliceEntries();
 }

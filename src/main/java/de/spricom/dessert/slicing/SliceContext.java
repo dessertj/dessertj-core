@@ -8,10 +8,7 @@ import de.spricom.dessert.util.Predicate;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -108,44 +105,120 @@ public final class SliceContext {
     }
 
     public Slice packageTreeOf(Class<?> clazz) {
-        return subPackagesOf(clazz.getPackage());
+        return packageTreeOf(clazz.getPackage());
     }
 
-    public Slice subPackagesOf(Package pkg) {
-        return subPackagesOf(pkg.getName());
+    public Slice packageTreeOf(Package pkg) {
+        return packageTreeOf(pkg.getName());
     }
 
-    public Slice subPackagesOf(final String packageName) {
-        return new DeferredSlice(new Predicate<SliceEntry>() {
+    public Slice packageTreeOf(final String packageName) {
+        DerivedSlice derivedSlice = new DerivedSlice(new Predicate<SliceEntry>() {
             @Override
             public boolean test(SliceEntry sliceEntry) {
                 return sliceEntry.getClassname().startsWith(packageName);
             }
-        }, new AbstractTreeResolver(this) {
+        });
+        return new DeferredSlice(derivedSlice, new AbstractTreeResolver(this) {
             @Override
             protected void resolve() {
                 ClassPackage cp = resolver.getPackage(packageName);
                 if (cp == null) {
-                    throw new IllegalStateException("Cannot resolve " + packageName);
+                    throw new ResolveException("Cannot resolve " + packageName);
                 }
                 addRecursiveWithAlternatives(cp);
             }
-        },
-                packageName + ".**");
+        });
     }
 
-    public Slice packagesOf(final Set<File> rootFiles) {
-        StringBuilder sb = new StringBuilder();
-        for (File file : rootFiles) {
-            if (sb.length() != 0) {
-                sb.append(File.pathSeparator);
+    public Slice packageOf(Class<?> clazz) {
+        return packageOf(clazz.getPackage());
+    }
+
+    public Slice packageOf(Package pkg) {
+        return packageOf(pkg.getName());
+    }
+
+    public Slice packageOf(final String packageName) {
+        DerivedSlice derivedSlice = new DerivedSlice(new Predicate<SliceEntry>() {
+            @Override
+            public boolean test(SliceEntry sliceEntry) {
+                return sliceEntry.getClassname().startsWith(packageName);
             }
-            sb.append(file.getPath());
+        });
+        return new DeferredSlice(derivedSlice, new AbstractTreeResolver(this) {
+            @Override
+            protected void resolve() {
+                ClassPackage cp = resolver.getPackage(packageName);
+                if (cp == null) {
+                    throw new ResolveException("Cannot resolve " + packageName);
+                }
+                addWithAlternatives(cp);
+            }
+        });
+    }
+
+    public Slice packageTreeOf(File root, Class<?> clazz) {
+        return packageTreeOf(root, clazz.getPackage());
+    }
+
+    public Slice packageTreeOf(File root, Package pkg) {
+        return packageTreeOf(root, pkg.getName());
+    }
+
+    public Slice packageTreeOf(final File root, final String packageName) {
+        ensureRootFile(root);
+        DerivedSlice derivedSlice = new DerivedSlice(new Predicate<SliceEntry>() {
+            @Override
+            public boolean test(SliceEntry sliceEntry) {
+                return sliceEntry.getClassname().startsWith(packageName);
+            }
+        });
+        return new DeferredSlice(derivedSlice, new AbstractTreeResolver(this) {
+            @Override
+            protected void resolve() {
+                ClassPackage cp = resolver.getPackage(root, packageName);
+                if (cp == null) {
+                    throw new ResolveException("Cannot resolve " + packageName);
+                }
+                addRecursive(cp);
+            }
+        });
+    }
+
+    public Slice packageOf(File root, Class<?> clazz) {
+        return packageOf(root, clazz.getPackage());
+    }
+
+    public Slice packageOf(File root, Package pkg) {
+        return packageOf(root, pkg.getName());
+    }
+
+    public Slice packageOf(File root, String packageName) {
+        ensureRootFile(root);
+        final ClassPackage cp = SliceContext.this.resolver.getPackage(root, packageName);
+        if (cp == null) {
+            throw new ResolveException("There is no " + packageName + " package in " + root.getAbsolutePath());
         }
         AbstractTreeResolver resolver = new AbstractTreeResolver(this) {
             @Override
             protected void resolve() {
+                addRecursive(cp);
+            }
+        };
+        return new ConcreteSlice(resolver.getSliceEntries());
+    }
+
+    public Slice packagesOf(File... rootFiles) {
+        return packagesOf(Arrays.asList(rootFiles));
+    }
+
+    public Slice packagesOf(final Collection<File> rootFiles) {
+        AbstractTreeResolver resolver = new AbstractTreeResolver(this) {
+            @Override
+            protected void resolve() {
                 for (File file : rootFiles) {
+                    ensureRootFile(file);
                     ClassRoot cr = SliceContext.this.resolver.getRoot(file);
                     if (cr != null) {
                         addRecursive(cr);
@@ -162,6 +235,16 @@ public final class SliceContext {
             sliceEntries.add(getSliceEntry(clazz));
         }
         return new ConcreteSlice(sliceEntries);
+    }
+
+    private void ensureRootFile(File rootFile) {
+        if (resolver.getRoot(rootFile) == null) {
+            try {
+                resolver.add(rootFile);
+            } catch (IOException ex) {
+                throw new ResolveException("Cannot resolve content of " + rootFile.getAbsolutePath(), ex);
+            }
+        }
     }
 
     public boolean isUseClassLoader() {

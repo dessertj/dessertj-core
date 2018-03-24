@@ -56,6 +56,11 @@ final class DerivedSlice implements Slice {
     }
 
     @Override
+    public boolean canResolveSliceEntries() {
+        return false;
+    }
+
+    @Override
     public Set<SliceEntry> getSliceEntries() {
         throw new IllegalStateException("Cannot materialize DerivedSlice");
     }
