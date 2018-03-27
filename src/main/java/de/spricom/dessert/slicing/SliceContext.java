@@ -240,6 +240,7 @@ public final class SliceContext {
     private void ensureRootFile(File rootFile) {
         if (resolver.getRoot(rootFile) == null) {
             try {
+                // TODO: Do not add root file, beause that leads to inconsistencies.
                 resolver.add(rootFile);
             } catch (IOException ex) {
                 throw new ResolveException("Cannot resolve content of " + rootFile.getAbsolutePath(), ex);
