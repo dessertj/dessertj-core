@@ -21,15 +21,24 @@ public final class SliceContext {
 
     private Map<String, SliceEntry> entries = new HashMap<String, SliceEntry>();
 
-    public SliceContext() throws IOException {
-        if (defaultResolver == null) {
-            defaultResolver = ClassResolver.ofClassPathAndBootClassPath();
-        }
-        resolver = defaultResolver;
+    public SliceContext() {
+        this(getDefaultResolver());
     }
 
-    public SliceContext(ClassResolver resolver) throws IOException {
+    public SliceContext(ClassResolver resolver) {
         this.resolver = resolver;
+        resolver.freeze();
+    }
+
+    private static ClassResolver getDefaultResolver() {
+        if (defaultResolver == null) {
+            try {
+                defaultResolver = ClassResolver.ofClassPathAndBootClassPath();
+            } catch (IOException ex) {
+                throw new ResolveException("Unable to access classes on classpath.", ex);
+            }
+        }
+        return defaultResolver;
     }
 
     SliceEntry getSliceEntry(ClassEntry ce) {
@@ -237,14 +246,19 @@ public final class SliceContext {
         return new ConcreteSlice(sliceEntries);
     }
 
+    /**
+     * Checks whether the correspondig root file has been added to the path.
+     * It's not allowed to add root files to an existing slice context, because
+     * that might change slices after they have been created.
+     *
+     * @param rootFile the classes directory or jar file to check
+     */
     private void ensureRootFile(File rootFile) {
+        if (rootFile == null) {
+            throw new NullPointerException("rootFile must not be null");
+        }
         if (resolver.getRoot(rootFile) == null) {
-            try {
-                // TODO: Do not add root file, beause that leads to inconsistencies.
-                resolver.add(rootFile);
-            } catch (IOException ex) {
-                throw new ResolveException("Cannot resolve content of " + rootFile.getAbsolutePath(), ex);
-            }
+            throw new IllegalArgumentException(rootFile + " has not been registered with this context.");
         }
     }
 

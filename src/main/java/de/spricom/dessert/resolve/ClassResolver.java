@@ -34,6 +34,7 @@ public final class ClassResolver {
 
     private final List<ClassRoot> path = new ArrayList<ClassRoot>(60);
     private final ClassResolverCache cache = new ClassResolverCache();
+    private boolean frozen;
 
     /**
      * Creates a ClassResolver for some arbitrary path.
@@ -114,8 +115,15 @@ public final class ClassResolver {
     }
 
     public void addRoot(ClassRoot root) throws IOException {
+        if (frozen) {
+            throw new IllegalStateException("Cannot add root to a frozen ClassResolver.");
+        }
         path.add(root);
         root.scan(cache);
+    }
+
+    public void freeze() {
+        frozen = true;
     }
 
     public ClassRoot getRoot(File file) {
