@@ -2,6 +2,7 @@ package de.spricom.dessert.resolve;
 
 import de.spricom.dessert.classfile.ClassFile;
 
+import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,4 +49,6 @@ public abstract class ClassEntry {
         alternatives.add(alt);
         alt.alternatives = alternatives;
     }
+
+    public abstract URI getURI();
 }

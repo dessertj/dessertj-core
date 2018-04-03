@@ -5,6 +5,8 @@ import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.resolve.ClassPackage;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class FakeClassEntry extends ClassEntry {
 
@@ -18,6 +20,15 @@ public class FakeClassEntry extends ClassEntry {
             return new ClassFile(this.getClass());
         } catch (IOException ex) {
             throw new IllegalStateException("Unable to resolve " + FakeClassEntry.class.getSimpleName(), ex);
+        }
+    }
+
+    @Override
+    public URI getURI() {
+        try {
+            return new URI("fake:" + getClassname());
+        } catch (URISyntaxException ex) {
+            throw new IllegalStateException("Invalid URI for " + getClassname(), ex);
         }
     }
 }

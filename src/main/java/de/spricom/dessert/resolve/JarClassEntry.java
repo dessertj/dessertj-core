@@ -2,8 +2,11 @@ package de.spricom.dessert.resolve;
 
 import de.spricom.dessert.classfile.ClassFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -41,4 +44,15 @@ final class JarClassEntry extends ClassEntry {
             }
         }
     }
+
+    @Override
+    public URI getURI() {
+        String uri = "jar:" + new File(jarFile.getName()).toURI().toASCIIString() + "!/" + jarEntry.getName();
+        try {
+            return new URI(uri);
+        } catch (URISyntaxException ex) {
+            throw new IllegalStateException("Cannot create URI from '" + uri + "'", ex);
+        }
+    }
+
 }

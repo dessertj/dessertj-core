@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 
 final class DirectoryClassEntry extends ClassEntry {
     private final File classFile;
@@ -37,5 +38,10 @@ final class DirectoryClassEntry extends ClassEntry {
                 }
             }
         }
+    }
+
+    @Override
+    public URI getURI() {
+        return classFile.toURI();
     }
 }
