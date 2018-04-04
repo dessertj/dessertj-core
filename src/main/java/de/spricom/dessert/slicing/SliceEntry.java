@@ -155,12 +155,16 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         return classfile == null;
     }
 
-    public Class<?> getClazz() throws ClassNotFoundException {
+    public Class<?> getClazz() {
         if (clazz == null && !isUnknown()) {
-            clazz = Class.forName(classname);
-            if (!getURI().equals(getURI(clazz))) {
-                // TODO: Use specialized classloader to prevent this
-                log.warning("Loaded class " + getURI(clazz) + " for entry " + getURI() + "!");
+            try {
+                clazz = Class.forName(classname);
+                if (!getURI().equals(getURI(clazz))) {
+                    // TODO: Use specialized classloader to prevent this
+                    log.warning("Loaded class " + getURI(clazz) + " for entry " + getURI() + "!");
+                }
+            } catch (ClassNotFoundException ex) {
+                throw new ResolveException("Unable to load " + classname, ex);
             }
         }
         return clazz;
