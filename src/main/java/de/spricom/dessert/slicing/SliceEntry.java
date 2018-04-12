@@ -22,8 +22,8 @@ public final class SliceEntry implements Comparable<SliceEntry> {
     public static final SliceEntry UNDEFINED = new SliceEntry();
 
     private final SliceContext context;
-    private final String classname;
-    private final ClassFile classfile;
+    private final String className;
+    private final ClassFile classFile;
     private final ClassEntry classEntry;
     private Class<?> clazz;
     private URI uri;
@@ -35,8 +35,8 @@ public final class SliceEntry implements Comparable<SliceEntry> {
 
     private SliceEntry() {
         context = null;
-        classname = "undefined";
-        classfile = null;
+        className = "undefined";
+        classFile = null;
         classEntry = null;
         superclass = this;
         implementedInterfaces = Collections.emptyList();
@@ -48,10 +48,31 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         assert context != null : "context == null";
         assert classEntry != null : "classEntry == null";
         this.context = context;
+        this.classFile = classEntry.getClassfile();
+        this.className = classFile.getThisClass();
         this.classEntry = classEntry;
-        this.classfile = classEntry.getClassfile();
-        this.classname = classfile.getThisClass();
-        setAlternatives(classEntry);
+        if (classEntry.getAlternatives() != null) {
+            for (ClassEntry alternative : classEntry.getAlternatives()) {
+                if (classEntry != alternative) {
+                    new SliceEntry(this, alternative);
+                }
+            }
+        }
+    }
+
+    SliceEntry(SliceEntry alternative, ClassEntry classEntry) {
+        assert alternative != null : "alternative == null";
+        assert classEntry != null : "classEntry == null";
+        this.context = alternative.context;
+        this.classEntry = classEntry;
+        this.classFile = classEntry.getClassfile();
+        this.className = classFile.getThisClass();
+        if (alternative.alternatives == null) {
+            alternative.alternatives = new LinkedList<SliceEntry>();
+            alternative.alternatives.add(alternative);
+        }
+        this.alternatives = alternative.alternatives;
+        this.alternatives.add(this);
     }
 
     SliceEntry(SliceContext context, Class<?> clazz) throws IOException {
@@ -60,17 +81,17 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         this.context = context;
         this.clazz = clazz;
         this.classEntry = null;
-        this.classfile = new ClassFile(clazz);
-        this.classname = classfile.getThisClass();
+        this.classFile = new ClassFile(clazz);
+        this.className = classFile.getThisClass();
     }
 
-    SliceEntry(SliceContext context, String classname) {
+    SliceEntry(SliceContext context, String className) {
         assert context != null : "context == null";
-        assert classname != null : "classname == null";
+        assert className != null : "className == null";
         this.context = context;
         this.classEntry = null;
-        this.classfile = null;
-        this.classname = classname;
+        this.classFile = null;
+        this.className = className;
         superclass = UNDEFINED;
         implementedInterfaces = Collections.emptyList();
         usedClasses = Collections.emptySet();
@@ -113,17 +134,17 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         } else if (clazz != null) {
             return clazz.getPackage().getName();
         } else {
-            int index = classname.lastIndexOf('.');
+            int index = className.lastIndexOf('.');
             if (index == -1) {
                 return "";
             }
-            return classname.substring(0, index);
+            return className.substring(0, index);
         }
     }
 
     @Override
     public int hashCode() {
-        return classname.hashCode();
+        return className.hashCode();
     }
 
     @Override
@@ -135,7 +156,7 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         if (getClass() != obj.getClass())
             return false;
         SliceEntry other = (SliceEntry) obj;
-        if (!classname.equals(other.classname)) {
+        if (!className.equals(other.className)) {
             return false;
         }
         return getURI().equals(other.getURI());
@@ -143,43 +164,43 @@ public final class SliceEntry implements Comparable<SliceEntry> {
 
     @Override
     public int compareTo(SliceEntry o) {
-        return getClassname().compareTo(o.getClassname());
+        return getClassName().compareTo(o.getClassName());
     }
 
     @Override
     public String toString() {
-        return classname;
+        return className;
     }
 
     public boolean isUnknown() {
-        return classfile == null;
+        return classFile == null;
     }
 
     public Class<?> getClazz() {
         if (clazz == null && !isUnknown()) {
             try {
-                clazz = Class.forName(classname);
+                clazz = Class.forName(className);
                 if (!getURI().equals(getURI(clazz))) {
                     // TODO: Use specialized classloader to prevent this
                     log.warning("Loaded class " + getURI(clazz) + " for entry " + getURI() + "!");
                 }
             } catch (ClassNotFoundException ex) {
-                throw new ResolveException("Unable to load " + classname, ex);
+                throw new ResolveException("Unable to load " + className, ex);
             }
         }
         return clazz;
     }
 
     public SliceEntry getSuperclass() {
-        if (superclass == null && classfile != null) {
-            superclass = context.getSliceEntry(classfile.getSuperClass());
+        if (superclass == null && classFile != null) {
+            superclass = context.getSliceEntry(classFile.getSuperClass());
         }
         return superclass;
     }
 
     public List<SliceEntry> getImplementedInterfaces() {
-        if (implementedInterfaces == null && classfile != null) {
-            implementedInterfaces = new ArrayList<SliceEntry>(classfile.getInterfaces().length);
+        if (implementedInterfaces == null && classFile != null) {
+            implementedInterfaces = new ArrayList<SliceEntry>(classFile.getInterfaces().length);
             for (String in : classEntry.getClassfile().getInterfaces()) {
                 implementedInterfaces.add(context.getSliceEntry(in));
             }
@@ -188,9 +209,9 @@ public final class SliceEntry implements Comparable<SliceEntry> {
     }
 
     public Set<SliceEntry> getUsedClasses() {
-        if (usedClasses == null && classfile != null) {
-            usedClasses = new HashSet<SliceEntry>(classfile.getDependentClasses().size());
-            for (String cn : classfile.getDependentClasses()) {
+        if (usedClasses == null && classFile != null) {
+            usedClasses = new HashSet<SliceEntry>(classFile.getDependentClasses().size());
+            for (String cn : classFile.getDependentClasses()) {
                 usedClasses.add(context.getSliceEntry(cn));
             }
         }
@@ -199,63 +220,38 @@ public final class SliceEntry implements Comparable<SliceEntry> {
 
     public List<SliceEntry> getAlternatives() {
         if (alternatives == null) {
-            return Collections.emptyList();
+            return Collections.singletonList(this);
         }
         return alternatives;
     }
 
     SliceEntry getAlternative(ClassEntry ce) {
-        if (merge(ce)) {
+        if (matches(ce)) {
             return this;
         }
-        if (alternatives == null) {
-            return null;
-        }
-        for (SliceEntry alt : alternatives) {
-            if (alt.merge(ce)) {
-                return alt;
+        if (alternatives != null) {
+            for (SliceEntry alt : alternatives) {
+                if (alt.matches(ce)) {
+                    return alt;
+                }
             }
         }
         return null;
     }
 
-    private boolean merge(ClassEntry ce) {
-        if (classEntry == ce) {
-            return true;
+    private boolean matches(ClassEntry ce) {
+        if (classEntry != null) {
+            return classEntry == ce;
         }
-        if (ce.getPackage().getRootFile().equals(getRootFile())) {
-            assert classEntry == null : "classEntry for " + ce.getClassname() + " has already been set";
-            setAlternatives(ce);
-            return true;
-        }
-        return false;
+        return getURI().equals(ce.getURI());
     }
 
-    private void setAlternatives(ClassEntry ce) {
-        if (ce.getAlternatives() != null) {
-            assert alternatives == null : "alternatives hav already been set for " + ce.getClassname();
-            alternatives = new ArrayList<SliceEntry>(ce.getAlternatives().size());
-            for (ClassEntry alt : ce.getAlternatives()) {
-                if (alt != ce) {
-                    addAlternative(new SliceEntry(context, alt));
-                }
-            }
-        }
+    public String getClassName() {
+        return className;
     }
 
-    void addAlternative(SliceEntry alt) {
-        assert alt.alternatives == null : "alt.alternatives != null";
-        if (alternatives == null) {
-            alternatives = new LinkedList<SliceEntry>();
-            alternatives.add(this);
-        }
-        assert !alternatives.contains(alt) : "alternatives.contains(alt)";
-        alternatives.add(alt);
-        alt.alternatives = alternatives;
-    }
-
-    public String getClassname() {
-        return classname;
+    public ClassFile getClassFile() {
+        return classFile;
     }
 
     public URI getURI() {
@@ -270,7 +266,7 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         if (clazz != null) {
             uri = getURI(clazz);
         } else {
-            String unknown = "unknown:" + classname;
+            String unknown = "unknown:" + className;
             try {
                 uri = new URI(unknown);
             } catch (URISyntaxException ex) {

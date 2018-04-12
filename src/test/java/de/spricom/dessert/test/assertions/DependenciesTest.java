@@ -118,7 +118,7 @@ public class DependenciesTest {
                 .slice(new Predicate<SliceEntry>() {
                     @Override
                     public boolean test(SliceEntry sliceEntry) {
-                        return sliceEntry.getClassname().equals(ClassFile.class.getName());
+                        return sliceEntry.getClassName().equals(ClassFile.class.getName());
                     }
                 });
         Slice resolve = sc.packageTreeOf(ClassResolver.class.getPackage());

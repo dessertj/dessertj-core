@@ -10,9 +10,9 @@ public class DefaultIllegalDependenciesRenderer implements IllegalDependenciesRe
         Map<SliceEntry, Set<SliceEntry>> dependecyViolations = violations.getViolations();
         StringBuilder sb = new StringBuilder("Illegal Dependencies:\n");
         for (SliceEntry entry : sort(dependecyViolations.keySet())) {
-            sb.append(entry.getClassname()).append("\n");
+            sb.append(entry.getClassName()).append("\n");
             for (SliceEntry dep : dependecyViolations.get(entry)) {
-                sb.append(" -> ").append(dep.getClassname()).append("\n");
+                sb.append(" -> ").append(dep.getClassName()).append("\n");
             }
         }
         return sb.toString();
@@ -21,7 +21,7 @@ public class DefaultIllegalDependenciesRenderer implements IllegalDependenciesRe
     private Collection<SliceEntry> sort(Set<SliceEntry> entries) {
         TreeMap<String, SliceEntry> sorted = new TreeMap<String, SliceEntry>();
         for (SliceEntry entry : entries) {
-            sorted.put(entry.getClassname(), entry);
+            sorted.put(entry.getClassName(), entry);
         }
         return sorted.values();
     }

@@ -46,15 +46,11 @@ public final class SliceContext {
         if (se == null) {
             se = new SliceEntry(this, ce);
             entries.put(ce.getClassname(), se);
+            return se;
         } else {
             SliceEntry alt = se.getAlternative(ce);
-            if (alt == null) {
-                alt = new SliceEntry(this, ce);
-                alt.addAlternative(se);
-            }
-            se = alt;
+            return alt;
         }
-        return se;
     }
 
     SliceEntry getSliceEntry(String classname) {
@@ -125,7 +121,7 @@ public final class SliceContext {
         DerivedSlice derivedSlice = new DerivedSlice(new Predicate<SliceEntry>() {
             @Override
             public boolean test(SliceEntry sliceEntry) {
-                return sliceEntry.getClassname().startsWith(packageName);
+                return sliceEntry.getClassName().startsWith(packageName);
             }
         });
         return new DeferredSlice(derivedSlice, new AbstractTreeResolver(this) {
@@ -152,7 +148,7 @@ public final class SliceContext {
         DerivedSlice derivedSlice = new DerivedSlice(new Predicate<SliceEntry>() {
             @Override
             public boolean test(SliceEntry sliceEntry) {
-                return sliceEntry.getClassname().startsWith(packageName);
+                return sliceEntry.getClassName().startsWith(packageName);
             }
         });
         return new DeferredSlice(derivedSlice, new AbstractTreeResolver(this) {
@@ -180,7 +176,7 @@ public final class SliceContext {
         DerivedSlice derivedSlice = new DerivedSlice(new Predicate<SliceEntry>() {
             @Override
             public boolean test(SliceEntry sliceEntry) {
-                return sliceEntry.getClassname().startsWith(packageName);
+                return sliceEntry.getClassName().startsWith(packageName);
             }
         });
         return new DeferredSlice(derivedSlice, new AbstractTreeResolver(this) {
@@ -244,6 +240,27 @@ public final class SliceContext {
             sliceEntries.add(getSliceEntry(clazz));
         }
         return new ConcreteSlice(sliceEntries);
+    }
+
+    public Slice sliceOf(final String... classnames) {
+        DerivedSlice derivedSlice = new DerivedSlice(new Predicate<SliceEntry>() {
+            private final Set<String> names = new HashSet<String>(Arrays.asList(classnames));
+
+            @Override
+            public boolean test(SliceEntry sliceEntry) {
+                return names.contains(sliceEntry.getClassName());
+            }
+        });
+        return new DeferredSlice(derivedSlice, new EntryResolver() {
+            @Override
+            public Set<SliceEntry> getSliceEntries() {
+                Set<SliceEntry> sliceEntries = new HashSet<SliceEntry>();
+                for (String name : classnames) {
+                    sliceEntries.add(getSliceEntry(name));
+                }
+                return sliceEntries;
+            }
+        });
     }
 
     /**

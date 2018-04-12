@@ -19,7 +19,7 @@ public final class SliceGroup<S extends PartSlice> implements Iterable<S> {
                 new SlicePartioner() {
                     @Override
                     public String partKey(SliceEntry entry) {
-                        return entry.getClassname();
+                        return entry.getClassName();
                     }
                 },
                 new PartSliceFactory<SingleEntrySlice>() {
