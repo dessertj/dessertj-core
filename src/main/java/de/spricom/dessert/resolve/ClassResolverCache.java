@@ -1,11 +1,13 @@
 package de.spricom.dessert.resolve;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 class ClassResolverCache implements ClassCollector {
     private final Map<String, ClassPackage> packages = new HashMap<String, ClassPackage>(3000);
     private final Map<String, ClassEntry> classes = new HashMap<String, ClassEntry>(60000);
+    private final Map<String, List<ClassEntry>> duplicates = new HashMap<String, List<ClassEntry>>();
 
     @Override
     public void addPackage(ClassPackage pckg) {
@@ -26,6 +28,7 @@ class ClassResolverCache implements ClassCollector {
             classes.put(cn, ce);
         } else {
             prev.addAlternative(ce);
+            duplicates.put(cn, prev.getAlternatives());
         }
     }
 
@@ -35,6 +38,10 @@ class ClassResolverCache implements ClassCollector {
 
     ClassEntry getClassEntry(String classname) {
         return classes.get(classname);
+    }
+
+    Map<String, List<ClassEntry>> getDuplicates() {
+        return duplicates;
     }
 
     int getPackageCount() {

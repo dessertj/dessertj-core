@@ -55,5 +55,11 @@ public class SliceEntryTest {
         assertThat(entries).hasSize(1);
         SliceEntry entry = entries.iterator().next();
         assertThat(entry.getAlternatives()).hasSize(2);
+
+        Slice duplicates = sc.duplicates();
+        // For each classname there is only one entry, even if there are alternatives.
+        assertThat(duplicates.getSliceEntries()).hasSize(1);
+        // The flyweight pattern must ensure there is only one SliceEntry instance.
+        assertThat(duplicates.getSliceEntries().iterator().next()).isSameAs(entry);
     }
 }

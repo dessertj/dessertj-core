@@ -43,11 +43,11 @@ public class ClassResolverFakeRootTest {
     @Test
     public void testClashes() throws IOException {
         ClassResolver resolver = new ClassResolver();
-        FakeRoot root1 = new FakeRoot(new File("/root"));
+        FakeRoot root1 = new FakeRoot(new File("/root1"));
         resolver.addRoot(root1);
-        FakeRoot root2 = new FakeRoot(new File("/root"));
+        FakeRoot root2 = new FakeRoot(new File("/root2"));
         resolver.addRoot(root2);
-        FakeRoot root3 = new FakeRoot(new File("/root"));
+        FakeRoot root3 = new FakeRoot(new File("/root3"));
         resolver.addRoot(root3);
 
         root1.add("de.sample_a.Fake1a");
@@ -77,5 +77,6 @@ public class ClassResolverFakeRootTest {
         assertThat(de1.getClasses()).isEmpty();
         assertThat(de1.getSubPackages()).hasSize(2);
         assertThat(de1.getAlternatives()).hasSize(3);
+        assertThat(resolver.getDuplicates()).hasSize(2);
     }
 }

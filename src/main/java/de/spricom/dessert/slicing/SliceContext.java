@@ -264,6 +264,23 @@ public final class SliceContext {
     }
 
     /**
+     * Returns a slice of all duplicate .class files detected by the underlying {@link ClassResolver}.
+     * Hence for each entry in this slice there are at least two .class files with the same classname but
+     * different URL's.
+     *
+     * @return Maybe empty slice of all duplicate .class files
+     */
+    public ConcreteSlice duplicates() {
+        Set<SliceEntry> sliceEntries = new HashSet<SliceEntry>();
+        for (List<ClassEntry> alternatives : resolver.getDuplicates().values()) {
+            for (ClassEntry alternative : alternatives) {
+                sliceEntries.add(getSliceEntry(alternative));
+            }
+        }
+        return new ConcreteSlice(sliceEntries);
+    }
+
+    /**
      * Checks whether the correspondig root file has been added to the path.
      * It's not allowed to add root files to an existing slice context, because
      * that might change slices after they have been created.

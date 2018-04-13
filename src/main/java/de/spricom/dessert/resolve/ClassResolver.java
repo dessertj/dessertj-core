@@ -219,6 +219,10 @@ public final class ClassResolver {
         return files;
     }
 
+    public Map<String, List<ClassEntry>> getDuplicates() {
+        return cache.getDuplicates();
+    }
+
     public int getPackageCount() {
         return cache.getPackageCount();
     }
