@@ -4,6 +4,7 @@ import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.resolve.ClassPackage;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,7 +27,7 @@ public class FakeClassEntry extends ClassEntry {
     @Override
     public URI getURI() {
         try {
-            return new URI("fake:" + getClassname());
+            return new URI("fake:" + getPackage().getRootFile().getPath().replace(File.separatorChar, '/') + "/" + getClassname());
         } catch (URISyntaxException ex) {
             throw new IllegalStateException("Invalid URI for " + getClassname(), ex);
         }

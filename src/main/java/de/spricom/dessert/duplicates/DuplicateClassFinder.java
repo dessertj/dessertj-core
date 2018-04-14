@@ -12,6 +12,37 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * <h3>DuplicateClassFinder</h3>
+ *
+ * The DuplicateClassFinder is included in the dessert library. It checks if there are different implementations of
+ * the same class on the class-path. You can use it form a Gradle file like that:
+ *
+ * <pre>
+ * 	apply plugin: 'java'
+ *
+ * 	repositories {
+ * 	    jcenter()
+ * 	    maven { url 'https://jitpack.io' }
+ *  }
+ *
+ * 	configurations {
+ * 		dessert
+ *  }
+ *
+ * 	dependencies {
+ * 		dessert 'com.github.hajo70:dessert:0.3'
+ *
+ * 		runtime 'org.apache.httpcomponents:httpclient:4.5.3'
+ * 		runtime 'org.keycloak:keycloak-osgi-thirdparty:1.1.1.Final'
+ *  }
+ *
+ * 	task findDuplicates(type: JavaExec) {
+ * 	  classpath = files(configurations.dessert, configurations.runtime)
+ * 	  main = 'de.spricom.dessert.duplicates.DuplicateClassFinder'
+ *  }
+ * </pre>
+ */
 public class DuplicateClassFinder implements ClassVisitor {
     private static final Logger logger = Logger.getLogger(DuplicateClassFinder.class.getName());
 

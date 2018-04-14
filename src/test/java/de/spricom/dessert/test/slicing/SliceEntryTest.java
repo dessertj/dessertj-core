@@ -11,6 +11,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -52,14 +53,11 @@ public class SliceEntryTest {
         SliceContext sc = new SliceContext(resolver);
         Slice slice = sc.packageTreeOf("de.spricom.dessert");
         Set<SliceEntry> entries = slice.getSliceEntries();
-        assertThat(entries).hasSize(1);
+        assertThat(entries).hasSize(2);
         SliceEntry entry = entries.iterator().next();
-        assertThat(entry.getAlternatives()).hasSize(2);
+        assertThat(new HashSet<SliceEntry>(entry.getAlternatives())).isEqualTo(entries);
 
         Slice duplicates = sc.duplicates();
-        // For each classname there is only one entry, even if there are alternatives.
-        assertThat(duplicates.getSliceEntries()).hasSize(1);
-        // The flyweight pattern must ensure there is only one SliceEntry instance.
-        assertThat(duplicates.getSliceEntries().iterator().next()).isSameAs(entry);
+        assertThat(duplicates.getSliceEntries()).isEqualTo(entries);
     }
 }
