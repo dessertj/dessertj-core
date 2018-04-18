@@ -1,14 +1,20 @@
-Dessert
+dessert
 =======
 
-The name is a short form of **De**pendency A**ssert**. Hence Dessert is a library to check assertions for
-dependencies. Typically it is used within unit-tests.
+The name is a short form of **de**pendency a**ssert**. Hence Dessert is a library to check assertions for
+dependencies. It is intended to be used within unit-tests.
+
+Features
+--------
+
+- Checking dependency rules
+- Detection of cyclic dependencies
 
 Goals
 -----
 
 - No additional dependencies but plain Java 6 or above
-- Simple and intuitive API
+- Simple and intuitive API (motivated by [AssertJ](https://joel-costigliola.github.io/assertj/))
 - Assertions should be robust against refactorings (no strings for class or package names required)
 - Easy and seamless integration with other testing or assertion frameworks
 - Speed
@@ -78,12 +84,72 @@ The corresponding gradle build file looks like this:
     }
     
     dependencies {
-        testCompile 'com.github.hajo70:dessert:0.3-SNAPSHOT'
+        testCompile 'com.github.hajo70:dessert:0.3'
         testCompile 'junit:junit:4.12'
     }
 
+### Samples
+
+There is a separate [dessert-samples](https://github.com/hajo70/dessert-samples) that
+shows how to use dessert with features of Java 8.
+
+Using dessert
+-------------
+
+- goal of dependency checking is finding unwanted dependencies
+- terms: building block, layer, vertical slice
+- mapping of building blocks to physical layout
+- dependencies to external libraries
+- what to check
+- operates on .class files
+- limitations
+- what is a .class file
+- what does class X dependends on class Y mean
+- elements of dessert API
+- problem of cycles
+- cycle detection
+- MVP-slices
+- exploring dependencies
+
 Background
 ----------
+
+The goal of dependency checking is finding unwanted dependencies. Dessert does this be analyzing
+.class files. The java compiler generates a .class file for each
+
+- class
+- interface
+- annotation
+- (anyonymous) innerclass or inner interface
+- enum class
+
+*Note: A java source file can define more than one class.*
+
+Such a .class file X depends on an other .class file Y if X uses Y, thus
+
+- X extends or implements Y
+- X has a field of type Y, 
+- X uses Y in a method signature (parameter, return value, throws clause)
+- X has a local variable of Y
+- X uses a (static) method of Y (direct call or method reference)
+- X throws Y
+- X implements Y within a λ-expression
+- X is an inner class of Y (or the other way round)
+- X uses generic type of Y
+- X is annotated with Y
+- X uses Y as an annotation parameter
+
+*Note:*
+- Import statements are no relevant, because they don't appear in the .class file
+- It's not possible to detect all of these uses (i. e. local variables, method references)
+  by reflection.
+- Jdeps does not consider classes used in annotation parameters as a dependency, but dessert does.
+- The compiler my have removed some source dependency that cannot be detected in the .class file
+  anymore.
+
+
+Old description
+---------------
 
 The goal of checking the dependencies of a class is to find any unintended dependency. Hence for each
 class there is a set of classes for which dependencies are permitted and an other set of classes
@@ -177,32 +243,3 @@ should not use classes of its parent package. Such a rule can be enforced like t
             SliceAssertions.assertThat(pckg).doesNotUse(pckg.getParentPackage());
         }
     }
-
-DuplicateClassFinder
-====================
-
-The DuplicateClassFinder is included in the dessert library. It checks if there are different implementations of
-the same class on the class-path. You can use it form a Gradle file like that:
-
-	apply plugin: 'java'
-	
-	repositories {
-	    jcenter()
-	    maven { url 'https://jitpack.io' }
-	}
-	
-	configurations {
-		dessert
-	}
-	
-	dependencies {
-		dessert 'com.github.hajo70:dessert:0.3'
-		
-		runtime 'org.apache.httpcomponents:httpclient:4.5.3'
-		runtime 'org.keycloak:keycloak-osgi-thirdparty:1.1.1.Final'
-	}
-	
-	task findDuplicates(type: JavaExec) {
-	  classpath = files(configurations.dessert, configurations.runtime)
-	  main = 'de.spricom.dessert.duplicates.DuplicateClassFinder'
-	}
