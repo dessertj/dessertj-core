@@ -112,7 +112,10 @@ Using dessert
 - exploring dependencies
 
 Background
-----------
+==========
+
+Classes and their dependencies
+------------------------------
 
 The goal of dependency checking is finding unwanted dependencies. Dessert does this be analyzing
 .class files. The java compiler generates a .class file for each
@@ -140,13 +143,68 @@ Such a .class file X depends on an other .class file Y if X uses Y, thus
 - X uses Y as an annotation parameter
 
 *Note:*
-- Import statements are no relevant, because they don't appear in the .class file
+- Import statements are no relevant, because they don't appear in a .class file.
 - It's not possible to detect all of these uses (i. e. local variables, method references)
   by reflection.
 - Jdeps does not consider classes used in annotation parameters as a dependency, but dessert does.
 - The compiler my have removed some source dependency that cannot be detected in the .class file
   anymore.
 
+Building Blocks
+---------------
+
+In a clean software design each class belongs to some building block. Each build block has
+defined interfaces and clear dependencies. In complex systems building blocks may be composed
+from other building blocks or they may be organized in layers or vertical slices.
+
+Ideally there is a clear and intuitive mapping between the physical package structure and the
+building blocks of a software:
+
+![Structual Architecture](structural-architecture.svg)
+
+Dessert helps you to move towards such a clean software design and alarms you immediately 
+if you are moving backward.
+
+Main Elements of the Dessert API
+--------------------------------
+
+#### Slice
+For dessert your software is just a bunch of classes. Hence you have to cut it down to
+pieces that make up building blocks. In dessert such a piece is a called a `Slice`. 
+A `Slice` is an arbitrary slice of the set of all classes that belong to a software.
+A `Slice` is immutable. The method `slice` can be used to create as smaller `Slice` from
+a existing `Slice`. Two slices can be combined with the methods `with` (union) and
+`without` (difference) to a new `Slice`.  
+
+#### SliceEntry
+Each `SliceEntry` represents a .class file. It has methods like `getClassName()` or
+`getClazz()` to access the details of the .class to be used for predicates. It's most
+important method is `getUsedClasses()`. This is used by the `SliceAssertions`.
+
+#### SliceContext
+The `SliceContext` is the entry point to dessert, a factory for slices. To get your
+initial slices you can use the methods `packageOf`, `packageTreeOf` or `sliceOf`. 
+The `SliceContext` implements the fly-weight pattern for slice entries. Hence for
+two 'SliceEntry' objects x and y that originate form the same `SliceContext`
+x.equals(y) is equivalent to x == y.    
+
+#### SliceAssertions
+`SliceAssertions` is a utility class that provides a fluent API with static methods
+analogous to [AssertJ](https://joel-costigliola.github.io/assertj/). It's most important
+method is `assertThat` or it's synonym `dessert`, so that it can be used with static
+imports without conflicting with AssertJ. The most important methods of the fluent API
+are `doesNotUse`, `usesOnly` or the combination of `uses`, `and` and `only()`.
+
+Groups and Cycles
+-----------------
+
+Duplicates
+----------
+
+Usage
+=====
+
+- 
 
 Old description
 ---------------
