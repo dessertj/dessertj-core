@@ -185,8 +185,9 @@ important method is `getUsedClasses()`. This is used by the `SliceAssertions`.
 The `SliceContext` is the entry point to dessert, a factory for slices. To get your
 initial slices you can use the methods `packageOf`, `packageTreeOf` or `sliceOf`. 
 The `SliceContext` implements the fly-weight pattern for slice entries. Hence for
-two 'SliceEntry' objects x and y that originate form the same `SliceContext`
-x.equals(y) is equivalent to x == y.    
+two 'SliceEntry' objects x and y that originate from the same `SliceContext`
+x.equals(y) is equivalent to x == y. Of nothing else is specified the `SliceContext`
+operates on the current class-path.
 
 #### SliceAssertions
 `SliceAssertions` is a utility class that provides a fluent API with static methods
@@ -197,6 +198,36 @@ are `doesNotUse`, `usesOnly` or the combination of `uses`, `and` and `only()`.
 
 Groups and Cycles
 -----------------
+
+The problem with a dependency cycle is: there is no starting point. Thus you cannot use
+or test a class involved in a cycle without having all other classes available. (By using
+a mocking framework testing of an isolated class is possible with limitations.) Small 
+cycles between classes are often necessary, but big interwined cycles make your software
+a ball of wool. In such an environment testing is a nightmare, because each simple test
+needs a very complex setup that initializes all parts of the software. It is not possible
+to re-use such a software without replicating the whole infrastructure with all it's system
+requirements, event if only a small part is required.
+
+#### SliceGroup
+For cycle detection dessert provides the concept of a `SliceGroup`. A the name says, a
+`SliceGroup` is a group of `Slice` objects. The `SliceGroup` has the static convienience
+factory methods `splitByPackage` and `splitByEntry` to split up a `Slice` into smaller
+corresponding slices. By providing a `SlicePartioner` an arbitrary criterium can be used
+to split up a `Slice`. All `SliceEntry` objects the `partKey` methods maps to the same
+string will be in the same  `Slice`.
+
+#### Cycle detection
+To detect cycles for a `SliceGroup` *sg* you can use:
+
+    SliceGroup<PackageSlice> sg = SliceGroup.splitByPackage(slice);
+    SliceAssertions.dessert(sg).isCycleFree();
+
+This can be shortend to:
+
+    SliceAssertions.dessert(slice).splitByPackage().isCycleFree();
+
+#### Enforcing nesting rules
+
 
 Duplicates
 ----------

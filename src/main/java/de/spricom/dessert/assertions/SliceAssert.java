@@ -1,8 +1,6 @@
 package de.spricom.dessert.assertions;
 
-import de.spricom.dessert.groups.PackageSlice;
-import de.spricom.dessert.groups.SingleEntrySlice;
-import de.spricom.dessert.groups.SliceGroup;
+import de.spricom.dessert.groups.*;
 import de.spricom.dessert.slicing.*;
 
 public class SliceAssert {
@@ -11,6 +9,11 @@ public class SliceAssert {
 
     SliceAssert(Slice slice) {
         this.slice = slice;
+    }
+
+    SliceAssert(SliceAssert previous) {
+        this(previous.slice);
+        this.violationsRenderer = previous.violationsRenderer;
     }
 
     public SliceAssert renderWith(IllegalDependenciesRenderer renderer) {
@@ -65,7 +68,11 @@ public class SliceAssert {
         return new SliceGroupAssert<PackageSlice>(this, SliceGroup.splitByPackage(slice));
     }
 
-    public SliceGroupAssert<SingleEntrySlice> splitByClass() {
+    public SliceGroupAssert<SingleEntrySlice> splitByEntry() {
         return new SliceGroupAssert<SingleEntrySlice>(this, SliceGroup.splitByEntry(slice));
+    }
+
+    public SliceGroupAssert<PartSlice> splitBy(SlicePartioner partioner) {
+        return new SliceGroupAssert<PartSlice>(this, SliceGroup.splitBy(slice, partioner));
     }
 }

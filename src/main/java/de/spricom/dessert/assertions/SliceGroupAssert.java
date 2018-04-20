@@ -2,7 +2,6 @@ package de.spricom.dessert.assertions;
 
 import de.spricom.dessert.groups.PartSlice;
 import de.spricom.dessert.groups.SliceGroup;
-import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.slicing.SliceEntry;
 import de.spricom.dessert.util.DependencyGraph;
 import de.spricom.dessert.util.SetHelper;
@@ -12,13 +11,23 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class SliceGroupAssert<S extends PartSlice> {
-    private final SliceAssert sliceAssert;
+public class SliceGroupAssert<S extends PartSlice> extends SliceAssert {
     private final SliceGroup<S> sliceGroup;
+    private CycleRenderer<S> cycleRenderer = new DefaultCycleRenderer<S>();
 
     public SliceGroupAssert(SliceAssert sliceAssert, SliceGroup<S> sliceGroup) {
-        this.sliceAssert = sliceAssert;
+        super(sliceAssert);
         this.sliceGroup = sliceGroup;
+    }
+
+    public SliceGroupAssert(SliceGroup<S> sliceGroup) {
+        super(sliceGroup.getOriginalSlice());
+        this.sliceGroup = sliceGroup;
+    }
+
+    public SliceAssert renderWith(CycleRenderer<S> renderer) {
+        this.cycleRenderer = renderer;
+        return this;
     }
 
     public SliceGroupAssert isCycleFree() {
@@ -55,17 +64,6 @@ public class SliceGroupAssert<S extends PartSlice> {
     }
 
     private String renderCycle(DependencyGraph<S> dag) {
-        StringBuilder sb = new StringBuilder("Cycle:\n");
-        int count = 0;
-        for (Slice n : dag.getCycle()) {
-            sb.append(count == 0 ? "" : ",\n");
-            sb.append(n.toString());
-            count++;
-        }
-        return sb.toString();
-    }
-
-    public SliceAssert end() {
-        return sliceAssert;
+        return cycleRenderer.renderCycle(dag);
     }
 }

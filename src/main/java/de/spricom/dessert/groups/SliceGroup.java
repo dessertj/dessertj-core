@@ -12,6 +12,7 @@ import java.util.*;
  * naming convention etc.
  */
 public final class SliceGroup<S extends PartSlice> implements Iterable<S> {
+    private final Slice originalSlice;
     private final Map<String, S> slices;
 
     public static SliceGroup<SingleEntrySlice> splitByEntry(Slice slice) {
@@ -60,6 +61,7 @@ public final class SliceGroup<S extends PartSlice> implements Iterable<S> {
 
 
     public SliceGroup(Slice slice, SlicePartioner partitioner, PartSliceFactory<S> partSliceFactory) {
+        this.originalSlice = slice;
         Map<String, Set<SliceEntry>> parts = new HashMap<String, Set<SliceEntry>>();
         for (SliceEntry entry : slice.getSliceEntries()) {
             String partKey = partitioner.partKey(entry);
@@ -76,6 +78,10 @@ public final class SliceGroup<S extends PartSlice> implements Iterable<S> {
                 throw new IllegalArgumentException(slice.toString() + " is not unique");
             }
         }
+    }
+
+    public Slice getOriginalSlice() {
+        return originalSlice;
     }
 
     @Override
