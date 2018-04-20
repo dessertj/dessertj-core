@@ -227,10 +227,21 @@ This can be shortend to:
     SliceAssertions.dessert(slice).splitByPackage().isCycleFree();
 
 #### Enforcing nesting rules
+One method to prevent package cycles is establishing dependency rules for nested packages. For
+example dessert follows the rule a deeper nested package must not use a class from it's parent
+package. `SliceGroup` implements the `Iterator` interface, hence the following code can be used
+to enforce this rule:
 
+    Slice slice = new SliceContext().packageTreeOf("de.spricom.dessert");
+    SliceGroup<PackageSlice> packages = SliceGroup.splitByPackage(slice);
+
+    packages.forEach(pckg -> SliceAssertions.assertThat(pckg)
+            .doesNotUse(pckg.getParentPackage(packages)));
 
 Duplicates
 ----------
+
+
 
 Usage
 =====
