@@ -111,8 +111,8 @@ Using dessert
 - MVP-slices
 - exploring dependencies
 
-Background
-==========
+Basics
+======
 
 Classes and their dependencies
 ------------------------------
@@ -238,108 +238,37 @@ to enforce this rule:
     packages.forEach(pckg -> SliceAssertions.assertThat(pckg)
             .doesNotUse(pckg.getParentPackage(packages)));
 
+The code above disallows only dependencies to direct parent packages. To disallow dependencies
+to any ancestor package one could write:
+
+    Slice slice = new SliceContext().packageTreeOf("de.spricom.dessert");
+    SliceGroup<PackageSlice> packages = SliceGroup.splitByPackage(slice);
+
+    packages.forEach(pckg -> SliceAssertions.assertThat(pckg)
+            .doesNotUse(slice.slice(entry -> pckg.getParentPackageName().startsWith(entry.getPackageName()))));
+
 Duplicates
 ----------
 
+A common source of errors are duplicate .class files on the class-path. To load a class only it's fully qualified
+name is required. Therefore the ClassLoader scan the entries on the class-path for the first .class file with
+that name. Thus the order on the class-path matters. The same .class file may appear in different libraries and
+the one loaded by the ClassLoader may not be the one you want.
 
+For dessert two `SliceEntry` objects are only equal if they point to the same .class file, thus their `getURI`
+method returns the same value. The ``getAlternatives()`` method returns all `SliceEntry` objects found by dessert
+that have the same fully qualified classname. Ideally there is only one alternative - the `SliceEntry` itself.
+
+By default the `SliceContext` scans the whole class-path and finds all duplicates (to be precise it scans all
+jar's and class-directories visible to it's `Resolver`). The `duplicates` method returns a `Slice` containing
+all duplicates. Hence the following code can be used to ensure there are none:   
+
+    ConcreteSlice duplicates = new SliceContext().duplicates();
+    StringBuilder sb = new StringBuilder();
+    duplicates.getSliceEntries().forEach(entry -> sb.append(entry.getURI()).append("\n"));
+    assertThat(duplicates.getSliceEntries()).as(sb.toString()).isEmpty();
 
 Usage
 =====
 
-- 
-
-Old description
----------------
-
-The goal of checking the dependencies of a class is to find any unintended dependency. Hence for each
-class there is a set of classes for which dependencies are permitted and an other set of classes
-for which dependencies are unwanted or disallowed.
-
-Typically the same dependency rules that apply to one class apply to other somehow related classes.
-Thus when specifying dependencies there is a group of related classes for which there may be dependencies
-to some other group of classes.
-
-A software product is constructed from different building blocks with defined interfaces within each other.
-The classes constituting a building block normally belong to the same package structure, thus they are related.
-For example in the dessert library the `de.spricom.dessert.classfile` packages analyze `.class` files, whereas
-the `de.spricom.dessert.slicing` package tracks dependencies between related classes. Therefore the `slices`
-block uses the `classfile` block, but not the other way round.
-
-A library for dependency checking needs some concept to specify such building blocks. Thus it needs a way
-to slice down the bunch of all classes into different parts. In dessert there is the `Slice` interface
-to represent one such part or building block.
-
-A `Slice` is an arbitrary set of classes. Therefore we need to
-know what a class is: Physically a class is .class file located in some directory tree or a .jar file.
-Within a directory tree a class is uniquely defined by its name and its position in the tree structure.
-This can be expressed by the fully qualified class name (fqcn), 
-i.e. `de.spricom.dessert.classfile.constpool.ConstantPool`. The same applies to a JAR file. But a class
-with the same fqcn can appear in different directories or JAR files. Thus we need
-besides the fqcn always it's container (directory or JAR file) to specify it
-uniquely.
-
-For the following a container is a directory or JAR file that could be added to the CLASSPATH to include
-all classes within the container. A class is a concrete .class file uniquely defined by its fqcn name
-and its container. Hence for the concepts below an interface or an inner class is a class because
-it has its own .class file.
-
-The classes belonging to a `Slice` are represented by `SliceEntry` objects. Each `SliceEntry` corresponds
-with a class file inside a container. The same `SliceEntry` object may belong to different `Slice` objects.
-The `SliceEntry` provides an API to access all direct dependencies of the corresponding class and other
-information (classname, implemenation class, container file) that can be used for predicates.
-
-The starting point for any dependency analysis with Dessert is the `SliceContext`. The `SliceContext` implements
-a flyweight pattern for `SliceEntry` objects. Thus for two `SliceEntry` objects `se1` and `se2`
-`se1.equals(se2)` is equivalent to `se1 == se2` if they come from the same `SliceContext`. Thus checking whether
-some dependency belongs to a `SliceSet` is very fast. For performance reasons all dependency tests should use
-the same `SliceContext`.
-
-The `SliceContext` provides some methods (`packagesOf`, `packageTreeOf`) to create an initial `Slice`
-whos slices contain all classes of a package or package-tree respectively.  
-
-Two `Slice` objects can be combined with the `with` or `without` method to a bigger or smaller `Slice`
-or the `slice` method can be used to create a smaller slices by specifying a `Predicate`.
-
-Thus it is possible to check dependency rules for other related groups of classes that have nothing to
-do with building blocks. Let's say there is a rule a presenter must not depend on a view implemetation.
-This could be implemented like this:
-
-    Slice presenters = uiSlice.slice(e -> e.getClassname().endsWith("Presenter"));
-    Slice views = uiSlice.slice(e -> e.getClassname().endsWith("ViewImpl"));
-    SliceAssertions.assertThat(persenters).doesNotUse(views);
-
-If one prefers interfaces over names the following it would read like this:
-
-    Slice presenters = uiSlice.slice(e -> Presenter.class.isAssignableFrom(e.getClass()));
-    Slice views = uiSlice.slice(e -> ViewImpl.class.isAssignableFrom(e.getClass()));
-    SliceAssertions.assertThat(persenters).doesNotUse(views);
-
-For the actual dependency checking between such `Slice` objects the `SliceAssertions` class provides 
-a fluent API.
-
-For an example of using the API see
-[DessertDependenciesTest.java](https://github.com/hajo70/dessert/blob/master/test/de/spricom/dessert/test/slicing/DessertDependenciesTest.java).
-
-Cycle detection and general dependency rules
---------------------------------------------
-
-All classes involved in a cycle are mutually dependent. Hence one cannot easily use or test a single class
-without having working and properly initialized instances of the other classes. Dessert provides an easy way
-to detect such cycles:
-
-    @Test
-    public void checkPackagesAreCycleFree() throws IOException {
-        SliceSet subPackages = new SliceContext().subPackagesOf("de.spricom.dessert");
-        SliceAssertions.dessert(subPackages).isCycleFree();
-    }
-
-One might want to enforce other general dependency rules. For example within dessert a deeper nested package
-should not use classes of its parent package. Such a rule can be enforced like this:
-
-    @Test
-    public void checkNestedPackagesShouldNotUseOuterPackages() throws IOException {
-        SliceSet subPackages = new SliceContext().subPackagesOf("de.spricom.dessert");
-        for (Slice pckg : subPackages) {
-            SliceAssertions.assertThat(pckg).doesNotUse(pckg.getParentPackage());
-        }
-    }
+tbd.    
