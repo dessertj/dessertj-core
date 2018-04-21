@@ -268,7 +268,67 @@ all duplicates. Hence the following code can be used to ensure there are none:
     duplicates.getSliceEntries().forEach(entry -> sb.append(entry.getURI()).append("\n"));
     assertThat(duplicates.getSliceEntries()).as(sb.toString()).isEmpty();
 
-Usage
-=====
+Usage Samples
+=============
 
-tbd.    
+Besides the samples given for [Cycle dectection](#cycle-detection) and finding [duplicates](#duplicates) here
+are some typical samples of using dessert.
+
+Architecture verification and documentation
+-------------------------------------------
+
+Each architecture verification requires two steps:
+
+1. Defining the building blocks
+2. Checking dependenencies between these building blocks
+
+For example the [Spring Batch Architecture](https://docs.spring.io/spring-batch/trunk/reference/html/spring-batch-intro.html#springBatchArchitecture)
+could be verified like this:
+
+    SliceContext sc = new SliceContext();
+
+    // defining the building blocks of spring-batch
+    Slice springBatchCore = sc.packageTreeOf("org.springframework.batch.core");
+    Slice springBatchTest = sc.packageTreeOf("org.springframework.batch.test");
+    Slice springBatchInfrastructure =
+            sc.packageTreeOf("org.springframework.batch")
+                    .without(springBatchCore)
+                    .without(springBatchTest);
+
+    // checking for disallowed dependencies
+    SliceAssertions.assertThat(springBatchInfrastructure).doesNotUse(springBatchCore);
+
+The package name can be replaced by a class located in the package. This makes the code more robust
+against refactorings, but harder to read:
+
+    Slice springBatchCore = sc.packageTreeOf(Job.class);
+    Slice springBatchTest = sc.packageTreeOf(StepRunner.class);
+
+The methods `doesNotUse` and `usesOnly` accept any number of building blocks:
+
+    SliceAssertions.assertThat(springBatchInfrastructure).doesNotUse(springBatchCore, springBatchTest);
+
+For `usesOnly` there is a fluent alternative for a long list of dependencies:  
+
+    SliceContext sc = new SliceContext();
+    Slice springBatchCore = sc.packageTreeOf(Job.class);
+    
+    // make sure a building block does not introduce unintended dependencies
+    SliceAssertions.assertThat(springBatchCore)
+            .uses(sc.packageTreeOf("org.springframework"))
+            .and(sc.packageTreeOf("java"))
+            .and(sc.packageTreeOf("org.apache.commons.logging"))
+            .and(sc.packageTreeOf("org.aspectj.lang.annotation"))
+            .and(sc.packageTreeOf("org.aopalliance"))
+            .and(sc.packageTreeOf("com.thoughtworks.xstream"))
+            .and(sc.packageTreeOf("com.fasterxml.jackson"))
+            .and(sc.packageTreeOf("org.w3c.dom"))
+            .only();
+
+Such a test not only verifies the architecture but it also documents it. 
+ 
+- describing a more complex architecture
+- implementation pattern verification
+- detecting usage of internal classes
+- explorative analyzation of libraries
+- refactoring simulation
