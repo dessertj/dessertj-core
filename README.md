@@ -93,24 +93,6 @@ The corresponding gradle build file looks like this:
 There is a separate [dessert-samples](https://github.com/hajo70/dessert-samples) that
 shows how to use dessert with features of Java 8.
 
-Using dessert
--------------
-
-- goal of dependency checking is finding unwanted dependencies
-- terms: building block, layer, vertical slice
-- mapping of building blocks to physical layout
-- dependencies to external libraries
-- what to check
-- operates on .class files
-- limitations
-- what is a .class file
-- what does class X dependends on class Y mean
-- elements of dessert API
-- problem of cycles
-- cycle detection
-- MVP-slices
-- exploring dependencies
-
 Basics
 ======
 
@@ -268,10 +250,17 @@ all duplicates. Hence the following code can be used to ensure there are none:
     duplicates.getSliceEntries().forEach(entry -> sb.append(entry.getURI()).append("\n"));
     assertThat(duplicates.getSliceEntries()).as(sb.toString()).isEmpty();
 
-Usage Samples
-=============
+*Note: The `SliceEntry` method `getClazz()` uses the system classloader to load a class with the corresponding
+name. Hence it always returns the same implementation and not necessarily the one that corresponds the 
+`SliceEntry`'s .class file. This will be fixed in a future version.*
 
-Besides the samples given for [Cycle dectection](#cycle-detection) and finding [duplicates](#duplicates) here
+*Note: When dependency checking considers always all `SliceEntry` objects that belong to the `Slice` even if
+some are duplicates.*
+
+Examples
+========
+
+Besides the samples given for [cycle dectection](#cycle-detection) and finding [duplicates](#duplicates) here
 are some typical samples of using dessert.
 
 Architecture verification and documentation
@@ -282,7 +271,7 @@ Each architecture verification requires two steps:
 1. Defining the building blocks
 2. Checking dependenencies between these building blocks
 
-For example the [Spring Batch Architecture](https://docs.spring.io/spring-batch/trunk/reference/html/spring-batch-intro.html#springBatchArchitecture)
+For example the [spring batch architecture](https://docs.spring.io/spring-batch/trunk/reference/html/spring-batch-intro.html#springBatchArchitecture)
 could be verified like this:
 
     SliceContext sc = new SliceContext();
@@ -326,9 +315,58 @@ For `usesOnly` there is a fluent alternative for a long list of dependencies:
             .only();
 
 Such a test not only verifies the architecture but it also documents it. 
+
+Verifiying an implementation pattern
+------------------------------------
+
+The motivation of the [MVP pattern in GWT applications](http://www.gwtproject.org/articles/mvp-architecture.html)
+was to separate view code that requires a Javascript environment from view logic that is executable in a pure
+Java environment and can be tested by simple unit-tests. Therefore the presenter must use the view implementation
+only through an interface. This can be checked like this: 
+
+    Slice presenters = mvp.slice(se -> se.getClassName().endsWith("Presenter"));
+    Slice views = mvp.slice(se -> se.getClassName().endsWith("ViewImpl"));
+    assertThat(presenters).doesNotUse(views);
+
+The sample above assumes a naming conventions for presenters and view implementations. Alternatively presenters
+and view implementations can be recognized by an interface they implement or a superclass they extend:
+
+    Slice presenters = mvp.slice(se -> Presenter.class.isAssignableFrom(se.getClazz()));
+    Slice views = mvp.slice(se -> ViewBase.class.isAssignableFrom(se.getClazz()));
+
+This sample shows that a `Slice` can be an arbitrary set of classes, it's not tied to a building block.    
+
+Detecting Usage of internal Classes
+-----------------------------------
+
+Every library has an public API and some internal classes required by the library itself to accomplish
+it's task. These internal classes should not be used by other applications, because they are subject to
+change without notice. Before Java 9 there was no way to make sure no internal classes are used. Dessert
+can detect such usages even in older versions of Java. For example if you wan't to migrate your software
+to Java 9 you should make sure on internal JDK classes are used. This can be done like this: 
+
+    SliceContext sc = new SliceContext();
+    Slice dessert = sc.packageTreeOf("de.spricom.dessert");
+
+    assertThat(dessert).doesNotUse(
+            sc.packageTreeOf("com.sun"),
+            sc.packageTreeOf("sun"));
+
+It's better practice to explicitly specify the the allowed packages than to specify what is not allowed:
+
+        assertThat(dessert).usesOnly(sc.packageTreeOf("java"));
  
-- describing a more complex architecture
-- implementation pattern verification
-- detecting usage of internal classes
-- explorative analyzation of libraries
-- refactoring simulation
+Explorative Analyzation of Libraries
+------------------------------------
+
+Typically each library comes with a bunch of dependencies. Event worse, some frameworks (i. e. Spring Boot)
+initialize and start services if some library appears on the class-path. Let's say you wan't to convert
+an CSV file to XML. Therefore you wan't to use the corresponding item-reader and -writer of Spring Batch
+without all the overhead of the framework. To find out what dependencies you need for that case you could
+use the following code:
+
+    SliceContext sc = new SliceContext();
+    Slice batchItemInfra = sc.packageTreeOf("org.springframework.batch.item.file")
+            .with(sc.packageTreeOf("org.springframework.batch.item.xml"));
+
+    dessert(batchItemInfra).uses(sc.packageTreeOf("java")).only();
