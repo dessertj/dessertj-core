@@ -74,7 +74,7 @@ A copy of the following Maven POM can be used to get started with dessert:
 
 ### Minimal Gradle Buildfile
 
-The corresponding gradle build file looks like this:
+The corresponding Gradle build file looks like this:
 
     apply plugin: 'java'
     
@@ -90,8 +90,8 @@ The corresponding gradle build file looks like this:
 
 ### Samples
 
-There is a separate [dessert-samples](https://github.com/hajo70/dessert-samples) that
-shows how to use dessert with features of Java 8.
+There is a separate [dessert-samples](https://github.com/hajo70/dessert-samples) project
+showing how to use dessert with features of Java 8.
 
 Basics
 ======
@@ -105,12 +105,12 @@ The goal of dependency checking is finding unwanted dependencies. Dessert does t
 - class
 - interface
 - annotation
-- (anyonymous) innerclass or inner interface
+- (anonymous) innerclass or inner interface
 - enum class
 
 *Note: A java source file can define more than one class.*
 
-Such a .class file X depends on an other .class file Y if X uses Y, thus
+Such a .class file X depends on another .class file Y if X uses Y, thus
 
 - X extends or implements Y
 - X has a field of type Y, 
@@ -128,7 +128,8 @@ Such a .class file X depends on an other .class file Y if X uses Y, thus
 - Import statements are no relevant, because they don't appear in a .class file.
 - It's not possible to detect all of these uses (i. e. local variables, method references)
   by reflection.
-- Jdeps does not consider classes used in annotation parameters as a dependency, but dessert does.
+- Jdeps does not consider classes used in annotation parameters as a dependency, but dessert does
+  (see [JDK-8134625](https://bugs.openjdk.java.net/browse/JDK-8134625)).
 - The compiler my have removed some source dependency that cannot be detected in the .class file
   anymore.
 
@@ -142,7 +143,7 @@ from other building blocks or they may be organized in layers or vertical slices
 Ideally there is a clear and intuitive mapping between the physical package structure and the
 building blocks of a software:
 
-![Structual Architecture](structural-architecture.svg)
+![Structural Architecture](structural-architecture.svg)
 
 Dessert helps you to move towards such a clean software design and alarms you immediately 
 if you are moving backward.
@@ -161,7 +162,7 @@ a existing `Slice`. Two slices can be combined with the methods `with` (union) a
 #### SliceEntry
 Each `SliceEntry` represents a .class file. It has methods like `getClassName()` or
 `getClazz()` to access the details of the .class to be used for predicates. It's most
-important method is `getUsedClasses()`. This is used by the `SliceAssertions`.
+important method is `getUsedClasses()` which is used by the `SliceAssertions`.
 
 #### SliceContext
 The `SliceContext` is the entry point to dessert, a factory for slices. To get your
@@ -181,22 +182,22 @@ are `doesNotUse`, `usesOnly` or the combination of `uses`, `and` and `only()`.
 Groups and Cycles
 -----------------
 
-The problem with a dependency cycle is: there is no starting point. Thus you cannot use
+The problem with a dependency cycle is: there is no starting point. Thus, you cannot use
 or test a class involved in a cycle without having all other classes available. (By using
-a mocking framework testing of an isolated class is possible with limitations.) Small 
-cycles between classes are often necessary, but big interwined cycles make your software
-a ball of wool. In such an environment testing is a nightmare, because each simple test
+a mocking framework limited testing of an isolated class is possible.) Small 
+cycles between classes are often necessary, but big intertwined cycles make your software
+a ball of wool. In such an environment testing is a nightmare because each simple test
 needs a very complex setup that initializes all parts of the software. It is not possible
-to re-use such a software without replicating the whole infrastructure with all it's system
-requirements, event if only a small part is required.
+to re-use such a software without replicating the whole infrastructure with all its system
+requirements, even if only a small part is required.
 
 #### SliceGroup
-For cycle detection dessert provides the concept of a `SliceGroup`. A the name says, a
-`SliceGroup` is a group of `Slice` objects. The `SliceGroup` has the static convienience
+For cycle detection dessert provides the concept of a `SliceGroup`. As the name says, a
+`SliceGroup` is a group of `Slice` objects. The `SliceGroup` has the static convenience
 factory methods `splitByPackage` and `splitByEntry` to split up a `Slice` into smaller
 corresponding slices. By providing a `SlicePartioner` an arbitrary criterium can be used
-to split up a `Slice`. All `SliceEntry` objects the `partKey` methods maps to the same
-string will be in the same  `Slice`.
+to split up a `Slice`. All `SliceEntry` objects the `partKey` method maps to the same
+string will be in the same `Slice`.
 
 #### Cycle detection
 To detect cycles for a `SliceGroup` *sg* you can use:
@@ -233,8 +234,8 @@ Duplicates
 ----------
 
 A common source of errors are duplicate .class files on the class-path. To load a class only it's fully qualified
-name is required. Therefore the ClassLoader scan the entries on the class-path for the first .class file with
-that name. Thus the order on the class-path matters. The same .class file may appear in different libraries and
+name is required. Therefore, the ClassLoader scans the entries on the class-path for the first .class file with
+that name. Thus, the order on the class-path matters. The same .class file may appear in different libraries and
 the one loaded by the ClassLoader may not be the one you want.
 
 For dessert two `SliceEntry` objects are only equal if they point to the same .class file, thus their `getURI`
@@ -242,7 +243,7 @@ method returns the same value. The ``getAlternatives()`` method returns all `Sli
 that have the same fully qualified classname. Ideally there is only one alternative - the `SliceEntry` itself.
 
 By default the `SliceContext` scans the whole class-path and finds all duplicates (to be precise it scans all
-jar's and class-directories visible to it's `Resolver`). The `duplicates` method returns a `Slice` containing
+jar's and class-directories visible to its `Resolver`). The `duplicates` method returns a `Slice` containing
 all duplicates. Hence the following code can be used to ensure there are none:   
 
     ConcreteSlice duplicates = new SliceContext().duplicates();
@@ -260,7 +261,7 @@ some are duplicates.*
 Examples
 ========
 
-Besides the samples given for [cycle dectection](#cycle-detection) and finding [duplicates](#duplicates) here
+Besides the samples given for [cycle detection](#cycle-detection) and finding [duplicates](#duplicates) here
 are some typical samples of using dessert.
 
 Architecture verification and documentation
@@ -269,7 +270,7 @@ Architecture verification and documentation
 Each architecture verification requires two steps:
 
 1. Defining the building blocks
-2. Checking dependenencies between these building blocks
+2. Checking dependencies between these building blocks
 
 For example the [spring batch architecture](https://docs.spring.io/spring-batch/trunk/reference/html/spring-batch-intro.html#springBatchArchitecture)
 could be verified like this:
@@ -316,12 +317,12 @@ For `usesOnly` there is a fluent alternative for a long list of dependencies:
 
 Such a test not only verifies the architecture but it also documents it. 
 
-Verifiying an implementation pattern
-------------------------------------
+Verifying an implementation pattern
+-----------------------------------
 
 The motivation of the [MVP pattern in GWT applications](http://www.gwtproject.org/articles/mvp-architecture.html)
-was to separate view code that requires a Javascript environment from view logic that is executable in a pure
-Java environment and can be tested by simple unit-tests. Therefore the presenter must use the view implementation
+was to separate view code that requires a JavaScript environment from view logic that is executable in a pure
+Java environment and can be tested by simple unit-tests. Therefore, the presenter must use the view implementation
 only through an interface. This can be checked like this: 
 
     Slice presenters = mvp.slice(se -> se.getClassName().endsWith("Presenter"));
@@ -339,11 +340,11 @@ This sample shows that a `Slice` can be an arbitrary set of classes, it's not ti
 Detecting Usage of internal Classes
 -----------------------------------
 
-Every library has an public API and some internal classes required by the library itself to accomplish
-it's task. These internal classes should not be used by other applications, because they are subject to
+Every library has a public API and some internal classes required by the library itself to accomplish
+its task. These internal classes should not be used by other applications, because they are subject to
 change without notice. Before Java 9 there was no way to make sure no internal classes are used. Dessert
-can detect such usages even in older versions of Java. For example if you wan't to migrate your software
-to Java 9 you should make sure on internal JDK classes are used. This can be done like this: 
+can detect such usages even in older versions of Java. For example, if you want to migrate your software
+to Java 9 you should make sure no internal JDK classes are used. This can be done like this: 
 
     SliceContext sc = new SliceContext();
     Slice dessert = sc.packageTreeOf("de.spricom.dessert");
@@ -352,16 +353,16 @@ to Java 9 you should make sure on internal JDK classes are used. This can be don
             sc.packageTreeOf("com.sun"),
             sc.packageTreeOf("sun"));
 
-It's better practice to explicitly specify the the allowed packages than to specify what is not allowed:
+It's better practice to explicitly specify the allowed packages than to specify what is not allowed:
 
         assertThat(dessert).usesOnly(sc.packageTreeOf("java"));
  
 Explorative Analyzation of Libraries
 ------------------------------------
 
-Typically each library comes with a bunch of dependencies. Event worse, some frameworks (i. e. Spring Boot)
-initialize and start services if some library appears on the class-path. Let's say you wan't to convert
-an CSV file to XML. Therefore you wan't to use the corresponding item-reader and -writer of Spring Batch
+Typically each library comes with a bunch of dependencies. Even worse, some frameworks (i. e. Spring Boot)
+initialize and start services if some library appears on the class-path. Let's say you want to convert
+an CSV file to XML. Therefore you want to use the corresponding item-reader and -writer of Spring Batch
 without all the overhead of the framework. To find out what dependencies you need for that case you could
 use the following code:
 
@@ -370,3 +371,5 @@ use the following code:
             .with(sc.packageTreeOf("org.springframework.batch.item.xml"));
 
     dessert(batchItemInfra).uses(sc.packageTreeOf("java")).only();
+    
+The resulting failure lists all dependencies besides the Java runtime classes.
