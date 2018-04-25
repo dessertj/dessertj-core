@@ -362,7 +362,7 @@ Explorative Analyzation of Libraries
 
 Typically each library comes with a bunch of dependencies. Even worse, some frameworks (i. e. Spring Boot)
 initialize and start services if some library appears on the class-path. Let's say you want to convert
-an CSV file to XML. Therefore you want to use the corresponding item-reader and -writer of Spring Batch
+an CSV file to XML. Therefore, you want to use the corresponding item-reader and -writer of Spring Batch
 without all the overhead of the framework. To find out what dependencies you need for that case you could
 use the following code:
 
