@@ -296,6 +296,18 @@ public final class SliceContext {
         }
     }
 
+    public File rootOf(String classname) {
+        ClassEntry cf = resolver.getClassEntry(classname);
+        if (cf == null) {
+            return null;
+        }
+        return cf.getPackage().getRootFile();
+    }
+
+    public File rootOf(Class<?> clazz) {
+        return rootOf(clazz.getName());
+    }
+
     public boolean isUseClassLoader() {
         return useClassLoader;
     }
