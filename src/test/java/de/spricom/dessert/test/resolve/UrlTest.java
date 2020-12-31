@@ -42,7 +42,7 @@ public class UrlTest {
         dump(url);
         File root = getRootFile(Test.class);
         assertThat(root).isFile();
-        assertThat(root.getName()).isEqualTo("junit-4.12.jar");
+        assertThat(root.getName()).isEqualTo("junit-4.13.1.jar");
     }
 
     private void dump(URL url) throws URISyntaxException {

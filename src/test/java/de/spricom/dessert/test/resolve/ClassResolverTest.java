@@ -69,7 +69,7 @@ public class ClassResolverTest {
         assertThat(resolver.getRootDirs()).isNotEmpty();
         assertThat(resolver.getRootJars()).isNotEmpty();
         assertThat(resolver.getRootDirs().size() + resolver.getRootJars().size()).isEqualTo(resolver.getRootFiles().size());
-        assertThat(resolver.getRootJars()).is(new ContainsFile("junit-4.12.jar"));
+        assertThat(resolver.getRootJars()).is(new ContainsFile("junit-4.13.1.jar"));
     }
 
     static class ContainsFile extends Condition<Collection<?>> {
