@@ -1,7 +1,5 @@
 package de.spricom.dessert.resolve;
 
-import com.sun.org.apache.bcel.internal.classfile.ConstantClass;
-import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.resolve.sample.Nested;
 import org.fest.assertions.Condition;

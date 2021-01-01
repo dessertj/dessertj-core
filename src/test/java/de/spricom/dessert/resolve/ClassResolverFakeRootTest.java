@@ -16,7 +16,7 @@ public class ClassResolverFakeRootTest {
     @Test
     public void testSimpleFakeRoot() throws IOException {
         ClassResolver resolver = new ClassResolver();
-        FakeRoot root = new FakeRoot(new File("/root"));
+        FakeRoot root = new FakeRoot(new File("/rootx"));
         resolver.addRoot(root);
         root.add("de.sample.Fake");
 
