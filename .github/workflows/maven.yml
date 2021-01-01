@@ -21,4 +21,4 @@ jobs:
       with:
         java-version: 6
     - name: Build with Maven
-      run: ./mvnw -B verify
+      run: . mvnw -B verify
