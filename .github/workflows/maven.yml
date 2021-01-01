@@ -22,15 +22,6 @@ jobs:
       with:
         java-version: 8
 
-    # Resolving dependencies with Java 6 is not possible
-    - name: Resolve Dependencies
-      run: . mvnw -B dependency:go-offline
-
-    - name: Set up JDK 1.6
-      uses: actions/setup-java@v1
-      with:
-        java-version: 6
-
     - name: Build with Maven
       run: . mvnw -B verify
 
