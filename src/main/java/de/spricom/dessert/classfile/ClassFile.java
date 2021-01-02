@@ -13,26 +13,22 @@ import java.io.InputStream;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * Wraps the information contained in a .class file according
+ * to the <a href="https://docs.oracle.com/javase/specs/jvms/se15/html/jvms-4.html">
+ * Java Virtual Machine Specification</a>.
+ *
+ */
 public class ClassFile {
     public static final int MAGIC = 0xCAFEBABE;
 
-    public static final int ACC_PUBLIC = 0x0001; // Declared public; may be
-    // accessed from outside its
-    // package.
-    public static final int ACC_FINAL = 0x0010; // Declared final; no subclasses
-    // allowed.
-    public static final int ACC_SUPER = 0x0020; // Treat superclass methods
-    // specially when invoked by the
-    // invokespecial instruction.
-    public static final int ACC_INTERFACE = 0x0200; // Is an interface, not a
-    // class.
-    public static final int ACC_ABSTRACT = 0x0400; // Declared abstract; must
-    // not be instantiated.
-    public static final int ACC_SYNTHETIC = 0x1000; // Declared synthetic; not
-    // present in the source
-    // code.
-    public static final int ACC_ANNOTATION = 0x2000; // Declared as an
-    // annotation type.
+    public static final int ACC_PUBLIC = 0x0001; // Declared public; may be accessed from outside its package.
+    public static final int ACC_FINAL = 0x0010; // Declared final; no subclasses allowed.
+    public static final int ACC_SUPER = 0x0020; // Treat superclass methods specially when invoked by the invokespecial instruction.
+    public static final int ACC_INTERFACE = 0x0200; // Is an interface, not a class.
+    public static final int ACC_ABSTRACT = 0x0400; // Declared abstract; must not be instantiated.
+    public static final int ACC_SYNTHETIC = 0x1000; // Declared synthetic; not present in the source code.
+    public static final int ACC_ANNOTATION = 0x2000; // Declared as an annotation type.
     public static final int ACC_ENUM = 0x4000; // Declared as an enum type.
 
     private int minorVersion;
@@ -118,18 +114,7 @@ public class ClassFile {
         return constantPool.getUtf8String(is.readUnsignedShort());
     }
 
-    static class FilteringTreeSet extends TreeSet<String> {
-        @Override
-        public boolean add(String classname) {
-            if ("javafx.event.Event".equals(classname)) {
-                new Throwable("Adding " + classname).printStackTrace();
-            }
-            return super.add(classname);
-        }
-    }
-
     public Set<String> getDependentClasses() {
-//        Set<String> classNames = new FilteringTreeSet();
         Set<String> classNames = new TreeSet<String>();
         constantPool.addDependentClassNames(classNames);
         for (FieldInfo fieldInfo : fields) {
@@ -143,18 +128,6 @@ public class ClassFile {
         }
         classNames.remove(thisClass);
         return classNames;
-    }
-
-    private void removeOuterClassForStaticInnerClasses(Set<String> classNames) {
-        for (AttributeInfo attribute : attributes) {
-            if (attribute instanceof InnerClassesAttribute) {
-                for (InnerClass innerClass : ((InnerClassesAttribute) attribute).getInnerClasses()) {
-                    if (innerClass.isIndependetOfOuterClass(thisClass)) {
-                        classNames.remove(innerClass.getOuterClassName());
-                    }
-                }
-            }
-        }
     }
 
     public String dumpConstantPool() {

@@ -31,7 +31,7 @@ public class ClassResolverTest {
         assertThat(cp.getSubPackages()).hasSize(0);
         assertThat(cp.getParent().getPackageName()).isEqualTo("de.spricom.dessert.classfile");
 
-        assertThat(cp.getClasses()).hasSize(19);
+        assertThat(cp.getClasses()).hasSize(21);
         ClassEntry cf = resolver.getClassEntry(ConstantPool.class.getName());
         assertThat(cf.getClassfile().getThisClass()).isEqualTo(ConstantPool.class.getName());
         assertThat(cf.getPackage()).isSameAs(cp);

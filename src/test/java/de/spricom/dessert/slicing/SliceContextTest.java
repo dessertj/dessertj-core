@@ -28,15 +28,28 @@ public class SliceContextTest {
         assertThat(slice.getSliceEntries()).hasSize(3);
     }
 
+    /**
+     * Use @code{find target/classes/de/spricom/dessert/classfile/constpool -iname "*.class" | wc -l}
+     * to determine the expected result.
+     */
     @Test
     public void testPackageTreeForSinglePackage() {
+        int numberOfContantPoolClasses = 21;
         Slice slice = sc.packageTreeOf(ConstantPool.class);
-        assertThat(slice.getSliceEntries()).hasSize(19);
+        assertThat(slice.getSliceEntries()).hasSize(numberOfContantPoolClasses);
     }
 
+
+    /**
+     * The exepected result is the sum of
+     * @code{find target/classes/de/spricom/dessert/classfile -iname "*.class" | wc -l} and
+     * @code{find target/test-classes/de/spricom/dessert/classfile -iname "*.class" | wc -l}.
+     */
     @Test
     public void testPackageTreeForSubpackages() {
+        int numberOfClassfileClasses = 44;
+        int numberofClassfileTestClasses = 22;
         Slice slice = sc.packageTreeOf(ClassFile.class);
-        assertThat(slice.getSliceEntries()).hasSize(65);
+        assertThat(slice.getSliceEntries()).hasSize(numberOfClassfileClasses + numberofClassfileTestClasses);
     }
 }
