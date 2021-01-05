@@ -1,4 +1,4 @@
-package de.spricom.dessert.classfile.samples;
+package de.spricom.dessert.samples.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

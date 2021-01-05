@@ -28,11 +28,11 @@ public class ElementValue implements DependencyHolder {
 		case 'S':
 		case 'Z':
 		case 's':
-			constantValue = constantPool.getConstantValue(is.readUnsignedShort());
+			constantValue = constantPool.getConstantPoolEntry(is.readUnsignedShort());
 			break;
 		case 'e':
 			type = constantPool.getFieldType(is.readUnsignedShort());
-			constantValue = constantPool.getConstantValue(is.readUnsignedShort());
+			constantValue = constantPool.getConstantPoolEntry(is.readUnsignedShort());
 			break;
 		case 'c':
 			type = constantPool.getFieldType(is.readUnsignedShort());
@@ -83,5 +83,38 @@ public class ElementValue implements DependencyHolder {
 
 	public ElementValue[] getValues() {
 		return values;
+	}
+
+	public String toString() {
+		switch (tag) {
+			case 'B':
+			case 'C':
+			case 'D':
+			case 'F':
+			case 'I':
+			case 'J':
+			case 'S':
+			case 'Z':
+			case 's':
+				return constantValue.toString();
+			case 'e':
+				return "enum " + type + ": " + constantValue;
+			case 'c':
+				return "class " + type;
+			case '@':
+				return "@" + annotation;
+			case '[':
+				StringBuilder sb = new StringBuilder("[");
+				for (ElementValue value : values) {
+					if (sb.length() > 1) {
+						sb.append(", ");
+					}
+					sb.append(value);
+				}
+				sb.append("]");
+				return sb.toString();
+			default:
+				throw new IllegalArgumentException("Invalid ElementValue tag: " + tag);
+		}
 	}
 }

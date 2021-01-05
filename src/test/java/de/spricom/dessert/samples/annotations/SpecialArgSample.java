@@ -1,4 +1,4 @@
-package de.spricom.dessert.classfile.samples;
+package de.spricom.dessert.samples.annotations;
 
 /**
  * This class uses a parameter annotation. The dependency to that annotation must be detected.

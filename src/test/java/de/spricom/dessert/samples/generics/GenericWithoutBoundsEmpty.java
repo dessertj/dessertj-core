@@ -1,4 +1,6 @@
-package de.spricom.dessert.classfile.samples;
+package de.spricom.dessert.samples.generics;
+
+import de.spricom.dessert.samples.base.Something;
 
 /**
  * According to 'jdeps' this class does not have a dependency to java.lang.Object.

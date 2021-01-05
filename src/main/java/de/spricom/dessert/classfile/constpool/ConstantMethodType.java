@@ -1,5 +1,6 @@
 package de.spricom.dessert.classfile.constpool;
 
+import java.util.BitSet;
 import java.util.Set;
 
 class ConstantMethodType extends ConstantPoolEntry {
@@ -8,6 +9,11 @@ class ConstantMethodType extends ConstantPoolEntry {
 
 	public ConstantMethodType(int referenceIndex) {
 		this.descriptorIndex = referenceIndex;
+	}
+
+	@Override
+	void recordReferences(BitSet references) {
+		references.set(descriptorIndex);
 	}
 
 	@Override
@@ -21,7 +27,7 @@ class ConstantMethodType extends ConstantPoolEntry {
 
 	@Override
 	public void addDependentClassNames(Set<String> classNames) {
-		ConstantUtf8 descriptor = (ConstantUtf8) getConstantPoolEntry(descriptorIndex);
+		ConstantUtf8 descriptor = getConstantPoolEntry(descriptorIndex);
 		new MethodType(descriptor.getValue()).addDependentClassNames(classNames);
 	}
 }

@@ -1,7 +1,7 @@
 package de.spricom.dessert.resolve;
 
 import de.spricom.dessert.classfile.constpool.ConstantPool;
-import de.spricom.dessert.resolve.sample.Nested;
+import de.spricom.dessert.samples.base.Foo;
 import org.fest.assertions.Condition;
 import org.junit.Assume;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public class ClassResolverTest {
         assertThat(cp.getSubPackages()).hasSize(0);
         assertThat(cp.getParent().getPackageName()).isEqualTo("de.spricom.dessert.classfile");
 
-        assertThat(cp.getClasses()).hasSize(21);
+        assertThat(cp.getClasses()).hasSize(22);
         ClassEntry cf = resolver.getClassEntry(ConstantPool.class.getName());
         assertThat(cf.getClassfile().getThisClass()).isEqualTo(ConstantPool.class.getName());
         assertThat(cf.getPackage()).isSameAs(cp);
@@ -54,7 +54,7 @@ public class ClassResolverTest {
         ClassPackage cp1 = resolver.getPackage("de.spricom.dessert");
         assertThat(cp1.getAlternatives()).hasSize(2);
 
-        String classname = Nested.class.getName();
+        String classname = Foo.class.getName();
         ClassEntry cf1 = resolver.getClassEntry(classname);
         assertThat(cf1.getClassfile().getThisClass()).isEqualTo(classname);
         assertThat(resolver.getClassEntry(cf1.getPackage().getRootFile(), classname)).isSameAs(cf1);

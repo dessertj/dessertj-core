@@ -1,5 +1,7 @@
 package de.spricom.dessert.classfile.constpool;
 
+import java.util.BitSet;
+
 class ConstantString extends ConstantPoolEntry implements ConstantValue<String>  {
 	public static final int TAG = 8;
 	private final int stringIndex;
@@ -9,8 +11,13 @@ class ConstantString extends ConstantPoolEntry implements ConstantValue<String> 
 	}
 
 	@Override
+	void recordReferences(BitSet references) {
+		references.set(stringIndex);
+	}
+
+	@Override
 	public String dump() {
-		return "string: " + getConstantPoolEntry(stringIndex).dump();
+		return "\"" + getConstantPoolEntry(stringIndex).dump() + "\"";
 	}
 
 	public int getStringIndex() {

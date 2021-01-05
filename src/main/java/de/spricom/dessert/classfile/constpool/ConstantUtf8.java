@@ -10,7 +10,26 @@ class ConstantUtf8 extends ConstantPoolEntry implements ConstantValue<String> {
 
 	@Override
 	public String dump() {
-		return "\"" + value + "\"";
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < value.length(); i++) {
+			int c = value.charAt(i);
+			if (c == '\n') {
+				sb.append("\\n\n");
+			} else if (c == '\r') {
+					sb.append("\\r");
+			} else if (c == '\t') {
+				sb.append("\\t");
+			} else if (c == '\f') {
+				sb.append("\\f");
+			} else if (c == '\\') {
+				sb.append("\\\\");
+			} else if (Character.isISOControl(c) || !Character.isDefined(c)) {
+				sb.append(String.format("\\u%04d", c));
+			} else {
+				sb.append((char)c);
+			}
+		}
+		return sb.toString();
 	}
 
 	public String getValue() {

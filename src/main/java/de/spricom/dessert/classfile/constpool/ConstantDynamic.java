@@ -3,12 +3,12 @@ package de.spricom.dessert.classfile.constpool;
 import java.util.BitSet;
 import java.util.Set;
 
-class ConstantInvokeDynamic extends ConstantPoolEntry {
-	public static final int TAG = 18;
+class ConstantDynamic extends ConstantPoolEntry {
+	public static final int TAG = 17;
 	private final int bootstrapMethodAttrIndex;
 	private final int nameAndTypeIndex;
 
-	public ConstantInvokeDynamic(int bootstrapMethodAttrIndex, int referenceIndex) {
+	public ConstantDynamic(int bootstrapMethodAttrIndex, int referenceIndex) {
 		this.bootstrapMethodAttrIndex = bootstrapMethodAttrIndex;
 		this.nameAndTypeIndex = referenceIndex;
 	}

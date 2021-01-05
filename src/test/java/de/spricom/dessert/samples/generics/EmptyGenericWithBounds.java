@@ -1,4 +1,4 @@
-package de.spricom.dessert.classfile.samples;
+package de.spricom.dessert.samples.generics;
 
 import java.nio.Buffer;
 

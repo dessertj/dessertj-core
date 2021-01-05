@@ -1,4 +1,6 @@
-package de.spricom.dessert.classfile.samples;
+package de.spricom.dessert.samples.annotations;
+
+import de.spricom.dessert.samples.enums.SomeEnum;
 
 import java.lang.annotation.*;
 

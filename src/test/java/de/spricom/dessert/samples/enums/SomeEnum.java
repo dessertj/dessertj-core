@@ -1,4 +1,4 @@
-package de.spricom.dessert.classfile.samples;
+package de.spricom.dessert.samples.enums;
 
 public enum SomeEnum {
     VAL1,

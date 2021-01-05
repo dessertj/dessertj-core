@@ -27,4 +27,8 @@ public class ElementValuePair  implements DependencyHolder {
 	public ElementValue getValue() {
 		return value;
 	}
+
+	public String toString() {
+		return name + "=" + value;
+	}
 }

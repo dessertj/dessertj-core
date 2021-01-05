@@ -63,6 +63,7 @@ public class CodeAttribute extends AttributeInfo {
         this.exceptionTable = exceptionTable;
     }
 
+    @Override
     public AttributeInfo[] getAttributes() {
         return attributes;
     }

@@ -2,15 +2,18 @@ package de.spricom.dessert.classfile.constpool;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.BitSet;
 import java.util.Set;
 
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
 
 public final class ConstantPool implements DependencyHolder {
     private final ConstantPoolEntry[] entries;
+    private final BitSet referenced;
 
     public ConstantPool(DataInputStream is) throws IOException {
         entries = new ConstantPoolEntry[is.readUnsignedShort()];
+        referenced = new BitSet(entries.length);
         int index = 1;
         while (index < entries.length) {
             int offset = 1;
@@ -57,6 +60,9 @@ public final class ConstantPool implements DependencyHolder {
                 case ConstantMethodType.TAG:
                     entries[index] = new ConstantMethodType(is.readUnsignedShort());
                     break;
+                case ConstantDynamic.TAG:
+                    entries[index] = new ConstantDynamic(is.readUnsignedShort(), is.readUnsignedShort());
+                    break;
                 case ConstantInvokeDynamic.TAG:
                     entries[index] = new ConstantInvokeDynamic(is.readUnsignedShort(), is.readUnsignedShort());
                     break;
@@ -70,6 +76,7 @@ public final class ConstantPool implements DependencyHolder {
                     throw new IOException("Unknown constant-pool tag: " + tag);
             }
             entries[index].setConstantPool(this);
+            entries[index].recordReferences(referenced);
             index += offset;
         }
     }
@@ -79,25 +86,27 @@ public final class ConstantPool implements DependencyHolder {
         int index = 0;
         for (ConstantPoolEntry entry : entries) {
             if (entry != null) {
-                sb.append(String.format("%4d: %s%n", index, entry.dump()));
+                sb.append(String.format("%4d: %-16s %s%n", index, entry.typeName() + referenced(index), entry.dump()));
             }
             index++;
         }
         return sb.toString();
     }
 
-    ConstantPoolEntry getEntry(int index) {
-        return entries[index];
-    }
-
-    public String getUtf8String(int index) {
-        ConstantUtf8 entry = (ConstantUtf8) entries[index];
-        return entry.getValue();
+    private String referenced(int index) {
+        return referenced.get(index) ? "." : "";
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getConstantValue(int index) {
-        return (T) entries[index];
+    public <T> T getConstantPoolEntry(int index) {
+        referenced.set(index);
+        ConstantPoolEntry entry = entries[index];
+        return (T) entry;
+    }
+
+    public String getUtf8String(int index) {
+        ConstantUtf8 entry = getConstantPoolEntry(index);
+        return entry.getValue();
     }
 
     public FieldType getFieldType(int index) {
@@ -105,7 +114,7 @@ public final class ConstantPool implements DependencyHolder {
     }
 
     public String getConstantClassName(int index) {
-        ConstantClass clazz = (ConstantClass) entries[index];
+        ConstantClass clazz = getConstantPoolEntry(index);
         if (clazz == null) {
             return null;
         }
@@ -113,12 +122,12 @@ public final class ConstantPool implements DependencyHolder {
     }
 
     public String getNameAndTypeName(int index) {
-        ConstantNameAndType nameAndType = (ConstantNameAndType) entries[index];
+        ConstantNameAndType nameAndType = getConstantPoolEntry(index);
         return getUtf8String(nameAndType.getNameIndex());
     }
 
     public MethodType getNameAndTypeMethodType(int index) {
-        ConstantNameAndType nameAndType = (ConstantNameAndType) entries[index];
+        ConstantNameAndType nameAndType = getConstantPoolEntry(index);
         return new MethodType(getUtf8String(nameAndType.getDescriptorIndex()));
     }
 

@@ -34,4 +34,12 @@ public class Annotation implements DependencyHolder {
 	public ElementValuePair[] getElementValuePairs() {
 		return elementValuePairs;
 	}
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder(type.toString());
+		for (ElementValuePair pair : elementValuePairs) {
+			sb.append(" ").append(pair);
+		}
+		return sb.toString();
+	}
 }

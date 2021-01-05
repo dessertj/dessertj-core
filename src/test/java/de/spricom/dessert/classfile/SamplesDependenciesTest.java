@@ -1,9 +1,9 @@
 package de.spricom.dessert.classfile;
 
-import de.spricom.dessert.classfile.samples.EmptyGenericWithBounds;
-import de.spricom.dessert.classfile.samples.GenericWithoutBounds;
-import de.spricom.dessert.classfile.samples.GenericWithoutBoundsEmpty;
-import de.spricom.dessert.classfile.samples.SpecialArgSample;
+import de.spricom.dessert.samples.generics.EmptyGenericWithBounds;
+import de.spricom.dessert.samples.generics.GenericWithoutBounds;
+import de.spricom.dessert.samples.generics.GenericWithoutBoundsEmpty;
+import de.spricom.dessert.samples.annotations.SpecialArgSample;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ public class SamplesDependenciesTest {
     public void testAnnotation() throws IOException {
         ClassFile cf = new ClassFile(SpecialArgSample.class);
         assertThat(cf.getDependentClasses()).containsOnly(
-                "de.spricom.dessert.classfile.samples.SpecialArg",
+                "de.spricom.dessert.samples.annotations.SpecialArg",
                 "java.io.PrintStream",
                 "java.lang.Object",
                 "java.lang.String",
@@ -38,7 +38,7 @@ public class SamplesDependenciesTest {
         ClassFile cf = new ClassFile(GenericWithoutBounds.class);
         assertThat(cf.getDependentClasses()).containsOnly(
                 "java.lang.Object",
-                "de.spricom.dessert.classfile.samples.Something");
+                "de.spricom.dessert.samples.base.Something");
     }
 
     /**
@@ -51,7 +51,7 @@ public class SamplesDependenciesTest {
         ClassFile cf = new ClassFile(GenericWithoutBoundsEmpty.class);
         assertThat(cf.getDependentClasses()).containsOnly(
                 "java.lang.Object",
-                "de.spricom.dessert.classfile.samples.Something");
+                "de.spricom.dessert.samples.base.Something");
     }
 
     /**

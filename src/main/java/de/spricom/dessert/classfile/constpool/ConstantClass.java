@@ -1,5 +1,6 @@
 package de.spricom.dessert.classfile.constpool;
 
+import java.util.BitSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,6 +12,11 @@ class ConstantClass extends ConstantPoolEntry {
 
 	public ConstantClass(int nameIndex) {
 		this.nameIndex = nameIndex;
+	}
+
+	@Override
+	void recordReferences(BitSet references) {
+		references.set(nameIndex);
 	}
 
 	@Override

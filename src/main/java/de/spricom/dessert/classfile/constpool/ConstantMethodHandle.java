@@ -1,5 +1,7 @@
 package de.spricom.dessert.classfile.constpool;
 
+import java.util.BitSet;
+
 class ConstantMethodHandle extends ConstantPoolEntry {
 	public static final int TAG = 15;
 	private final int referenceKind;
@@ -8,6 +10,11 @@ class ConstantMethodHandle extends ConstantPoolEntry {
 	public ConstantMethodHandle(int referenceKind, int referenceIndex) {
 		this.referenceKind = referenceKind;
 		this.referenceIndex = referenceIndex;
+	}
+
+	@Override
+	void recordReferences(BitSet references) {
+		references.set(referenceIndex);
 	}
 
 	@Override

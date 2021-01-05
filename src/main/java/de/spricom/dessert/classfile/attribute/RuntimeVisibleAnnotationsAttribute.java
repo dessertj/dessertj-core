@@ -28,4 +28,20 @@ public class RuntimeVisibleAnnotationsAttribute extends AttributeInfo {
 			annotation.addDependentClassNames(classNames);
 		}
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder(super.toString());
+		boolean first = true;
+		for (Annotation annotation : annotations) {
+			if (first) {
+				sb.append(": ");
+				first = false;
+			} else {
+				sb.append(", ");
+			}
+			sb.append(annotation);
+		}
+		return sb.toString();
+	}
 }
