@@ -17,7 +17,8 @@ class ConstantModule extends ConstantPoolEntry implements ConstantValue<String> 
 
 	@Override
 	public String dump() {
-		return "name: " + getConstantPoolEntry(nameIndex).dump();
+		ConstantUtf8 name = getConstantPoolEntry(nameIndex);
+		return dump(index(nameIndex), name.getValue());
 	}
 
 	public int getNameIndex() {

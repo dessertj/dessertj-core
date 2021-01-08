@@ -34,7 +34,7 @@ public class SliceContextTest {
      */
     @Test
     public void testPackageTreeForSinglePackage() {
-        int expectedNumberOfClasses = 22;
+        int expectedNumberOfClasses = 25;
         Slice slice = sc.packageTreeOf(ConstantPool.class);
         assertThat(slice.getSliceEntries()).hasSize(expectedNumberOfClasses);
     }
@@ -47,8 +47,8 @@ public class SliceContextTest {
      */
     @Test
     public void testPackageTreeForSubpackages() {
-        int expectedNumberOfClasses = 45;
-        int expectedNumberOfTestClasses = 12;
+        int expectedNumberOfClasses = 46;
+        int expectedNumberOfTestClasses = 14;
         Slice slice = sc.packageTreeOf(ClassFile.class);
         assertThat(slice.getSliceEntries()).hasSize(expectedNumberOfClasses + expectedNumberOfTestClasses);
     }

@@ -7,6 +7,7 @@ class ConstantMethodref extends ConstantPoolEntry {
 	public static final int TAG = 10;
 	private final int classIndex;
 	private final int nameAndTypeIndex;
+	private MethodType type;
 
 	public ConstantMethodref(int classIndex, int nameAndTypeIndex) {
 		this.classIndex = classIndex;
@@ -21,23 +22,30 @@ class ConstantMethodref extends ConstantPoolEntry {
 
 	@Override
 	public String dump() {
-		return "methodref: " + getConstantPoolEntry(classIndex).dump() + ", "
-				+ getConstantPoolEntry(nameAndTypeIndex).dump();
+		return dump(index(classIndex) + "." + index(nameAndTypeIndex),
+				getClassName() + "." + getMethodName() + ": " + getMethodType());
 	}
 
-	public int getClassIndex() {
-		return classIndex;
+	public String getClassName() {
+		ConstantClass clazz = getConstantPoolEntry(classIndex);
+		return clazz.getName();
 	}
 
-	public int getNameAndTypeIndex() {
-		return nameAndTypeIndex;
+	public String getMethodName() {
+		ConstantNameAndType nameAndType = getConstantPoolEntry(nameAndTypeIndex);
+		return nameAndType.getName();
 	}
-	
+
+	public MethodType getMethodType() {
+		if (type == null) {
+			ConstantNameAndType nameAndType = getConstantPoolEntry(nameAndTypeIndex);
+			type = new MethodType(nameAndType.getDescriptor());
+		}
+		return type;
+	}
+
 	@Override
 	public void addDependentClassNames(Set<String> classNames) {
-		ConstantNameAndType nameAndType = getConstantPoolEntry(nameAndTypeIndex);
-		ConstantUtf8 descriptor = getConstantPoolEntry(nameAndType.getDescriptorIndex());
-		new MethodType(descriptor.getValue()).addDependentClassNames(classNames);
+		getMethodType().addDependentClassNames(classNames);
 	}
-
 }

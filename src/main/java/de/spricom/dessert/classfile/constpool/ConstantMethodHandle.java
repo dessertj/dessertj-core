@@ -3,30 +3,33 @@ package de.spricom.dessert.classfile.constpool;
 import java.util.BitSet;
 
 class ConstantMethodHandle extends ConstantPoolEntry {
-	public static final int TAG = 15;
-	private final int referenceKind;
-	private final int referenceIndex;
+    public static final int TAG = 15;
 
-	public ConstantMethodHandle(int referenceKind, int referenceIndex) {
-		this.referenceKind = referenceKind;
-		this.referenceIndex = referenceIndex;
-	}
+    private final ReferenceKind referenceKind;
+    private final int referenceIndex;
 
-	@Override
-	void recordReferences(BitSet references) {
-		references.set(referenceIndex);
-	}
+    public ConstantMethodHandle(int referenceKind, int referenceIndex) {
+        this.referenceKind = ReferenceKind.values()[referenceKind];
+        this.referenceIndex = referenceIndex;
+    }
 
-	@Override
-	public String dump() {
-		return "methodHandle " + referenceIndex + ": " + getConstantPoolEntry(referenceIndex).dump();
-	}
+    @Override
+    void recordReferences(BitSet references) {
+        references.set(referenceIndex);
+    }
 
-	public int getReferenceKind() {
-		return referenceKind;
-	}
+    @Override
+    public String dump() {
+        return dump(referenceKind.ordinal() + ":" + referenceIndex,
+                referenceKind.name() + "(" + referenceKind.interpretation + "): "
+                        + getConstantPoolEntry(referenceIndex).dump());
+    }
 
-	public int getReferenceIndex() {
-		return referenceIndex;
-	}
+    public ReferenceKind getReferenceKind() {
+        return referenceKind;
+    }
+
+    <T extends ConstantPoolEntry> T getReference() {
+        return getConstantPoolEntry(referenceIndex);
+    }
 }

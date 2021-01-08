@@ -1,7 +1,8 @@
 package de.spricom.dessert.resolve;
 
 import de.spricom.dessert.classfile.constpool.ConstantPool;
-import de.spricom.dessert.samples.base.Foo;
+import de.spricom.dessert.classfile.dependency.DependencyHolder;
+import de.spricom.dessert.samples.basic.Foo;
 import org.fest.assertions.Condition;
 import org.junit.Assume;
 import org.junit.Test;
@@ -25,15 +26,15 @@ public class ClassResolverTest {
         assertThat(resolver.getRootDirs().size()).isLessThanOrEqualTo(2);
         assertThat(resolver.getRootJars()).isEmpty();
 
-        ClassPackage cp = resolver.getPackage("de.spricom.dessert.classfile.constpool");
-        assertThat(cp.getPackageName()).isEqualTo("de.spricom.dessert.classfile.constpool");
-        assertThat(cp.toString()).isEqualTo("de.spricom.dessert.classfile.constpool");
+        ClassPackage cp = resolver.getPackage("de.spricom.dessert.samples.basic");
+        assertThat(cp.getPackageName()).isEqualTo("de.spricom.dessert.samples.basic");
+        assertThat(cp.toString()).isEqualTo("de.spricom.dessert.samples.basic");
         assertThat(cp.getSubPackages()).hasSize(0);
-        assertThat(cp.getParent().getPackageName()).isEqualTo("de.spricom.dessert.classfile");
+        assertThat(cp.getParent().getPackageName()).isEqualTo("de.spricom.dessert.samples");
 
-        assertThat(cp.getClasses()).hasSize(22);
-        ClassEntry cf = resolver.getClassEntry(ConstantPool.class.getName());
-        assertThat(cf.getClassfile().getThisClass()).isEqualTo(ConstantPool.class.getName());
+        assertThat(cp.getClasses()).hasSize(5);
+        ClassEntry cf = resolver.getClassEntry(Foo.class.getName());
+        assertThat(cf.getClassfile().getThisClass()).isEqualTo(Foo.class.getName());
         assertThat(cf.getPackage()).isSameAs(cp);
         assertThat(cf.getAlternatives()).isNull();
 
@@ -51,14 +52,16 @@ public class ClassResolverTest {
         Assume.assumeTrue("There are separate directories for productive an test classes",
                 resolver.getRootDirs().size() == 2);
 
-        ClassPackage cp1 = resolver.getPackage("de.spricom.dessert");
+        ClassPackage cp1 = resolver.getPackage("de.spricom.dessert.classfile");
         assertThat(cp1.getAlternatives()).hasSize(2);
 
         String classname = Foo.class.getName();
         ClassEntry cf1 = resolver.getClassEntry(classname);
         assertThat(cf1.getClassfile().getThisClass()).isEqualTo(classname);
         assertThat(resolver.getClassEntry(cf1.getPackage().getRootFile(), classname)).isSameAs(cf1);
-        assertThat(resolver.getClassEntry(resolver.getPackage(ConstantPool.class.getPackage().getName()).getRootFile(), classname)).isNull();
+        assertThat(resolver.getClassEntry(
+                resolver.getPackage(DependencyHolder.class.getPackage().getName()).getRootFile(),
+                classname)).isNull();
     }
 
     @Test

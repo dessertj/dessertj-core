@@ -116,7 +116,6 @@ public class ClassFile {
 
     public Set<String> getDependentClasses() {
         Set<String> classNames = new TreeSet<String>();
-        constantPool.addDependentClassNames(classNames);
         for (FieldInfo fieldInfo : fields) {
             fieldInfo.addDependentClassNames(classNames);
         }
@@ -126,12 +125,55 @@ public class ClassFile {
         for (AttributeInfo attribute : attributes) {
             attribute.addDependentClassNames(classNames);
         }
+        constantPool.addDependentClassNames(classNames);
         classNames.remove(thisClass);
         return classNames;
     }
 
     public String dumpConstantPool() {
         return constantPool.dumpConstantPool();
+    }
+
+    /**
+     * Produces a dump similar to <i>javap -verbose</i>.
+     *
+     * @return the dump
+     */
+    public String dump() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(constantPool.dumpConstantPool());
+        String indent = "\t";
+
+
+        sb.append("Interfaces:\n");
+        for (String ifc : getInterfaces()) {
+            sb.append(indent).append(ifc).append("\n");
+        }
+        sb.append("Fields:\n");
+        for (FieldInfo field : getFields()) {
+            sb.append(indent).append(field).append("\n");
+            dump(field.getAttributes(), sb, indent + indent);
+        }
+        sb.append("Methods:\n");
+        for (MethodInfo method : getMethods()) {
+            sb.append(indent).append(method).append("\n");
+            dump(method.getAttributes(), sb, indent + indent);
+        }
+        sb.append("Class attributes:\n");
+        dump(getAttributes(), sb, indent);
+
+        sb.append("Dependent classes:\n");
+        for (String dependentClass : getDependentClasses()) {
+            sb.append("  ").append(dependentClass).append("\n");
+        }
+        return sb.toString();
+    }
+
+    private void dump(AttributeInfo[] attributes, StringBuilder sb, String indent) {
+        for (AttributeInfo attribute : attributes) {
+            sb.append(indent).append("attribute: ").append(attribute).append("\n");
+            dump(attribute.getAttributes(), sb, indent + "\t");
+        }
     }
 
     public int getMinorVersion() {

@@ -3,41 +3,10 @@ package de.spricom.dessert.classfile.constpool;
 import java.util.BitSet;
 import java.util.Set;
 
-class ConstantInvokeDynamic extends ConstantPoolEntry {
+class ConstantInvokeDynamic extends ConstantDynamic {
 	public static final int TAG = 18;
-	private final int bootstrapMethodAttrIndex;
-	private final int nameAndTypeIndex;
 
 	public ConstantInvokeDynamic(int bootstrapMethodAttrIndex, int referenceIndex) {
-		this.bootstrapMethodAttrIndex = bootstrapMethodAttrIndex;
-		this.nameAndTypeIndex = referenceIndex;
+		super(bootstrapMethodAttrIndex, referenceIndex);
 	}
-
-	@Override
-	void recordReferences(BitSet references) {
-		references.set(nameAndTypeIndex);
-	}
-
-	@Override
-	public String dump() {
-		return "bootstrapMethodAttrIndex " + bootstrapMethodAttrIndex
-				+ ": " + getConstantPoolEntry(nameAndTypeIndex).dump();
-	}
-
-	public int getNameAndTypeIndex() {
-		return nameAndTypeIndex;
-	}
-
-	public int getBootstrapMethodAttrIndex() {
-		return bootstrapMethodAttrIndex;
-	}
-	
-
-	@Override
-	public void addDependentClassNames(Set<String> classNames) {
-		ConstantNameAndType nameAndType = getConstantPoolEntry(nameAndTypeIndex);
-		ConstantUtf8 descriptor = getConstantPoolEntry(nameAndType.getDescriptorIndex());
-		new MethodType(descriptor.getValue()).addDependentClassNames(classNames);
-	}
-
 }

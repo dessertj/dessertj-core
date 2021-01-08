@@ -1,4 +1,4 @@
-package de.spricom.dessert.samples.base;
+package de.spricom.dessert.samples.basic;
 
 public class Literals {
 

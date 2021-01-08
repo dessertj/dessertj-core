@@ -7,6 +7,7 @@ class ConstantDynamic extends ConstantPoolEntry {
 	public static final int TAG = 17;
 	private final int bootstrapMethodAttrIndex;
 	private final int nameAndTypeIndex;
+	private MethodType type;
 
 	public ConstantDynamic(int bootstrapMethodAttrIndex, int referenceIndex) {
 		this.bootstrapMethodAttrIndex = bootstrapMethodAttrIndex;
@@ -20,24 +21,30 @@ class ConstantDynamic extends ConstantPoolEntry {
 
 	@Override
 	public String dump() {
-		return "bootstrapMethodAttrIndex " + bootstrapMethodAttrIndex
-				+ ": " + getConstantPoolEntry(nameAndTypeIndex).dump();
-	}
-
-	public int getNameAndTypeIndex() {
-		return nameAndTypeIndex;
+		return dump("[" + bootstrapMethodAttrIndex + "]" + "." + index(nameAndTypeIndex),
+				"[bootstrapMethodAttrIndex=" + bootstrapMethodAttrIndex + "]"
+						+ "." + getMethodName() + ": " + getMethodType());
 	}
 
 	public int getBootstrapMethodAttrIndex() {
 		return bootstrapMethodAttrIndex;
 	}
-	
+
+	public String getMethodName() {
+		ConstantNameAndType nameAndType = getConstantPoolEntry(nameAndTypeIndex);
+		return nameAndType.getName();
+	}
+
+	public MethodType getMethodType() {
+		if (type == null) {
+			ConstantNameAndType nameAndType = getConstantPoolEntry(nameAndTypeIndex);
+			type = new MethodType(nameAndType.getDescriptor());
+		}
+		return type;
+	}
 
 	@Override
 	public void addDependentClassNames(Set<String> classNames) {
-		ConstantNameAndType nameAndType = getConstantPoolEntry(nameAndTypeIndex);
-		ConstantUtf8 descriptor = getConstantPoolEntry(nameAndType.getDescriptorIndex());
-		new MethodType(descriptor.getValue()).addDependentClassNames(classNames);
+		getMethodType().addDependentClassNames(classNames);
 	}
-
 }

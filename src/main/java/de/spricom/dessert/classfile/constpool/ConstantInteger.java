@@ -10,7 +10,7 @@ class ConstantInteger extends ConstantPoolEntry implements ConstantValue<Integer
 
 	@Override
 	public String dump() {
-		return "integer: " + value;
+		return Integer.toString(value);
 	}
 
 	public Integer getValue() {

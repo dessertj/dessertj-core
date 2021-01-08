@@ -1,13 +1,16 @@
 package de.spricom.dessert.classfile.constpool;
 
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
 
 public class FieldType  implements DependencyHolder {
-	private int arrayDimensions;
+	private static final Pattern DESCRIPTOR_PATTERN = Pattern.compile("\\[*([BCDEFIJSZ]|L\\S+;)");
+
 	private Class<?> primitiveType;
 	private String objectTypeClassname;
+	private int arrayDimensions;
 
 	public FieldType(String descriptor) {
 		int i = 0;
@@ -35,7 +38,9 @@ public class FieldType  implements DependencyHolder {
 			primitiveType = Long.TYPE;
 			break;
 		case 'L':
-			objectTypeClassname = descriptor.substring(i + 1, descriptor.indexOf(';', i + 1)).replace('/', '.');
+			objectTypeClassname = descriptor
+					.substring(i + 1, descriptor.indexOf(';', i + 1))
+					.replace('/', '.');
 			break;
 		case 'S':
 			primitiveType = Short.TYPE;
@@ -94,16 +99,16 @@ public class FieldType  implements DependencyHolder {
 		}
 	}
 
+	public static boolean isFieldDescriptor(String descriptor) {
+		return DESCRIPTOR_PATTERN.matcher(descriptor).matches();
+	}
+
 	public String toString() {
 		return getDeclaration();
 	}
 
 	public String getObjectTypeClassname() {
 		return objectTypeClassname;
-	}
-
-	public void setObjectTypeClassname(String objectTypeClassname) {
-		this.objectTypeClassname = objectTypeClassname;
 	}
 
 	public int getArrayDimensions() {

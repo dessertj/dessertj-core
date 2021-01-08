@@ -10,7 +10,7 @@ class ConstantFloat extends ConstantPoolEntry implements ConstantValue<Float> {
 
 	@Override
 	public String dump() {
-		return "float: " + value;
+		return Float.toString(value);
 	}
 
 	public Float getValue() {

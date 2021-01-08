@@ -10,7 +10,7 @@ class ConstantLong extends ConstantPoolEntry  implements ConstantValue<Long> {
 
 	@Override
 	public String dump() {
-		return "long: " + value;
+		return Long.toString(value);
 	}
 
 	public Long getValue() {

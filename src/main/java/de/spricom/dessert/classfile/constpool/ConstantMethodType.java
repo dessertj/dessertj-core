@@ -4,30 +4,34 @@ import java.util.BitSet;
 import java.util.Set;
 
 class ConstantMethodType extends ConstantPoolEntry {
-	public static final int TAG = 16;
-	private final int descriptorIndex;
+    public static final int TAG = 16;
+    private final int descriptorIndex;
+    private MethodType type;
 
-	public ConstantMethodType(int referenceIndex) {
-		this.descriptorIndex = referenceIndex;
-	}
+    public ConstantMethodType(int referenceIndex) {
+        this.descriptorIndex = referenceIndex;
+    }
 
-	@Override
-	void recordReferences(BitSet references) {
-		references.set(descriptorIndex);
-	}
+    @Override
+    void recordReferences(BitSet references) {
+        references.set(descriptorIndex);
+    }
 
-	@Override
-	public String dump() {
-		return "methodType: " + getConstantPoolEntry(descriptorIndex).dump();
-	}
+    @Override
+    public String dump() {
+        return dump(index(descriptorIndex), getMethodType().toString());
+    }
 
-	public int getDescriptorIndex() {
-		return descriptorIndex;
-	}
+    public MethodType getMethodType() {
+        if (type == null) {
+            ConstantUtf8 descriptor = getConstantPoolEntry(descriptorIndex);
+            type = new MethodType(descriptor.getValue());
+        }
+        return type;
+    }
 
-	@Override
-	public void addDependentClassNames(Set<String> classNames) {
-		ConstantUtf8 descriptor = getConstantPoolEntry(descriptorIndex);
-		new MethodType(descriptor.getValue()).addDependentClassNames(classNames);
-	}
+    @Override
+    public void addDependentClassNames(Set<String> classNames) {
+        getMethodType().addDependentClassNames(classNames);
+    }
 }

@@ -87,13 +87,17 @@ public class InnerClassesDependenciesTest {
                 "java.util.Set",
                 "org.fest.assertions.Assertions",
                 "org.fest.assertions.CollectionAssert",
-                "org.junit.Test"
+                "org.junit.Test",
+                "java.io.PrintStream",
+                "java.lang.String",
+                "java.lang.System"
         );
     }
 
     @Test
     public void testInnerInterface() throws IOException {
         ClassFile cf = new ClassFile(AnInnerInterface.class);
+        System.out.println(cf.dump());
         assertThat(cf.getDependentClasses()).containsOnly(
                 "de.spricom.dessert.classfile.InnerClassesDependenciesTest",
                 "java.lang.Object"

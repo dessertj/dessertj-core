@@ -17,15 +17,11 @@ class ConstantString extends ConstantPoolEntry implements ConstantValue<String> 
 
 	@Override
 	public String dump() {
-		return "\"" + getConstantPoolEntry(stringIndex).dump() + "\"";
+		return dump(index(stringIndex), "\"" + getValue() + "\"");
 	}
 
-	public int getStringIndex() {
-		return stringIndex;
-	}
-
-	@Override
 	public String getValue() {
-		return getConstantPool().getUtf8String(stringIndex);
+		ConstantUtf8 value = getConstantPoolEntry(stringIndex);
+		return value.getValue();
 	}
 }

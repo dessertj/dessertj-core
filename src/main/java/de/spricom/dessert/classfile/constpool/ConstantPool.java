@@ -86,7 +86,9 @@ public final class ConstantPool implements DependencyHolder {
         int index = 0;
         for (ConstantPoolEntry entry : entries) {
             if (entry != null) {
-                sb.append(String.format("%4d: %-16s %s%n", index, entry.typeName() + referenced(index), entry.dump()));
+                sb.append(String.format("%6s: %-16s %s%n", ConstantPoolEntry.index(index),
+                        entry.typeName() + referenced(index),
+                        entry.dump()));
             }
             index++;
         }
@@ -109,10 +111,6 @@ public final class ConstantPool implements DependencyHolder {
         return entry.getValue();
     }
 
-    public FieldType getFieldType(int index) {
-        return new FieldType(getUtf8String(index));
-    }
-
     public String getConstantClassName(int index) {
         ConstantClass clazz = getConstantPoolEntry(index);
         if (clazz == null) {
@@ -121,19 +119,25 @@ public final class ConstantPool implements DependencyHolder {
         return clazz.getName();
     }
 
+    public FieldType getFieldType(int index) {
+        ConstantUtf8 entry = getConstantPoolEntry(index);
+        return new FieldType(entry.getValue());
+    }
+
     public String getNameAndTypeName(int index) {
         ConstantNameAndType nameAndType = getConstantPoolEntry(index);
-        return getUtf8String(nameAndType.getNameIndex());
+        return nameAndType.getName();
     }
 
     public MethodType getNameAndTypeMethodType(int index) {
         ConstantNameAndType nameAndType = getConstantPoolEntry(index);
-        return new MethodType(getUtf8String(nameAndType.getDescriptorIndex()));
+        return new MethodType(nameAndType.getDescriptor());
     }
 
     @Override
     public void addDependentClassNames(Set<String> classNames) {
-        for (ConstantPoolEntry entry : entries) {
+        for (int i = 1; i < entries.length; i++) {
+            ConstantPoolEntry entry = entries[i];
             if (entry != null) {
                 entry.addDependentClassNames(classNames);
             }

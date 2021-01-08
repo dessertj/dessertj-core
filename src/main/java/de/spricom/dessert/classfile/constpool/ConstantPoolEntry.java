@@ -8,24 +8,32 @@ import java.util.Set;
 abstract class ConstantPoolEntry implements DependencyHolder {
 	private ConstantPool constantPool;
 
-	public abstract String dump();
-	
-	public void addDependentClassNames(Set<String> classNames) {
+	void recordReferences(BitSet references) {
 	}
 
 	<T extends ConstantPoolEntry> T getConstantPoolEntry(int index) {
 		return constantPool.getConstantPoolEntry(index);
 	}
 
+	public void addDependentClassNames(Set<String> classNames) {
+	}
+
+	public String toString() {
+		return typeName() + " " + dump();
+	}
+
 	String typeName() {
 		return getClass().getSimpleName().substring("Constant".length());
 	}
 
-	void recordReferences(BitSet references) {
+	abstract String dump();
+
+	String dump(String content, String comment) {
+		return String.format("%-16s// %s", content, comment);
 	}
 
-	public String toString() {
-		return dump();
+	static String index(int index) {
+		return "#" + index;
 	}
 
 	ConstantPool getConstantPool() {

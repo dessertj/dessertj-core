@@ -10,7 +10,7 @@ class ConstantDouble extends ConstantPoolEntry implements ConstantValue<Double> 
 
 	@Override
 	public String dump() {
-		return "double: " + value;
+		return Double.toString(value);
 	}
 
 	public Double getValue() {

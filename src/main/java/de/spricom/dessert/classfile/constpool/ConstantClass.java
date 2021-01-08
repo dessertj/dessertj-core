@@ -21,15 +21,16 @@ class ConstantClass extends ConstantPoolEntry {
 
 	@Override
 	public String dump() {
-		return "class: " + getConstantPoolEntry(nameIndex).dump();
+		return dump(index(nameIndex), getName());
 	}
 
-	public int getNameIndex() {
-		return nameIndex;
+	public String getPhysicalName() {
+		ConstantUtf8 name = getConstantPoolEntry(nameIndex);
+		return name.getValue();
 	}
 
 	public String getName() {
-		return getConstantPool().getUtf8String(nameIndex).replace('/', '.');
+		return getPhysicalName().replace('/', '.');
 	}
 
 	public void addDependentClassNames(Set<String> classNames) {

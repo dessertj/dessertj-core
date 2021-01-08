@@ -7,6 +7,7 @@ class ConstantFieldref extends ConstantPoolEntry {
 	public static final int TAG = 9;
 	private final int classIndex;
 	private final int nameAndTypeIndex;
+	private FieldType type;
 
 	public ConstantFieldref(int classIndex, int nameAndTypeIndex) {
 		this.classIndex = classIndex;
@@ -21,22 +22,30 @@ class ConstantFieldref extends ConstantPoolEntry {
 
 	@Override
 	public String dump() {
-		return "fieldref: " + getConstantPoolEntry(classIndex).dump() + ", "
-				+ getConstantPoolEntry(nameAndTypeIndex).dump();
+		return dump(index(classIndex) + "." + index(nameAndTypeIndex),
+				getClassName() + "." + getFieldName() + ": " + getFieldType());
 	}
 
-	public int getClassIndex() {
-		return classIndex;
+	public String getClassName() {
+		ConstantClass clazz = getConstantPoolEntry(classIndex);
+		return clazz.getName();
 	}
 
-	public int getNameAndTypeIndex() {
-		return nameAndTypeIndex;
+	public String getFieldName() {
+		ConstantNameAndType nameAndType = getConstantPoolEntry(nameAndTypeIndex);
+		return nameAndType.getName();
+	}
+
+	public FieldType getFieldType() {
+		if (type == null) {
+			ConstantNameAndType nameAndType = getConstantPoolEntry(nameAndTypeIndex);
+			type = new FieldType(nameAndType.getDescriptor());
+		}
+		return type;
 	}
 
 	@Override
 	public void addDependentClassNames(Set<String> classNames) {
-		ConstantNameAndType nameAndType = getConstantPoolEntry(nameAndTypeIndex);
-		ConstantUtf8 descriptor = getConstantPoolEntry(nameAndType.getDescriptorIndex());
-		new FieldType(descriptor.getValue()).addDependentClassNames(classNames);
+		getFieldType().addDependentClassNames(classNames);
 	}
 }

@@ -38,7 +38,7 @@ public class SamplesDependenciesTest {
         ClassFile cf = new ClassFile(GenericWithoutBounds.class);
         assertThat(cf.getDependentClasses()).containsOnly(
                 "java.lang.Object",
-                "de.spricom.dessert.samples.base.Something");
+                "de.spricom.dessert.samples.basic.Something");
     }
 
     /**
@@ -49,9 +49,10 @@ public class SamplesDependenciesTest {
     @Test
     public void testGenericWithoutBoundsEmpty() throws IOException {
         ClassFile cf = new ClassFile(GenericWithoutBoundsEmpty.class);
+        System.out.println(cf.dump());
         assertThat(cf.getDependentClasses()).containsOnly(
                 "java.lang.Object",
-                "de.spricom.dessert.samples.base.Something");
+                "de.spricom.dessert.samples.basic.Something");
     }
 
     /**
