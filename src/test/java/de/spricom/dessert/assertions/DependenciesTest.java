@@ -95,7 +95,8 @@ public class DependenciesTest {
         SliceAssertions.assertThat(classfile).usesOnly(javaIO);
         Slice dependencyHolder = sc.packageTreeOf(DependencyHolder.class.getPackage());
         SliceAssertions.assertThat(dependencyHolder).usesOnly(javaCore);
-        SliceAssertions.assertThat(sc.packageTreeOf(ConstantPool.class.getPackage())).usesOnly(javaIO, dependencyHolder);
+        SliceAssertions.assertThat(sc.packageTreeOf(ConstantPool.class.getPackage()).without(tests()))
+                .usesOnly(javaIO, dependencyHolder);
     }
 
     /**
