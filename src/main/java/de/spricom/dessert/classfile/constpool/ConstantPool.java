@@ -86,7 +86,7 @@ public final class ConstantPool implements DependencyHolder {
         int index = 0;
         for (ConstantPoolEntry entry : entries) {
             if (entry != null) {
-                sb.append(String.format("%6s: %-16s %s%n", ConstantPoolEntry.index(index),
+                sb.append(String.format("%6s: %-18s %s%n", ConstantPoolEntry.index(index),
                         entry.typeName() + referenced(index),
                         entry.dump()));
             }

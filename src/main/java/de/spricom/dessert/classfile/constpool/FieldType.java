@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
 
 public class FieldType  implements DependencyHolder {
-	private static final Pattern DESCRIPTOR_PATTERN = Pattern.compile("\\[*([BCDEFIJSZ]|L\\S+;)");
+	private static final Pattern DESCRIPTOR_PATTERN = Pattern.compile("\\[*([BCDFIJSZ]|L\\S+;)");
 
 	private Class<?> primitiveType;
 	private String objectTypeClassname;

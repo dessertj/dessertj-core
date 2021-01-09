@@ -7,6 +7,7 @@ import java.util.Set;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.constpool.ConstantValue;
 import de.spricom.dessert.classfile.constpool.FieldType;
+import de.spricom.dessert.classfile.constpool.MethodType;
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
 
 public class ElementValue implements DependencyHolder {
@@ -63,6 +64,18 @@ public class ElementValue implements DependencyHolder {
 				value.addDependentClassNames(classNames);
 			}
 		}
+		if (tag == 's') {
+			extractTypeFromString(classNames);
+		}
+	}
+
+	private void extractTypeFromString(Set<String> classNames) {
+		String descriptor = (String) constantValue.getValue();
+		if (FieldType.isFieldDescriptor(descriptor)) {
+			new FieldType(descriptor).addDependentClassNames(classNames);
+		} else if (MethodType.isMethodDescriptor(descriptor)) {
+			new MethodType(descriptor).addDependentClassNames(classNames);
+		}
 	}
 
 	public char getTag() {
@@ -86,6 +99,8 @@ public class ElementValue implements DependencyHolder {
 	}
 
 	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(tag).append(":");
 		switch (tag) {
 			case 'B':
 			case 'C':
@@ -95,26 +110,32 @@ public class ElementValue implements DependencyHolder {
 			case 'J':
 			case 'S':
 			case 'Z':
+				sb.append(constantValue.getValue());
+				break;
 			case 's':
-				return constantValue.toString();
+				sb.append("\"" + constantValue.getValue() + "\"");
+				break;
 			case 'e':
-				return "enum " + type + ": " + constantValue;
+				sb.append("enum " + type + ": " + constantValue.getValue());
+				break;
 			case 'c':
-				return "class " + type;
+				sb.append("class ").append(type);
+				break;
 			case '@':
-				return "@" + annotation;
+				sb.append(annotation);
+				break;
 			case '[':
-				StringBuilder sb = new StringBuilder("[");
 				for (ElementValue value : values) {
-					if (sb.length() > 1) {
+					if (sb.length() > 2) {
 						sb.append(", ");
 					}
 					sb.append(value);
 				}
 				sb.append("]");
-				return sb.toString();
+				break;
 			default:
 				throw new IllegalArgumentException("Invalid ElementValue tag: " + tag);
 		}
+		return sb.toString();
 	}
 }
