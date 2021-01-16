@@ -4,7 +4,7 @@ import de.spricom.dessert.util.Predicate;
 
 import java.util.Set;
 
-public class DeferredSlice implements Slice {
+public class DeferredSlice extends AbstractSlice {
     private final Slice derivedSlice;
     private final EntryResolver resolver;
     private ConcreteSlice concreteSlice;

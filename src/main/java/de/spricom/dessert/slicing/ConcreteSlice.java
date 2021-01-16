@@ -8,12 +8,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A Slice is as Set of the packageSlices for which the elements of each
- * {@link PackageSlice} have common properties. I. e. they belong to the same parent
- * package, the same root, implement the same interface, comply with the same
- * naming convention etc.
+ * A concrete slice is a concrete collection of classes.
+ * Hence it contains a set of {@link SliceEntry}.
+ * The sum or difference on concrete slices
+ * produce a concrete slice again.
  */
-public class ConcreteSlice implements Slice {
+public class ConcreteSlice extends AbstractSlice {
     private final Set<SliceEntry> entries;
 
     protected ConcreteSlice(Set<SliceEntry> entries) {

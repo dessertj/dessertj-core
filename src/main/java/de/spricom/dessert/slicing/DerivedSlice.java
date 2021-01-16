@@ -5,7 +5,7 @@ import de.spricom.dessert.util.Predicate;
 import java.util.HashSet;
 import java.util.Set;
 
-final class DerivedSlice implements Slice {
+final class DerivedSlice extends AbstractSlice {
     private final Predicate<SliceEntry> predicate;
     private final Set<SliceEntry> cache = new HashSet<SliceEntry>();
 
