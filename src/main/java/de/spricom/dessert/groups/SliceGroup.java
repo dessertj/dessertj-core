@@ -1,7 +1,7 @@
 package de.spricom.dessert.groups;
 
 import de.spricom.dessert.slicing.Slice;
-import de.spricom.dessert.slicing.SliceEntry;
+import de.spricom.dessert.slicing.Clazz;
 
 import java.util.*;
 
@@ -19,13 +19,13 @@ public final class SliceGroup<S extends PartSlice> implements Iterable<S> {
         return new SliceGroup<SingleEntrySlice>(slice,
                 new SlicePartioner() {
                     @Override
-                    public String partKey(SliceEntry entry) {
+                    public String partKey(Clazz entry) {
                         return entry.getClassName();
                     }
                 },
                 new PartSliceFactory<SingleEntrySlice>() {
                     @Override
-                    public SingleEntrySlice createPartSlice(Set<SliceEntry> entries, String partKey) {
+                    public SingleEntrySlice createPartSlice(Set<Clazz> entries, String partKey) {
                         assert entries.size() == 1 : entries + " must contain exactly one entry";
                         return new SingleEntrySlice(entries.iterator().next());
                     }
@@ -36,13 +36,13 @@ public final class SliceGroup<S extends PartSlice> implements Iterable<S> {
         return new SliceGroup<PackageSlice>(slice,
                 new SlicePartioner() {
                     @Override
-                    public String partKey(SliceEntry entry) {
+                    public String partKey(Clazz entry) {
                         return entry.getPackageName();
                     }
                 },
                 new PartSliceFactory<PackageSlice>() {
                     @Override
-                    public PackageSlice createPartSlice(Set<SliceEntry> entries, String partKey) {
+                    public PackageSlice createPartSlice(Set<Clazz> entries, String partKey) {
                         return new PackageSlice(partKey, entries);
                     }
                 });
@@ -53,7 +53,7 @@ public final class SliceGroup<S extends PartSlice> implements Iterable<S> {
                 partioner,
                 new PartSliceFactory<PartSlice>() {
                     @Override
-                    public PartSlice createPartSlice(Set<SliceEntry> entries, String partKey) {
+                    public PartSlice createPartSlice(Set<Clazz> entries, String partKey) {
                         return new PartSlice(entries, partKey);
                     }
                 });
@@ -62,18 +62,18 @@ public final class SliceGroup<S extends PartSlice> implements Iterable<S> {
 
     public SliceGroup(Slice slice, SlicePartioner partitioner, PartSliceFactory<S> partSliceFactory) {
         this.originalSlice = slice;
-        Map<String, Set<SliceEntry>> parts = new HashMap<String, Set<SliceEntry>>();
-        for (SliceEntry entry : slice.getSliceEntries()) {
+        Map<String, Set<Clazz>> parts = new HashMap<String, Set<Clazz>>();
+        for (Clazz entry : slice.getSliceEntries()) {
             String partKey = partitioner.partKey(entry);
-            Set<SliceEntry> partEntries = parts.get(partKey);
+            Set<Clazz> partEntries = parts.get(partKey);
             if (partEntries == null) {
-                partEntries = new HashSet<SliceEntry>();
+                partEntries = new HashSet<Clazz>();
                 parts.put(partKey, partEntries);
             }
             partEntries.add(entry);
         }
         slices = new TreeMap<String, S>();
-        for (Map.Entry<String, Set<SliceEntry>> part : parts.entrySet()) {
+        for (Map.Entry<String, Set<Clazz>> part : parts.entrySet()) {
             if (slices.put(part.getKey(), partSliceFactory.createPartSlice(part.getValue(), part.getKey())) != null) {
                 throw new IllegalArgumentException(slice.toString() + " is not unique");
             }

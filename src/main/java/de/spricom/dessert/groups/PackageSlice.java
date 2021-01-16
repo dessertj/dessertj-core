@@ -1,6 +1,6 @@
 package de.spricom.dessert.groups;
 
-import de.spricom.dessert.slicing.SliceEntry;
+import de.spricom.dessert.slicing.Clazz;
 
 import java.util.Collections;
 import java.util.Set;
@@ -17,7 +17,7 @@ import java.util.Set;
  */
 public class PackageSlice extends PartSlice {
 
-    PackageSlice(String packageName, Set<SliceEntry> entries) {
+    PackageSlice(String packageName, Set<Clazz> entries) {
         super(entries, packageName);
     }
 
@@ -37,7 +37,7 @@ public class PackageSlice extends PartSlice {
     public PackageSlice getParentPackage(SliceGroup<PackageSlice> group) {
         PackageSlice parentPackage = group.getByPartKey(getParentPackageName());
         if (parentPackage == null) {
-            parentPackage = new PackageSlice(getParentPackageName(), Collections.<SliceEntry>emptySet());
+            parentPackage = new PackageSlice(getParentPackageName(), Collections.<Clazz>emptySet());
         }
         return parentPackage;
     }

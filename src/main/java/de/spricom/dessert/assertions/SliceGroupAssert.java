@@ -2,7 +2,7 @@ package de.spricom.dessert.assertions;
 
 import de.spricom.dessert.groups.PartSlice;
 import de.spricom.dessert.groups.SliceGroup;
-import de.spricom.dessert.slicing.SliceEntry;
+import de.spricom.dessert.slicing.Clazz;
 import de.spricom.dessert.util.DependencyGraph;
 import de.spricom.dessert.util.SetHelper;
 
@@ -31,7 +31,7 @@ public class SliceGroupAssert<S extends PartSlice> extends SliceAssert {
     }
 
     public SliceGroupAssert isCycleFree() {
-        Map<S, Set<SliceEntry>> dependencies = mapDependencies();
+        Map<S, Set<Clazz>> dependencies = mapDependencies();
         DependencyGraph<S> dag = new DependencyGraph<S>();
         for (S n : sliceGroup) {
             for (S m : sliceGroup) {
@@ -47,17 +47,17 @@ public class SliceGroupAssert<S extends PartSlice> extends SliceAssert {
         return this;
     }
 
-    private Map<S, Set<SliceEntry>> mapDependencies() {
-        Map<S, Set<SliceEntry>> dependencies = new HashMap<S, Set<SliceEntry>>();
+    private Map<S, Set<Clazz>> mapDependencies() {
+        Map<S, Set<Clazz>> dependencies = new HashMap<S, Set<Clazz>>();
         for (S slice : sliceGroup) {
             dependencies.put(slice, getDependencies(slice));
         }
         return dependencies;
     }
 
-    private Set<SliceEntry> getDependencies(S slice) {
-        Set<SliceEntry> dependencies = new HashSet<SliceEntry>();
-        for (SliceEntry entry : slice.getSliceEntries()) {
+    private Set<Clazz> getDependencies(S slice) {
+        Set<Clazz> dependencies = new HashSet<Clazz>();
+        for (Clazz entry : slice.getSliceEntries()) {
             dependencies.addAll(entry.getUsedClasses());
         }
         return dependencies;

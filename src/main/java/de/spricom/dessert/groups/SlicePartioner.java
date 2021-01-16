@@ -1,7 +1,7 @@
 package de.spricom.dessert.groups;
 
-import de.spricom.dessert.slicing.SliceEntry;
+import de.spricom.dessert.slicing.Clazz;
 
 public interface SlicePartioner {
-    String partKey(SliceEntry entry);
+    String partKey(Clazz entry);
 }

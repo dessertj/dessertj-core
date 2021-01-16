@@ -15,23 +15,15 @@ public class DeferredSlice extends AbstractSlice {
     }
 
     @Override
-    public Slice with(final Slice other) {
+    public Slice combine(final Slice other) {
         if (concreteSlice != null) {
-            return concreteSlice.with(other);
+            return concreteSlice.combine(other);
         }
-        return new DeferredSlice(derivedSlice.with(other), resolver);
+        return new DeferredSlice(derivedSlice.combine(other), resolver);
     }
 
     @Override
-    public Slice without(final Slice other) {
-        if (concreteSlice != null) {
-            return concreteSlice.without(other);
-        }
-        return new DeferredSlice(derivedSlice.without(other), resolver);
-    }
-
-    @Override
-    public Slice slice(final Predicate<SliceEntry> predicate) {
+    public Slice slice(final Predicate<Clazz> predicate) {
         if (concreteSlice != null) {
             return concreteSlice.slice(predicate);
         }
@@ -39,7 +31,7 @@ public class DeferredSlice extends AbstractSlice {
     }
 
     @Override
-    public boolean contains(SliceEntry entry) {
+    public boolean contains(Clazz entry) {
         if (concreteSlice != null) {
             return concreteSlice.contains(entry);
         }
@@ -52,13 +44,13 @@ public class DeferredSlice extends AbstractSlice {
     }
 
     @Override
-    public Set<SliceEntry> getSliceEntries() {
+    public Set<Clazz> getSliceEntries() {
         if (concreteSlice == null) {
             ConcreteSlice cs = new ConcreteSlice(resolver.getSliceEntries());
-            concreteSlice = cs.slice(new Predicate<SliceEntry>() {
+            concreteSlice = cs.slice(new Predicate<Clazz>() {
                 @Override
-                public boolean test(SliceEntry sliceEntry) {
-                    return derivedSlice.contains(sliceEntry);
+                public boolean test(Clazz clazz) {
+                    return derivedSlice.contains(clazz);
                 }
             });
         }

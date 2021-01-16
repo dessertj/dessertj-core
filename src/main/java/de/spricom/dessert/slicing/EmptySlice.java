@@ -6,23 +6,19 @@ import java.util.Collections;
 import java.util.Set;
 
 class EmptySlice extends AbstractSlice {
+
     @Override
-    public Slice with(Slice other) {
+    public Slice combine(Slice other) {
         return other;
     }
 
     @Override
-    public Slice without(Slice other) {
+    public Slice slice(Predicate<Clazz> predicate) {
         return this;
     }
 
     @Override
-    public Slice slice(Predicate<SliceEntry> predicate) {
-        return this;
-    }
-
-    @Override
-    public boolean contains(SliceEntry entry) {
+    public boolean contains(Clazz entry) {
         return false;
     }
 
@@ -32,7 +28,7 @@ class EmptySlice extends AbstractSlice {
     }
 
     @Override
-    public Set<SliceEntry> getSliceEntries() {
+    public Set<Clazz> getSliceEntries() {
         return Collections.emptySet();
     }
 }

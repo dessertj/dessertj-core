@@ -6,45 +6,35 @@ import java.util.HashSet;
 import java.util.Set;
 
 final class DerivedSlice extends AbstractSlice {
-    private final Predicate<SliceEntry> predicate;
-    private final Set<SliceEntry> cache = new HashSet<SliceEntry>();
+    private final Predicate<Clazz> predicate;
+    private final Set<Clazz> cache = new HashSet<Clazz>();
 
-    DerivedSlice(Predicate<SliceEntry> predicate) {
+    DerivedSlice(Predicate<Clazz> predicate) {
         this.predicate = predicate;
     }
 
     @Override
-    public Slice with(final Slice other) {
-        return new DerivedSlice(new Predicate<SliceEntry>() {
+    public Slice combine(final Slice other) {
+        return new DerivedSlice(new Predicate<Clazz>() {
             @Override
-            public boolean test(SliceEntry sliceEntry) {
-                return contains(sliceEntry) || other.contains(sliceEntry);
+            public boolean test(Clazz clazz) {
+                return contains(clazz) || other.contains(clazz);
             }
         });
     }
 
     @Override
-    public Slice without(final Slice other) {
-        return new DerivedSlice(new Predicate<SliceEntry>() {
+    public Slice slice(final Predicate<Clazz> predicate) {
+        return new DerivedSlice(new Predicate<Clazz>() {
             @Override
-            public boolean test(SliceEntry sliceEntry) {
-                return contains(sliceEntry) && !other.contains(sliceEntry);
+            public boolean test(Clazz clazz) {
+                return contains(clazz) && predicate.test(clazz);
             }
         });
     }
 
     @Override
-    public Slice slice(final Predicate<SliceEntry> predicate) {
-        return new DerivedSlice(new Predicate<SliceEntry>() {
-            @Override
-            public boolean test(SliceEntry sliceEntry) {
-                return contains(sliceEntry) && predicate.test(sliceEntry);
-            }
-        });
-    }
-
-    @Override
-    public boolean contains(SliceEntry entry) {
+    public boolean contains(Clazz entry) {
         if (cache.contains(entry)) {
             return true;
         }
@@ -61,7 +51,7 @@ final class DerivedSlice extends AbstractSlice {
     }
 
     @Override
-    public Set<SliceEntry> getSliceEntries() {
+    public Set<Clazz> getSliceEntries() {
         throw new IllegalStateException("Cannot materialize DerivedSlice");
     }
 }

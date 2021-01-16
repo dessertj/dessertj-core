@@ -1,6 +1,5 @@
 package de.spricom.dessert.slicing;
 
-import de.spricom.dessert.groups.PackageSlice;
 import de.spricom.dessert.util.Predicate;
 import de.spricom.dessert.util.SetHelper;
 
@@ -9,41 +8,36 @@ import java.util.Set;
 
 /**
  * A concrete slice is a concrete collection of classes.
- * Hence it contains a set of {@link SliceEntry}.
+ * Hence it contains a set of {@link Clazz}.
  * The sum or difference on concrete slices
  * produce a concrete slice again.
  */
 public class ConcreteSlice extends AbstractSlice {
-    private final Set<SliceEntry> entries;
+    private final Set<Clazz> entries;
 
-    protected ConcreteSlice(Set<SliceEntry> entries) {
+    protected ConcreteSlice(Set<Clazz> entries) {
         this.entries = entries;
     }
 
     @Override
-    public Slice with(final Slice other) {
+    public Slice combine(final Slice other) {
         if (other instanceof ConcreteSlice) {
-            ConcreteSlice slice = new ConcreteSlice(SetHelper.unite(entries, other.getSliceEntries()));
+            ConcreteSlice slice = new ConcreteSlice(SetHelper.union(entries, other.getSliceEntries()));
             return slice;
         }
-        Predicate<SliceEntry> combined = new Predicate<SliceEntry>() {
+        Predicate<Clazz> combined = new Predicate<Clazz>() {
             @Override
-            public boolean test(SliceEntry sliceEntry) {
+            public boolean test(Clazz sliceEntry) {
                 return contains(sliceEntry) || other.contains(sliceEntry);
             }
         };
         return new DerivedSlice(combined);
     }
 
-    public ConcreteSlice with(final ConcreteSlice other) {
-        ConcreteSlice slice = new ConcreteSlice(SetHelper.unite(entries, other.getSliceEntries()));
-        return slice;
-    }
-
     public ConcreteSlice without(final Slice other) {
-        Predicate<SliceEntry> excluded = new Predicate<SliceEntry>() {
+        Predicate<Clazz> excluded = new Predicate<Clazz>() {
             @Override
-            public boolean test(SliceEntry sliceEntry) {
+            public boolean test(Clazz sliceEntry) {
                 return !other.contains(sliceEntry);
             }
         };
@@ -51,9 +45,9 @@ public class ConcreteSlice extends AbstractSlice {
     }
 
     @Override
-    public ConcreteSlice slice(Predicate<SliceEntry> predicate) {
-        Set<SliceEntry> filtered = new HashSet<SliceEntry>();
-        for (SliceEntry entry : entries) {
+    public ConcreteSlice slice(Predicate<Clazz> predicate) {
+        Set<Clazz> filtered = new HashSet<Clazz>();
+        for (Clazz entry : entries) {
             if (predicate.test(entry)) {
                 filtered.add(entry);
             }
@@ -62,7 +56,7 @@ public class ConcreteSlice extends AbstractSlice {
     }
 
     @Override
-    public boolean contains(SliceEntry entry) {
+    public boolean contains(Clazz entry) {
         return entries.contains(entry);
     }
 
@@ -71,7 +65,7 @@ public class ConcreteSlice extends AbstractSlice {
         return true;
     }
 
-    public Set<SliceEntry> getSliceEntries() {
+    public Set<Clazz> getSliceEntries() {
         return entries;
     }
 

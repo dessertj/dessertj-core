@@ -25,19 +25,19 @@ public final class SetHelper {
         return true;
     }
 
-    public static <T> Set<T> subtract(Set<T> s, Set<T> t) {
+    public static <T> Set<T> difference(Set<T> s, Set<T> t) {
         HashSet<T> r = new HashSet<T>(s);
         r.removeAll(t);
         return r;
     }
 
-    public static <T> Set<T> intersect(Set<T> s, Set<T> t) {
+    public static <T> Set<T> intersection(Set<T> s, Set<T> t) {
         HashSet<T> r = new HashSet<T>(s);
         r.retainAll(t);
         return r;
     }
 
-    public static <T> Set<T> unite(Set<T> s, Set<T> t) {
+    public static <T> Set<T> union(Set<T> s, Set<T> t) {
         HashSet<T> r = new HashSet<T>(s);
         r.addAll(t);
         return r;

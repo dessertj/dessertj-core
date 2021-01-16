@@ -1,39 +1,38 @@
 package de.spricom.dessert.slicing;
 
 import de.spricom.dessert.classfile.ClassFile;
-import de.spricom.dessert.groups.PackageSlice;
 import de.spricom.dessert.resolve.ClassEntry;
+import de.spricom.dessert.util.ClassUtil;
+import de.spricom.dessert.util.Predicate;
+import de.spricom.dessert.util.SetHelper;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.*;
 import java.util.logging.Logger;
 
 /**
- * For each class belonging to a {@link PackageSlice} there is a SliceEntry.
+ * A special {@link Slice} that represents a single .class file.
  */
-public final class SliceEntry implements Comparable<SliceEntry> {
-    private static final Logger log = Logger.getLogger(SliceEntry.class.getName());
-    public static final SliceEntry UNDEFINED = new SliceEntry();
+public final class Clazz extends AbstractSlice implements Comparable<Clazz> {
+    private static final Logger log = Logger.getLogger(Clazz.class.getName());
+    public static final Clazz UNDEFINED = new Clazz();
 
     private final SliceContext context;
     private final String className;
     private final ClassFile classFile;
     private final ClassEntry classEntry;
-    private Class<?> clazz;
+    private Class<?> classImpl;
     private URI uri;
 
-    private SliceEntry superclass;
-    private List<SliceEntry> implementedInterfaces;
-    private Set<SliceEntry> usedClasses;
-    private List<SliceEntry> alternatives;
+    private Clazz superclass;
+    private List<Clazz> implementedInterfaces;
+    private Set<Clazz> usedClasses;
+    private List<Clazz> alternatives;
 
-    private SliceEntry() {
+    private Clazz() {
         context = null;
         className = "undefined";
         classFile = null;
@@ -44,7 +43,7 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         alternatives = Collections.emptyList();
     }
 
-    SliceEntry(SliceContext context, ClassEntry classEntry) {
+    Clazz(SliceContext context, ClassEntry classEntry) {
         assert context != null : "context == null";
         assert classEntry != null : "classEntry == null";
         this.context = context;
@@ -54,13 +53,13 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         if (classEntry.getAlternatives() != null) {
             for (ClassEntry alternative : classEntry.getAlternatives()) {
                 if (classEntry != alternative) {
-                    new SliceEntry(this, alternative);
+                    new Clazz(this, alternative);
                 }
             }
         }
     }
 
-    SliceEntry(SliceEntry alternative, ClassEntry classEntry) {
+    Clazz(Clazz alternative, ClassEntry classEntry) {
         assert alternative != null : "alternative == null";
         assert classEntry != null : "classEntry == null";
         this.context = alternative.context;
@@ -68,24 +67,24 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         this.classFile = classEntry.getClassfile();
         this.className = classFile.getThisClass();
         if (alternative.alternatives == null) {
-            alternative.alternatives = new LinkedList<SliceEntry>();
+            alternative.alternatives = new LinkedList<Clazz>();
             alternative.alternatives.add(alternative);
         }
         this.alternatives = alternative.alternatives;
         this.alternatives.add(this);
     }
 
-    SliceEntry(SliceContext context, Class<?> clazz) throws IOException {
+    Clazz(SliceContext context, Class<?> classImpl) throws IOException {
         assert context != null : "context == null";
-        assert clazz != null : "clazz == null";
+        assert classImpl != null : "clazz == null";
         this.context = context;
-        this.clazz = clazz;
+        this.classImpl = classImpl;
         this.classEntry = null;
-        this.classFile = new ClassFile(clazz);
+        this.classFile = new ClassFile(classImpl);
         this.className = classFile.getThisClass();
     }
 
-    SliceEntry(SliceContext context, String className) {
+    Clazz(SliceContext context, String className) {
         assert context != null : "context == null";
         assert className != null : "className == null";
         this.context = context;
@@ -98,31 +97,11 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         alternatives = Collections.emptyList();
     }
 
-    public static final File getRootFile(Class<?> clazz) {
-        String filename = "/" + clazz.getName().replace('.', '/') + ".class";
-        URL url = clazz.getResource(filename);
-        assert url != null : "Resource " + filename + " not found!";
-        if ("file".equals(url.getProtocol())) {
-            assert url.getFile().endsWith(filename) : url + " does not end with " + filename;
-            return new File(url.getFile().substring(0, url.getFile().length() - filename.length()));
-        } else if ("jar".equals(url.getProtocol())) {
-            assert url.getFile().startsWith("file:") : url + " does not start with jar:file";
-            assert url.getFile().endsWith(".jar!" + filename) : url + " does not end with .jar!" + filename;
-            try {
-                return new File(URLDecoder.decode(url.getFile().substring("file:".length(), url.getFile().length() - filename.length() - 1), "UTF-8"));
-            } catch (UnsupportedEncodingException ex) {
-                throw new IllegalStateException("UTF-8 encoding not supported!", ex);
-            }
-        } else {
-            throw new IllegalArgumentException("Unknown protocol in " + url);
-        }
-    }
-
     public File getRootFile() {
         if (classEntry != null) {
             return classEntry.getPackage().getRootFile();
-        } else if (clazz != null) {
-            return getRootFile(clazz);
+        } else if (classImpl != null) {
+            return ClassUtil.getRootFile(classImpl);
         } else {
             return null;
         }
@@ -131,8 +110,8 @@ public final class SliceEntry implements Comparable<SliceEntry> {
     public String getPackageName() {
         if (classEntry != null) {
             return classEntry.getPackage().getPackageName();
-        } else if (clazz != null) {
-            return clazz.getPackage().getName();
+        } else if (classImpl != null) {
+            return classImpl.getPackage().getName();
         } else {
             int index = className.lastIndexOf('.');
             if (index == -1) {
@@ -140,6 +119,42 @@ public final class SliceEntry implements Comparable<SliceEntry> {
             }
             return className.substring(0, index);
         }
+    }
+
+    @Override
+    public Slice combine(final Slice other) {
+        if (other instanceof ConcreteSlice) {
+            Set<Clazz> union = SetHelper.union(Collections.singleton(this), other.getSliceEntries());
+            ConcreteSlice slice = new ConcreteSlice(union);
+            return slice;
+        }
+        Predicate<Clazz> combined = new Predicate<Clazz>() {
+            @Override
+            public boolean test(Clazz clazz) {
+                return this.equals(clazz) || other.contains(clazz);
+            }
+        };
+        return new DerivedSlice(combined);
+    }
+
+    @Override
+    public Slice slice(Predicate<Clazz> predicate) {
+        return predicate.test(this) ? this : Slices.EMPTY_SLICE;
+    }
+
+    @Override
+    public boolean contains(Clazz clazz) {
+        return equals(clazz);
+    }
+
+    @Override
+    public boolean canResolveSliceEntries() {
+        return true;
+    }
+
+    @Override
+    public Set<Clazz> getSliceEntries() {
+        return Collections.singleton(this);
     }
 
     @Override
@@ -155,7 +170,7 @@ public final class SliceEntry implements Comparable<SliceEntry> {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        SliceEntry other = (SliceEntry) obj;
+        Clazz other = (Clazz) obj;
         if (!className.equals(other.className)) {
             return false;
         }
@@ -163,7 +178,7 @@ public final class SliceEntry implements Comparable<SliceEntry> {
     }
 
     @Override
-    public int compareTo(SliceEntry o) {
+    public int compareTo(Clazz o) {
         return getClassName().compareTo(o.getClassName());
     }
 
@@ -176,31 +191,31 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         return classFile == null;
     }
 
-    public Class<?> getClazz() {
-        if (clazz == null && !isUnknown()) {
+    public Class<?> getClassImpl() {
+        if (classImpl == null && !isUnknown()) {
             try {
-                clazz = Class.forName(className);
-                if (!getURI().equals(getURI(clazz))) {
+                classImpl = Class.forName(className);
+                if (!getURI().equals(ClassUtil.getURI(classImpl))) {
                     // TODO: Use specialized classloader to prevent this
-                    log.warning("Loaded class " + getURI(clazz) + " for entry " + getURI() + "!");
+                    log.warning("Loaded class " + ClassUtil.getURI(classImpl) + " for entry " + getURI() + "!");
                 }
             } catch (ClassNotFoundException ex) {
                 throw new ResolveException("Unable to load " + className, ex);
             }
         }
-        return clazz;
+        return classImpl;
     }
 
-    public SliceEntry getSuperclass() {
+    public Clazz getSuperclass() {
         if (superclass == null && classFile != null) {
             superclass = context.getSliceEntry(classFile.getSuperClass());
         }
         return superclass;
     }
 
-    public List<SliceEntry> getImplementedInterfaces() {
+    public List<Clazz> getImplementedInterfaces() {
         if (implementedInterfaces == null && classFile != null) {
-            implementedInterfaces = new ArrayList<SliceEntry>(classFile.getInterfaces().length);
+            implementedInterfaces = new ArrayList<Clazz>(classFile.getInterfaces().length);
             for (String in : classEntry.getClassfile().getInterfaces()) {
                 implementedInterfaces.add(context.getSliceEntry(in));
             }
@@ -208,9 +223,9 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         return implementedInterfaces;
     }
 
-    public Set<SliceEntry> getUsedClasses() {
+    public Set<Clazz> getUsedClasses() {
         if (usedClasses == null && classFile != null) {
-            usedClasses = new HashSet<SliceEntry>(classFile.getDependentClasses().size());
+            usedClasses = new HashSet<Clazz>(classFile.getDependentClasses().size());
             for (String cn : classFile.getDependentClasses()) {
                 usedClasses.add(context.getSliceEntry(cn));
             }
@@ -218,19 +233,19 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         return usedClasses;
     }
 
-    public List<SliceEntry> getAlternatives() {
+    public List<Clazz> getAlternatives() {
         if (alternatives == null) {
             return Collections.singletonList(this);
         }
         return alternatives;
     }
 
-    SliceEntry getAlternative(ClassEntry ce) {
+    Clazz getAlternative(ClassEntry ce) {
         if (matches(ce)) {
             return this;
         }
         if (alternatives != null) {
-            for (SliceEntry alt : alternatives) {
+            for (Clazz alt : alternatives) {
                 if (alt.matches(ce)) {
                     return alt;
                 }
@@ -262,9 +277,9 @@ public final class SliceEntry implements Comparable<SliceEntry> {
             uri = classEntry.getURI();
             return uri;
         }
-        // either there is a classEntry or a clazz or it's unknown
-        if (clazz != null) {
-            uri = getURI(clazz);
+        // either there is a classEntry or a classImpl or it's unknown
+        if (classImpl != null) {
+            uri = ClassUtil.getURI(classImpl);
         } else {
             String unknown = "unknown:" + className;
             try {
@@ -277,13 +292,4 @@ public final class SliceEntry implements Comparable<SliceEntry> {
         return uri;
     }
 
-    private URI getURI(Class<?> clazz) {
-        URL url = clazz.getResource(clazz.getSimpleName() + ".class");
-        assert url != null : "Cannot find resource for " + clazz;
-        try {
-            return url.toURI();
-        } catch (URISyntaxException ex) {
-            throw new IllegalStateException("Cannot convert '" + url + "' to URI", ex);
-        }
-    }
 }

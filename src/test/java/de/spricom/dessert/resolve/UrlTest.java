@@ -1,6 +1,6 @@
 package de.spricom.dessert.resolve;
 
-import de.spricom.dessert.slicing.SliceEntry;
+import de.spricom.dessert.util.ClassUtil;
 import org.junit.Test;
 
 import java.io.File;
@@ -51,6 +51,6 @@ public class UrlTest {
     }
 
     private File getRootFile(Class<?> clazz) {
-        return SliceEntry.getRootFile(clazz);
+        return ClassUtil.getRootFile(clazz);
     }
 }

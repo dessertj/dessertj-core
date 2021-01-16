@@ -4,5 +4,5 @@ import java.util.Set;
 
 public interface EntryResolver {
 
-    Set<SliceEntry> getSliceEntries();
+    Set<Clazz> getSliceEntries();
 }

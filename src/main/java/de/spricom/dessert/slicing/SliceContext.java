@@ -19,7 +19,7 @@ public final class SliceContext {
     private final ClassResolver resolver;
     private boolean useClassLoader = true;
 
-    private Map<String, SliceEntry> entries = new HashMap<String, SliceEntry>();
+    private Map<String, Clazz> entries = new HashMap<String, Clazz>();
 
     public SliceContext() {
         this(getDefaultResolver());
@@ -41,20 +41,20 @@ public final class SliceContext {
         return defaultResolver;
     }
 
-    SliceEntry getSliceEntry(ClassEntry ce) {
-        SliceEntry se = entries.get(ce.getClassname());
+    Clazz getSliceEntry(ClassEntry ce) {
+        Clazz se = entries.get(ce.getClassname());
         if (se == null) {
-            se = new SliceEntry(this, ce);
+            se = new Clazz(this, ce);
             entries.put(ce.getClassname(), se);
             return se;
         } else {
-            SliceEntry alt = se.getAlternative(ce);
+            Clazz alt = se.getAlternative(ce);
             return alt;
         }
     }
 
-    SliceEntry getSliceEntry(String classname) {
-        SliceEntry se = entries.get(classname);
+    Clazz getSliceEntry(String classname) {
+        Clazz se = entries.get(classname);
         if (se == null) {
             se = resolveEntry(classname);
             if (se == null && useClassLoader) {
@@ -68,8 +68,8 @@ public final class SliceContext {
         return se;
     }
 
-    private SliceEntry getSliceEntry(Class<?> clazz) {
-        SliceEntry se = entries.get(clazz.getName());
+    private Clazz getSliceEntry(Class<?> clazz) {
+        Clazz se = entries.get(clazz.getName());
         if (se == null) {
             se = createEntry(clazz);
             entries.put(clazz.getName(), se);
@@ -77,26 +77,26 @@ public final class SliceContext {
         return se;
     }
 
-    private SliceEntry resolveEntry(String classname) {
+    private Clazz resolveEntry(String classname) {
         ClassEntry resolverEntry = resolver.getClassEntry(classname);
         if (resolverEntry == null) {
             return null;
         }
-        return new SliceEntry(this, resolverEntry);
+        return new Clazz(this, resolverEntry);
     }
 
-    private SliceEntry createEntry(Class<?> clazz) {
+    private Clazz createEntry(Class<?> clazz) {
         try {
-            return new SliceEntry(this, clazz);
+            return new Clazz(this, clazz);
         } catch (IOException ex) {
             throw new ResolveException("Cannot analyze " + clazz, ex);
         }
     }
 
-    private SliceEntry loadClass(String classname) {
+    private Clazz loadClass(String classname) {
         try {
             Class<?> clazz = Class.forName(classname);
-            return new SliceEntry(this, clazz);
+            return new Clazz(this, clazz);
         } catch (ClassNotFoundException ex) {
             log.log(Level.FINE, "Cannot find " + classname, ex);
         } catch (IOException ex) {
@@ -105,8 +105,8 @@ public final class SliceContext {
         return null;
     }
 
-    private SliceEntry undefined(String classname) {
-        return new SliceEntry(this, classname);
+    private Clazz undefined(String classname) {
+        return new Clazz(this, classname);
     }
 
     public Slice packageTreeOf(Class<?> clazz) {
@@ -118,9 +118,9 @@ public final class SliceContext {
     }
 
     public Slice packageTreeOf(final String packageName) {
-        DerivedSlice derivedSlice = new DerivedSlice(new Predicate<SliceEntry>() {
+        DerivedSlice derivedSlice = new DerivedSlice(new Predicate<Clazz>() {
             @Override
-            public boolean test(SliceEntry sliceEntry) {
+            public boolean test(Clazz sliceEntry) {
                 return sliceEntry.getClassName().startsWith(packageName);
             }
         });
@@ -145,9 +145,9 @@ public final class SliceContext {
     }
 
     public Slice packageOf(final String packageName) {
-        DerivedSlice derivedSlice = new DerivedSlice(new Predicate<SliceEntry>() {
+        DerivedSlice derivedSlice = new DerivedSlice(new Predicate<Clazz>() {
             @Override
-            public boolean test(SliceEntry sliceEntry) {
+            public boolean test(Clazz sliceEntry) {
                 return sliceEntry.getClassName().startsWith(packageName);
             }
         });
@@ -173,9 +173,9 @@ public final class SliceContext {
 
     public Slice packageTreeOf(final File root, final String packageName) {
         ensureRootFile(root);
-        DerivedSlice derivedSlice = new DerivedSlice(new Predicate<SliceEntry>() {
+        DerivedSlice derivedSlice = new DerivedSlice(new Predicate<Clazz>() {
             @Override
-            public boolean test(SliceEntry sliceEntry) {
+            public boolean test(Clazz sliceEntry) {
                 return sliceEntry.getClassName().startsWith(packageName);
             }
         });
@@ -235,7 +235,7 @@ public final class SliceContext {
     }
 
     public ConcreteSlice sliceOf(Class<?>... classes) {
-        Set<SliceEntry> sliceEntries = new HashSet<SliceEntry>();
+        Set<Clazz> sliceEntries = new HashSet<Clazz>();
         for (Class<?> clazz : classes) {
             sliceEntries.add(getSliceEntry(clazz));
         }
@@ -243,18 +243,18 @@ public final class SliceContext {
     }
 
     public Slice sliceOf(final String... classnames) {
-        DerivedSlice derivedSlice = new DerivedSlice(new Predicate<SliceEntry>() {
+        DerivedSlice derivedSlice = new DerivedSlice(new Predicate<Clazz>() {
             private final Set<String> names = new HashSet<String>(Arrays.asList(classnames));
 
             @Override
-            public boolean test(SliceEntry sliceEntry) {
+            public boolean test(Clazz sliceEntry) {
                 return names.contains(sliceEntry.getClassName());
             }
         });
         return new DeferredSlice(derivedSlice, new EntryResolver() {
             @Override
-            public Set<SliceEntry> getSliceEntries() {
-                Set<SliceEntry> sliceEntries = new HashSet<SliceEntry>();
+            public Set<Clazz> getSliceEntries() {
+                Set<Clazz> sliceEntries = new HashSet<Clazz>();
                 for (String name : classnames) {
                     sliceEntries.add(getSliceEntry(name));
                 }
@@ -271,7 +271,7 @@ public final class SliceContext {
      * @return Maybe empty slice of all duplicate .class files
      */
     public ConcreteSlice duplicates() {
-        Set<SliceEntry> sliceEntries = new HashSet<SliceEntry>();
+        Set<Clazz> sliceEntries = new HashSet<Clazz>();
         for (List<ClassEntry> alternatives : resolver.getDuplicates().values()) {
             for (ClassEntry alternative : alternatives) {
                 sliceEntries.add(getSliceEntry(alternative));

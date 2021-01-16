@@ -1,12 +1,12 @@
 package de.spricom.dessert.groups;
 
-import de.spricom.dessert.slicing.SliceEntry;
+import de.spricom.dessert.slicing.Clazz;
 
 import java.util.Collections;
 
 public class SingleEntrySlice extends PartSlice {
 
-    SingleEntrySlice(SliceEntry entry) {
+    SingleEntrySlice(Clazz entry) {
         super(Collections.singleton(entry), entry.getClassName());
     }
 

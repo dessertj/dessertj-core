@@ -1,31 +1,31 @@
 package de.spricom.dessert.assertions;
 
-import de.spricom.dessert.slicing.SliceEntry;
+import de.spricom.dessert.slicing.Clazz;
 
 import java.util.*;
 
 public class IllegalDependencies {
-    private final Map<SliceEntry, Set<SliceEntry>> violations = new HashMap<SliceEntry, Set<SliceEntry>>();
+    private final Map<Clazz, Set<Clazz>> violations = new HashMap<Clazz, Set<Clazz>>();
 
-    public void add(SliceEntry entry, SliceEntry illegalDependency) {
-        Set<SliceEntry> deps = violations.get(entry);
+    public void add(Clazz entry, Clazz illegalDependency) {
+        Set<Clazz> deps = violations.get(entry);
         if (deps == null) {
-            deps = new TreeSet<SliceEntry>();
+            deps = new TreeSet<Clazz>();
             violations.put(entry, deps);
         }
         deps.add(illegalDependency);
     }
 
-    public void add(SliceEntry entry,  Set<SliceEntry> illegalDependencies ) {
-        Set<SliceEntry> deps = violations.get(entry);
+    public void add(Clazz entry, Set<Clazz> illegalDependencies ) {
+        Set<Clazz> deps = violations.get(entry);
         if (deps == null) {
-            deps = new TreeSet<SliceEntry>();
+            deps = new TreeSet<Clazz>();
             violations.put(entry, deps);
         }
         deps.addAll(illegalDependencies);
     }
 
-    public Map<SliceEntry, Set<SliceEntry>> getViolations() {
+    public Map<Clazz, Set<Clazz>> getViolations() {
         return violations;
     }
 

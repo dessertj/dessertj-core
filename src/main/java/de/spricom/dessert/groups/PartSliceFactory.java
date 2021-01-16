@@ -1,9 +1,9 @@
 package de.spricom.dessert.groups;
 
-import de.spricom.dessert.slicing.SliceEntry;
+import de.spricom.dessert.slicing.Clazz;
 
 import java.util.Set;
 
 public interface PartSliceFactory<S extends PartSlice> {
-    S createPartSlice(Set<SliceEntry> entries, String partKey);
+    S createPartSlice(Set<Clazz> entries, String partKey);
 }

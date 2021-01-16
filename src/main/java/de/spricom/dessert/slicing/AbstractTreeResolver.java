@@ -7,16 +7,16 @@ import java.util.*;
 
 public abstract class AbstractTreeResolver implements EntryResolver {
     private final SliceContext sc;
-    private Set<SliceEntry> sliceEntries;
+    private Set<Clazz> sliceEntries;
 
     public AbstractTreeResolver(SliceContext sc) {
         this.sc = sc;
     }
 
     @Override
-    public final Set<SliceEntry> getSliceEntries() {
+    public final Set<Clazz> getSliceEntries() {
         if (sliceEntries == null) {
-            sliceEntries = new HashSet<SliceEntry>();
+            sliceEntries = new HashSet<Clazz>();
             resolve();
         }
         return sliceEntries;

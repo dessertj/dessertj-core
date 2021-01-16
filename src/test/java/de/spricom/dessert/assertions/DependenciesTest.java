@@ -1,6 +1,5 @@
 package de.spricom.dessert.assertions;
 
-import de.spricom.dessert.assertions.SliceAssertions;
 import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
@@ -9,7 +8,7 @@ import de.spricom.dessert.groups.SliceGroup;
 import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.slicing.SliceContext;
-import de.spricom.dessert.slicing.SliceEntry;
+import de.spricom.dessert.slicing.Clazz;
 import de.spricom.dessert.util.Predicate;
 import de.spricom.dessert.util.SetHelper;
 import org.junit.BeforeClass;
@@ -46,7 +45,7 @@ public class DependenciesTest {
     @Test
     public void testPackagesAreCycleFree() {
         Slice subPackages = sc.packageTreeOf("de.spricom.dessert")
-                .without(sc.packageTreeOf(sc.rootOf(this.getClass().getName()), "de.spricom.dessert"));
+                .minus(sc.packageTreeOf(sc.rootOf(this.getClass().getName()), "de.spricom.dessert"));
         SliceAssertions.dessert(subPackages).splitByPackage().isCycleFree();
     }
 
@@ -69,12 +68,12 @@ public class DependenciesTest {
      */
     @Test
     public void testExternalDependencies() {
-        Slice dessert = sc.packageTreeOf("de.spricom.dessert").without(tests());
+        Slice dessert = sc.packageTreeOf("de.spricom.dessert").minus(tests());
         Slice java = sc.packageTreeOf("java.lang")
-                .with(sc.packageTreeOf("java.util"))
-                .with(sc.packageTreeOf("java.io"))
-                .with(sc.packageTreeOf("java.net"))
-                .with(sc.packageTreeOf("java.security"));
+                .plus(sc.packageTreeOf("java.util"))
+                .plus(sc.packageTreeOf("java.io"))
+                .plus(sc.packageTreeOf("java.net"))
+                .plus(sc.packageTreeOf("java.security"));
         SliceAssertions.assertThat(dessert).usesOnly(java);
     }
 
@@ -88,14 +87,14 @@ public class DependenciesTest {
      */
     @Test
     public void testClassfileDependencies() {
-        Slice classfile = sc.packageTreeOf(ClassFile.class.getPackage()).without(tests());
+        Slice classfile = sc.packageTreeOf(ClassFile.class.getPackage()).minus(tests());
         Slice javaCore = sc.packageTreeOf("java.lang")
-                .with(sc.packageTreeOf("java.util"));
-        Slice javaIO = sc.packageTreeOf("java.io").with(javaCore);
+                .plus(sc.packageTreeOf("java.util"));
+        Slice javaIO = sc.packageTreeOf("java.io").plus(javaCore);
         SliceAssertions.assertThat(classfile).usesOnly(javaIO);
         Slice dependencyHolder = sc.packageTreeOf(DependencyHolder.class.getPackage());
         SliceAssertions.assertThat(dependencyHolder).usesOnly(javaCore);
-        SliceAssertions.assertThat(sc.packageTreeOf(ConstantPool.class.getPackage()).without(tests()))
+        SliceAssertions.assertThat(sc.packageTreeOf(ConstantPool.class.getPackage()).minus(tests()))
                 .usesOnly(javaIO, dependencyHolder);
     }
 
@@ -107,24 +106,24 @@ public class DependenciesTest {
     @Test
     public void testDessertDependencies() {
         Slice javaCore = sc.packageTreeOf("java.lang")
-                .with(sc.packageTreeOf("java.util"));
+                .plus(sc.packageTreeOf("java.util"));
         Slice javaIO = sc.packageTreeOf("java.io")
-                .with(sc.packageTreeOf(URI.class));
+                .plus(sc.packageTreeOf(URI.class));
 
         // The ClassFile class is the facade for the classfile package. Nothing but
         // this class should be used outside this package.
         Slice classfile = sc.packageTreeOf(ClassFile.class.getPackage().getName())
-                .slice(new Predicate<SliceEntry>() {
+                .slice(new Predicate<Clazz>() {
                     @Override
-                    public boolean test(SliceEntry sliceEntry) {
+                    public boolean test(Clazz sliceEntry) {
                         return sliceEntry.getClassName().equals(ClassFile.class.getName());
                     }
                 });
-        Slice resolve = sc.packageTreeOf(ClassResolver.class.getPackage()).without(tests());
-        Slice slicing = sc.packageTreeOf(Slice.class.getPackage()).without(tests());
+        Slice resolve = sc.packageTreeOf(ClassResolver.class.getPackage()).minus(tests());
+        Slice slicing = sc.packageTreeOf(Slice.class.getPackage()).minus(tests());
         Slice util = sc.packageTreeOf(SetHelper.class.getPackage());
 
-        SliceAssertions.assertThat(util).usesOnly(javaCore);
+        SliceAssertions.assertThat(util).usesOnly(javaCore, javaIO);
         SliceAssertions.assertThat(resolve).usesOnly(javaCore, javaIO, classfile, util);
         SliceAssertions.assertThat(slicing)
                 .uses(javaCore).and(javaIO).and(resolve).and(util).and(classfile)

@@ -23,8 +23,8 @@ public class SliceAssert {
 
     public SliceAssert usesOnly(Slice... others) {
         IllegalDependencies illegalDependencies = new IllegalDependencies();
-        for (SliceEntry entry : slice.getSliceEntries()) {
-            for (SliceEntry dependency : entry.getUsedClasses()) {
+        for (Clazz entry : slice.getSliceEntries()) {
+            for (Clazz dependency : entry.getUsedClasses()) {
                 if (!slice.contains(dependency) && !containedByAny(dependency, others)) {
                     illegalDependencies.add(entry, dependency);
                 }
@@ -38,8 +38,8 @@ public class SliceAssert {
 
     public SliceAssert doesNotUse(Slice... others) {
         IllegalDependencies illegalDependencies = new IllegalDependencies();
-        for (SliceEntry entry : slice.getSliceEntries()) {
-            for (SliceEntry dependency : entry.getUsedClasses()) {
+        for (Clazz entry : slice.getSliceEntries()) {
+            for (Clazz dependency : entry.getUsedClasses()) {
                 if (containedByAny(dependency, others)) {
                     illegalDependencies.add(entry, dependency);
                 }
@@ -51,7 +51,7 @@ public class SliceAssert {
         return this;
     }
 
-    private boolean containedByAny(SliceEntry entry, Slice[] sets) {
+    private boolean containedByAny(Clazz entry, Slice[] sets) {
         for (Slice slice : sets) {
             if (slice.contains(entry)) {
                 return true;

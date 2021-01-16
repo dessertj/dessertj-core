@@ -5,7 +5,7 @@ import de.spricom.dessert.util.Predicate;
 import java.util.Set;
 
 /**
- * A Slice is an arbitrary Set of {@link SliceEntry}.
+ * A Slice is an arbitrary Set of {@link Clazz}.
  */
 public interface Slice {
 
@@ -13,15 +13,13 @@ public interface Slice {
 
     Slice minus(Slice... slices);
 
-    Slice with(Slice other);
+    Slice combine(Slice other);
 
-    Slice without(Slice other);
+    Slice slice(Predicate<Clazz> predicate);
 
-    Slice slice(Predicate<SliceEntry> predicate);
-
-    boolean contains(SliceEntry entry);
+    boolean contains(Clazz entry);
 
     boolean canResolveSliceEntries();
 
-    Set<SliceEntry> getSliceEntries();
+    Set<Clazz> getSliceEntries();
 }
