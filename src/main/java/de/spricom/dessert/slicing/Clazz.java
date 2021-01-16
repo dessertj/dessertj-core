@@ -29,7 +29,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz> {
 
     private Clazz superclass;
     private List<Clazz> implementedInterfaces;
-    private Set<Clazz> usedClasses;
+    private Set<Clazz> dependencies;
     private List<Clazz> alternatives;
 
     private Clazz() {
@@ -39,7 +39,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz> {
         classEntry = null;
         superclass = this;
         implementedInterfaces = Collections.emptyList();
-        usedClasses = Collections.emptySet();
+        dependencies = Collections.emptySet();
         alternatives = Collections.emptyList();
     }
 
@@ -93,7 +93,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz> {
         this.className = className;
         superclass = UNDEFINED;
         implementedInterfaces = Collections.emptyList();
-        usedClasses = Collections.emptySet();
+        dependencies = Collections.emptySet();
         alternatives = Collections.emptyList();
     }
 
@@ -179,12 +179,12 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz> {
 
     @Override
     public int compareTo(Clazz o) {
-        return getClassName().compareTo(o.getClassName());
+        return getName().compareTo(o.getName());
     }
 
     @Override
     public String toString() {
-        return className;
+        return "clazz " + className;
     }
 
     public boolean isUnknown() {
@@ -208,7 +208,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz> {
 
     public Clazz getSuperclass() {
         if (superclass == null && classFile != null) {
-            superclass = context.getSliceEntry(classFile.getSuperClass());
+            superclass = context.asClazz(classFile.getSuperClass());
         }
         return superclass;
     }
@@ -217,20 +217,20 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz> {
         if (implementedInterfaces == null && classFile != null) {
             implementedInterfaces = new ArrayList<Clazz>(classFile.getInterfaces().length);
             for (String in : classEntry.getClassfile().getInterfaces()) {
-                implementedInterfaces.add(context.getSliceEntry(in));
+                implementedInterfaces.add(context.asClazz(in));
             }
         }
         return implementedInterfaces;
     }
 
-    public Set<Clazz> getUsedClasses() {
-        if (usedClasses == null && classFile != null) {
-            usedClasses = new HashSet<Clazz>(classFile.getDependentClasses().size());
+    public Set<Clazz> getDependencies() {
+        if (dependencies == null && classFile != null) {
+            dependencies = new HashSet<Clazz>(classFile.getDependentClasses().size());
             for (String cn : classFile.getDependentClasses()) {
-                usedClasses.add(context.getSliceEntry(cn));
+                dependencies.add(context.asClazz(cn));
             }
         }
-        return usedClasses;
+        return dependencies;
     }
 
     public List<Clazz> getAlternatives() {
@@ -261,8 +261,21 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz> {
         return getURI().equals(ce.getURI());
     }
 
-    public String getClassName() {
+    public String getName() {
         return className;
+    }
+
+    public String getSimpleName() {
+        int dollarIndex = className.lastIndexOf('$');
+        if (dollarIndex > 0) {
+            String name = className.substring(dollarIndex + 1);
+            if (name.matches("\\d+")) {
+                return "";
+            }
+            return name;
+        }
+        int dotIndex = className.lastIndexOf('.');
+        return className.substring(dotIndex + 1);
     }
 
     public ClassFile getClassFile() {
@@ -281,7 +294,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz> {
         if (classImpl != null) {
             uri = ClassUtil.getURI(classImpl);
         } else {
-            String unknown = "unknown:" + className;
+            String unknown = "dessert:unknown:" + className;
             try {
                 uri = new URI(unknown);
             } catch (URISyntaxException ex) {

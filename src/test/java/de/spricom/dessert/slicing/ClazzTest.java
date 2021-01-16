@@ -3,6 +3,7 @@ package de.spricom.dessert.slicing;
 import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.resolve.FakeClassEntry;
 import de.spricom.dessert.resolve.FakeRoot;
+import de.spricom.dessert.samples.basic.Outer;
 import org.junit.Test;
 
 import java.io.File;
@@ -15,16 +16,18 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class ClazzTest {
 
+    private final SliceContext sc = new SliceContext();
+
     @Test
     public void testThisClass() throws MalformedURLException {
-        SliceContext sc = new SliceContext();
         Slice slice = sc.sliceOf(ClazzTest.class.getName());
         Set<Clazz> entries = slice.getSliceEntries();
         assertThat(entries).hasSize(1);
         Clazz entry = entries.iterator().next();
         assertThat(entry.getAlternatives()).hasSize(1);
 
-        assertThat(entry.getClassName()).isEqualTo(getClass().getName());
+        assertThat(entry.getName()).isEqualTo(getClass().getName());
+        assertThat(entry.getSimpleName()).isEqualTo(getClass().getSimpleName());
         assertThat(entry.getClassFile().getThisClass()).isEqualTo(getClass().getName());
         assertThat(entry.getClassImpl()).isSameAs(getClass());
         assertThat(entry.getPackageName()).isEqualTo(getClass().getPackage().getName());
@@ -34,7 +37,26 @@ public class ClazzTest {
         assertThat(entry.getURI().toURL()).isEqualTo(getClass().getResource(getClass().getSimpleName() + ".class"));
         assertThat(new File(entry.getURI().toURL().getPath()).getAbsolutePath()).startsWith(entry.getRootFile().getAbsolutePath());
     }
-    
+
+    @Test
+    public void testInnerClass() {
+        checkName(Outer.InnerIfc.class);
+    }
+
+    @Test
+    public void testAnonymousInnerClass() {
+        Outer outer = new Outer();
+        Outer.InnerIfc anonymous = outer.useAnonymous();
+        checkName(anonymous.getClass());
+    }
+
+    private void checkName(Class<?> classImpl) {
+        Clazz clazz = sc.sliceOf(classImpl).getSliceEntries().iterator().next();
+
+        assertThat(clazz.getName()).isEqualTo(classImpl.getName());
+        assertThat(clazz.getSimpleName()).isEqualTo(classImpl.getSimpleName());
+    }
+
     @Test
     public void testCreateSliceEntryWithAlternative() throws IOException {
         ClassResolver resolver = new ClassResolver();

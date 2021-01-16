@@ -58,6 +58,6 @@ public abstract class AbstractTreeResolver implements EntryResolver {
     }
 
     protected final void add(ClassEntry ce) {
-        sliceEntries.add(sc.getSliceEntry(ce));
+        sliceEntries.add(sc.asClazz(ce));
     }
 }

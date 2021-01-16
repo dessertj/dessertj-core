@@ -24,7 +24,7 @@ public class SliceContextTest {
 
     @Test
     public void testSliceOfClasses() {
-        ConcreteSlice slice = sc.sliceOf(Slice.class, ClassFile.class, File.class);
+        Slice slice = sc.sliceOf(Slice.class, ClassFile.class, File.class);
         assertThat(slice.getSliceEntries()).hasSize(3);
     }
 

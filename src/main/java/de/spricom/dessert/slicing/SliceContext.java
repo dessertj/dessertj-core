@@ -41,7 +41,7 @@ public final class SliceContext {
         return defaultResolver;
     }
 
-    Clazz getSliceEntry(ClassEntry ce) {
+    Clazz asClazz(ClassEntry ce) {
         Clazz se = entries.get(ce.getClassname());
         if (se == null) {
             se = new Clazz(this, ce);
@@ -53,7 +53,7 @@ public final class SliceContext {
         }
     }
 
-    Clazz getSliceEntry(String classname) {
+    public Clazz asClazz(String classname) {
         Clazz se = entries.get(classname);
         if (se == null) {
             se = resolveEntry(classname);
@@ -68,7 +68,7 @@ public final class SliceContext {
         return se;
     }
 
-    private Clazz getSliceEntry(Class<?> clazz) {
+    public Clazz asClazz(Class<?> clazz) {
         Clazz se = entries.get(clazz.getName());
         if (se == null) {
             se = createEntry(clazz);
@@ -121,7 +121,7 @@ public final class SliceContext {
         DerivedSlice derivedSlice = new DerivedSlice(new Predicate<Clazz>() {
             @Override
             public boolean test(Clazz sliceEntry) {
-                return sliceEntry.getClassName().startsWith(packageName);
+                return sliceEntry.getName().startsWith(packageName);
             }
         });
         return new DeferredSlice(derivedSlice, new AbstractTreeResolver(this) {
@@ -148,7 +148,7 @@ public final class SliceContext {
         DerivedSlice derivedSlice = new DerivedSlice(new Predicate<Clazz>() {
             @Override
             public boolean test(Clazz sliceEntry) {
-                return sliceEntry.getClassName().startsWith(packageName);
+                return sliceEntry.getName().startsWith(packageName);
             }
         });
         return new DeferredSlice(derivedSlice, new AbstractTreeResolver(this) {
@@ -176,7 +176,7 @@ public final class SliceContext {
         DerivedSlice derivedSlice = new DerivedSlice(new Predicate<Clazz>() {
             @Override
             public boolean test(Clazz sliceEntry) {
-                return sliceEntry.getClassName().startsWith(packageName);
+                return sliceEntry.getName().startsWith(packageName);
             }
         });
         return new DeferredSlice(derivedSlice, new AbstractTreeResolver(this) {
@@ -234,10 +234,15 @@ public final class SliceContext {
         return new ConcreteSlice(resolver.getSliceEntries());
     }
 
-    public ConcreteSlice sliceOf(Class<?>... classes) {
+    public Slice sliceOf(Class<?>... classes) {
+        if (classes.length == 0) {
+            return Slices.EMPTY_SLICE;
+        } else if (classes.length == 1) {
+            return asClazz(classes[0]);
+        }
         Set<Clazz> sliceEntries = new HashSet<Clazz>();
         for (Class<?> clazz : classes) {
-            sliceEntries.add(getSliceEntry(clazz));
+            sliceEntries.add(asClazz(clazz));
         }
         return new ConcreteSlice(sliceEntries);
     }
@@ -248,7 +253,7 @@ public final class SliceContext {
 
             @Override
             public boolean test(Clazz sliceEntry) {
-                return names.contains(sliceEntry.getClassName());
+                return names.contains(sliceEntry.getName());
             }
         });
         return new DeferredSlice(derivedSlice, new EntryResolver() {
@@ -256,7 +261,7 @@ public final class SliceContext {
             public Set<Clazz> getSliceEntries() {
                 Set<Clazz> sliceEntries = new HashSet<Clazz>();
                 for (String name : classnames) {
-                    sliceEntries.add(getSliceEntry(name));
+                    sliceEntries.add(asClazz(name));
                 }
                 return sliceEntries;
             }
@@ -274,7 +279,7 @@ public final class SliceContext {
         Set<Clazz> sliceEntries = new HashSet<Clazz>();
         for (List<ClassEntry> alternatives : resolver.getDuplicates().values()) {
             for (ClassEntry alternative : alternatives) {
-                sliceEntries.add(getSliceEntry(alternative));
+                sliceEntries.add(asClazz(alternative));
             }
         }
         return new ConcreteSlice(sliceEntries);

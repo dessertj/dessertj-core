@@ -7,7 +7,7 @@ import java.util.Collections;
 public class SingleEntrySlice extends PartSlice {
 
     SingleEntrySlice(Clazz entry) {
-        super(Collections.singleton(entry), entry.getClassName());
+        super(Collections.singleton(entry), entry.getName());
     }
 
     public String getClassname() {

@@ -58,7 +58,7 @@ public class SliceGroupAssert<S extends PartSlice> extends SliceAssert {
     private Set<Clazz> getDependencies(S slice) {
         Set<Clazz> dependencies = new HashSet<Clazz>();
         for (Clazz entry : slice.getSliceEntries()) {
-            dependencies.addAll(entry.getUsedClasses());
+            dependencies.addAll(entry.getDependencies());
         }
         return dependencies;
     }

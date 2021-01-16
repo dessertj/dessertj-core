@@ -32,7 +32,7 @@ public class ClassResolverTest {
         assertThat(cp.getSubPackages()).hasSize(0);
         assertThat(cp.getParent().getPackageName()).isEqualTo("de.spricom.dessert.samples");
 
-        assertThat(cp.getClasses()).hasSize(5);
+        assertThat(cp.getClasses()).hasSize(9);
         ClassEntry cf = resolver.getClassEntry(Foo.class.getName());
         assertThat(cf.getClassfile().getThisClass()).isEqualTo(Foo.class.getName());
         assertThat(cf.getPackage()).isSameAs(cp);
