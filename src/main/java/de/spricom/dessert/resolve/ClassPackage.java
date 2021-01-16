@@ -41,7 +41,7 @@ public class ClassPackage {
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return packageName;
     }
 

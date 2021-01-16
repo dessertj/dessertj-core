@@ -20,4 +20,9 @@ public abstract class ClassRoot extends ClassPackage {
     public final File getRootFile() {
         return rootFile;
     }
+
+    @Override
+    public String toString() {
+        return "root " + rootFile.getAbsolutePath();
+    }
 }

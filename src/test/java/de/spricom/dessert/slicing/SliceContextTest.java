@@ -2,15 +2,10 @@ package de.spricom.dessert.slicing;
 
 import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
-import de.spricom.dessert.slicing.ConcreteSlice;
-import de.spricom.dessert.slicing.Slice;
-import de.spricom.dessert.slicing.SliceContext;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -18,7 +13,7 @@ public class SliceContextTest {
     private static SliceContext sc;
 
     @BeforeClass
-    public static void init() throws IOException {
+    public static void init() {
         sc = new SliceContext();
     }
 

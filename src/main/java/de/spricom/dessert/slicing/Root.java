@@ -49,6 +49,10 @@ public class Root extends AbstractSlice {
         return root.getRootFile().toURI();
     }
 
+    ClassRoot getClassRoot() {
+        return root;
+    }
+
     private ConcreteSlice getConcreteSlice() {
         if (concreteSlice == null) {
             concreteSlice = new ConcreteSlice(resolver.getSliceEntries());

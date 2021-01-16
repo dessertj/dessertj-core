@@ -4,6 +4,7 @@ import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.resolve.ClassPackage;
 import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.resolve.ClassRoot;
+import de.spricom.dessert.util.Assertions;
 import de.spricom.dessert.util.Predicate;
 
 import java.io.File;
@@ -13,13 +14,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class SliceContext {
-    private static Logger log = Logger.getLogger(SliceContext.class.getName());
+    private static final Logger log = Logger.getLogger(SliceContext.class.getName());
     private static ClassResolver defaultResolver;
 
     private final ClassResolver resolver;
     private boolean useClassLoader = true;
 
-    private Map<String, Clazz> entries = new HashMap<String, Clazz>();
+    private final Map<String, Clazz> entries = new HashMap<String, Clazz>();
 
     public SliceContext() {
         this(getDefaultResolver());
@@ -163,16 +164,17 @@ public final class SliceContext {
         });
     }
 
-    public Slice packageTreeOf(File root, Class<?> clazz) {
+    public Slice packageTreeOf(Root root, Class<?> clazz) {
         return packageTreeOf(root, clazz.getPackage());
     }
 
-    public Slice packageTreeOf(File root, Package pkg) {
+    public Slice packageTreeOf(Root root, Package pkg) {
         return packageTreeOf(root, pkg.getName());
     }
 
-    public Slice packageTreeOf(final File root, final String packageName) {
-        ensureRootFile(root);
+    public Slice packageTreeOf(final Root root, final String packageName) {
+        Assertions.notNull(root, "root");
+        Assertions.notNull(packageName, "packageName");
         DerivedSlice derivedSlice = new DerivedSlice(new Predicate<Clazz>() {
             @Override
             public boolean test(Clazz sliceEntry) {
@@ -182,7 +184,7 @@ public final class SliceContext {
         return new DeferredSlice(derivedSlice, new AbstractTreeResolver(this) {
             @Override
             protected void resolve() {
-                ClassPackage cp = resolver.getPackage(root, packageName);
+                ClassPackage cp = resolver.getPackage(root.getClassRoot().getRootFile(), packageName);
                 if (cp == null) {
                     throw new ResolveException("Cannot resolve " + packageName);
                 }
@@ -191,19 +193,20 @@ public final class SliceContext {
         });
     }
 
-    public Slice packageOf(File root, Class<?> clazz) {
+    public Slice packageOf(Root root, Class<?> clazz) {
         return packageOf(root, clazz.getPackage());
     }
 
-    public Slice packageOf(File root, Package pkg) {
+    public Slice packageOf(Root root, Package pkg) {
         return packageOf(root, pkg.getName());
     }
 
-    public Slice packageOf(File root, String packageName) {
-        ensureRootFile(root);
-        final ClassPackage cp = SliceContext.this.resolver.getPackage(root, packageName);
+    public Slice packageOf(Root root, String packageName) {
+        Assertions.notNull(root, "root");
+        Assertions.notNull(packageName, "packageName");
+        final ClassPackage cp = SliceContext.this.resolver.getPackage(root.getClassRoot().getRootFile(), packageName);
         if (cp == null) {
-            throw new ResolveException("There is no " + packageName + " package in " + root.getAbsolutePath());
+            throw new ResolveException("There is no " + packageName + " package in " + root);
         }
         AbstractTreeResolver resolver = new AbstractTreeResolver(this) {
             @Override
@@ -223,7 +226,7 @@ public final class SliceContext {
             @Override
             protected void resolve() {
                 for (File file : rootFiles) {
-                    ensureRootFile(file);
+                    getClassRoot(file);
                     ClassRoot cr = SliceContext.this.resolver.getRoot(file);
                     if (cr != null) {
                         addRecursive(cr);
@@ -285,32 +288,52 @@ public final class SliceContext {
         return new ConcreteSlice(sliceEntries);
     }
 
+    public Root rootOfClass(String classname) {
+        ClassEntry cf = resolver.getClassEntry(classname);
+        if (cf == null) {
+            throw new IllegalArgumentException(classname + " not found within this context.");
+        }
+        return rootOf(cf.getPackage().getRoot());
+    }
+
+    public Root rootOf(Class<?> clazz) {
+        return rootOfClass(clazz.getName());
+    }
+
+    public Root rootOf(final File rootFile) {
+        return rootOf(getClassRoot(rootFile));
+    }
+
+    private Root rootOf(final ClassRoot root) {
+        return new Root(root, new AbstractTreeResolver(this) {
+            @Override
+            protected void resolve() {
+                ClassPackage cp = resolver.getPackage(root.getRootFile(), "");
+                if (cp == null) {
+                    throw new ResolveException("Cannot resolve root package of " + root);
+                }
+                addRecursive(cp);
+            }
+        });
+    }
+
     /**
-     * Checks whether the correspondig root file has been added to the path.
+     * Checks whether the corresponding root file has been added to the path.
      * It's not allowed to add root files to an existing slice context, because
      * that might change slices after they have been created.
      *
      * @param rootFile the classes directory or jar file to check
+     * @return the root
      */
-    private void ensureRootFile(File rootFile) {
+    private ClassRoot getClassRoot(File rootFile) {
         if (rootFile == null) {
             throw new NullPointerException("rootFile must not be null");
         }
-        if (resolver.getRoot(rootFile) == null) {
+        ClassRoot root = resolver.getRoot(rootFile);
+        if (root == null) {
             throw new IllegalArgumentException(rootFile + " has not been registered with this context.");
         }
-    }
-
-    public File rootOf(String classname) {
-        ClassEntry cf = resolver.getClassEntry(classname);
-        if (cf == null) {
-            return null;
-        }
-        return cf.getPackage().getRootFile();
-    }
-
-    public File rootOf(Class<?> clazz) {
-        return rootOf(clazz.getName());
+        return root;
     }
 
     public boolean isUseClassLoader() {

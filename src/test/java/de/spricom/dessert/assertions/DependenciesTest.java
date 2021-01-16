@@ -45,7 +45,7 @@ public class DependenciesTest {
     @Test
     public void testPackagesAreCycleFree() {
         Slice subPackages = sc.packageTreeOf("de.spricom.dessert")
-                .minus(sc.packageTreeOf(sc.rootOf(this.getClass().getName()), "de.spricom.dessert"));
+                .minus(tests());
         SliceAssertions.dessert(subPackages).splitByPackage().isCycleFree();
     }
 
@@ -132,6 +132,6 @@ public class DependenciesTest {
     }
 
     private Slice tests() {
-        return sc.packagesOf(sc.rootOf(this.getClass()));
+        return sc.rootOf(this.getClass());
     }
 }
