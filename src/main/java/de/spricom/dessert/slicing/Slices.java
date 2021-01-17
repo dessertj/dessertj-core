@@ -1,12 +1,12 @@
 package de.spricom.dessert.slicing;
 
-import java.util.EmptyStackException;
+import java.util.Arrays;
 
 /**
  * Factory methods for {@link Slice}.
  */
 public final class Slices {
-    public static final EmptySlice EMPTY_SLICE = new EmptySlice();
+    public static final EmptySlice EMPTY_SLICE = EmptySlice.EMPTY_SLICE;
 
     private Slices() {
     }
@@ -18,7 +18,11 @@ public final class Slices {
      * @param slices the slices to create the union from
      * @return the union of the the slices
      */
-    public static Slice of(Slice... slices) {
+    public static Slice of(Iterable<? extends Slice> slices) {
         return EMPTY_SLICE.plus(slices);
+    }
+
+    public static Slice of(Slice... slices) {
+        return of(Arrays.asList(slices));
     }
 }

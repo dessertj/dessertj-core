@@ -1,13 +1,12 @@
 package de.spricom.dessert.assertions;
 
-import de.spricom.dessert.groups.PartSlice;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.util.DependencyGraph;
 
-public class DefaultCycleRenderer<S extends PartSlice> implements CycleRenderer<S> {
+public class DefaultCycleRenderer implements CycleRenderer {
 
     @Override
-    public String renderCycle(DependencyGraph<S> dag) {
+    public String renderCycle(DependencyGraph<Slice> dag) {
         StringBuilder sb = new StringBuilder("Cycle:\n");
         int count = 0;
         for (Slice n : dag.getCycle()) {
@@ -17,5 +16,4 @@ public class DefaultCycleRenderer<S extends PartSlice> implements CycleRenderer<
         }
         return sb.toString();
     }
-
 }

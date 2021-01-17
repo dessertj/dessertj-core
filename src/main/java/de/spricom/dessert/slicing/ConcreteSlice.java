@@ -4,6 +4,7 @@ import de.spricom.dessert.util.Predicate;
 import de.spricom.dessert.util.SetHelper;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Set;
  * The sum or difference on concrete slices
  * produce a concrete slice again.
  */
-public class ConcreteSlice extends AbstractSlice {
+public class ConcreteSlice extends AbstractSlice implements Concrete {
     private final Set<Clazz> entries;
 
     protected ConcreteSlice(Set<Clazz> entries) {
@@ -21,7 +22,7 @@ public class ConcreteSlice extends AbstractSlice {
 
     @Override
     public Slice combine(final Slice other) {
-        if (other instanceof ConcreteSlice) {
+        if (other instanceof Concrete) {
             ConcreteSlice slice = new ConcreteSlice(SetHelper.union(entries, other.getSliceEntries()));
             return slice;
         }
@@ -31,17 +32,17 @@ public class ConcreteSlice extends AbstractSlice {
                 return contains(sliceEntry) || other.contains(sliceEntry);
             }
         };
-        return new DerivedSlice(combined);
-    }
-
-    public ConcreteSlice without(final Slice other) {
-        Predicate<Clazz> excluded = new Predicate<Clazz>() {
-            @Override
-            public boolean test(Clazz sliceEntry) {
-                return !other.contains(sliceEntry);
-            }
-        };
-        return (ConcreteSlice) slice(excluded);
+        DerivedSlice derived = new DerivedSlice(combined);
+        if (other.canResolveSliceEntries()) {
+            EntryResolver resolver = new EntryResolver() {
+                @Override
+                public Set<Clazz> getSliceEntries() {
+                    return SetHelper.union(entries, other.getSliceEntries());
+                }
+            };
+            return new DeferredSlice(derived, resolver);
+        }
+        return derived;
     }
 
     @Override
@@ -70,6 +71,23 @@ public class ConcreteSlice extends AbstractSlice {
     }
 
     public String toString() {
-        return entries.toString();
+        StringBuilder sb = new StringBuilder("slice of [");
+        Iterator<Clazz> iter = entries.iterator();
+        boolean first = true;
+        while (iter.hasNext() && sb.length() < 60) {
+            Clazz entry = iter.next();
+            if (first) {
+                first = false;
+            } else {
+                sb.append(", ");
+            }
+            sb.append(entry.getName());
+        }
+        if (iter.hasNext()) {
+            sb.append(" ...");
+        }
+        sb.append("]");
+        return sb.toString();
     }
+
 }

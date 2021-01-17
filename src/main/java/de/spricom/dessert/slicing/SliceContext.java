@@ -18,9 +18,8 @@ public final class SliceContext {
     private static ClassResolver defaultResolver;
 
     private final ClassResolver resolver;
-    private boolean useClassLoader = true;
 
-    private final Map<String, Clazz> entries = new HashMap<String, Clazz>();
+    private final Map<String, Clazz> classes = new HashMap<String, Clazz>();
 
     public SliceContext() {
         this(getDefaultResolver());
@@ -43,10 +42,10 @@ public final class SliceContext {
     }
 
     Clazz asClazz(ClassEntry ce) {
-        Clazz se = entries.get(ce.getClassname());
+        Clazz se = classes.get(ce.getClassname());
         if (se == null) {
             se = new Clazz(this, ce);
-            entries.put(ce.getClassname(), se);
+            classes.put(ce.getClassname(), se);
             return se;
         } else {
             Clazz alt = se.getAlternative(ce);
@@ -55,30 +54,30 @@ public final class SliceContext {
     }
 
     public Clazz asClazz(String classname) {
-        Clazz se = entries.get(classname);
+        Clazz se = classes.get(classname);
         if (se == null) {
-            se = resolveEntry(classname);
-            if (se == null && useClassLoader) {
+            se = resolveClazz(classname);
+            if (se == null) {
                 se = loadClass(classname);
             }
             if (se == null) {
                 se = undefined(classname);
             }
-            entries.put(classname, se);
+            classes.put(classname, se);
         }
         return se;
     }
 
     public Clazz asClazz(Class<?> clazz) {
-        Clazz se = entries.get(clazz.getName());
+        Clazz se = classes.get(clazz.getName());
         if (se == null) {
-            se = createEntry(clazz);
-            entries.put(clazz.getName(), se);
+            se = createClazz(clazz);
+            classes.put(clazz.getName(), se);
         }
         return se;
     }
 
-    private Clazz resolveEntry(String classname) {
+    private Clazz resolveClazz(String classname) {
         ClassEntry resolverEntry = resolver.getClassEntry(classname);
         if (resolverEntry == null) {
             return null;
@@ -86,7 +85,7 @@ public final class SliceContext {
         return new Clazz(this, resolverEntry);
     }
 
-    private Clazz createEntry(Class<?> clazz) {
+    private Clazz createClazz(Class<?> clazz) {
         try {
             return new Clazz(this, clazz);
         } catch (IOException ex) {
@@ -334,13 +333,5 @@ public final class SliceContext {
             throw new IllegalArgumentException(rootFile + " has not been registered with this context.");
         }
         return root;
-    }
-
-    public boolean isUseClassLoader() {
-        return useClassLoader;
-    }
-
-    public void setUseClassLoader(boolean useClassLoader) {
-        this.useClassLoader = useClassLoader;
     }
 }

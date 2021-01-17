@@ -56,4 +56,9 @@ public class DeferredSlice extends AbstractSlice {
         }
         return concreteSlice.getSliceEntries();
     }
+
+    public String toString() {
+        getSliceEntries(); // ensure concrete slice is resolved
+        return concreteSlice.toString();
+    }
 }

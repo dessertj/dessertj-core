@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 /**
  * A special {@link Slice} that represents a single .class file.
  */
-public final class Clazz extends AbstractSlice implements Comparable<Clazz> {
+public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Concrete {
     private static final Logger log = Logger.getLogger(Clazz.class.getName());
     public static final Clazz UNDEFINED = new Clazz();
 
@@ -123,7 +123,10 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz> {
 
     @Override
     public Slice combine(final Slice other) {
-        if (other instanceof ConcreteSlice) {
+        if (other.contains(this)) {
+            return other;
+        }
+        if (other instanceof Concrete) {
             Set<Clazz> union = SetHelper.union(Collections.singleton(this), other.getSliceEntries());
             ConcreteSlice slice = new ConcreteSlice(union);
             return slice;
@@ -134,7 +137,17 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz> {
                 return this.equals(clazz) || other.contains(clazz);
             }
         };
-        return new DerivedSlice(combined);
+        DerivedSlice derived = new DerivedSlice(combined);
+        if (other.canResolveSliceEntries()) {
+            EntryResolver resolver = new EntryResolver() {
+                @Override
+                public Set<Clazz> getSliceEntries() {
+                    return SetHelper.union(Collections.singleton(Clazz.this), other.getSliceEntries());
+                }
+            };
+            return new DeferredSlice(derived, resolver);
+        }
+        return derived;
     }
 
     @Override

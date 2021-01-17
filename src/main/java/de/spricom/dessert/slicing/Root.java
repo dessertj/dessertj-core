@@ -22,7 +22,10 @@ public class Root extends AbstractSlice {
 
     @Override
     public Slice combine(final Slice other) {
-        return getConcreteSlice().combine(other);
+        if (concreteSlice != null) {
+            return concreteSlice.combine(other);
+        }
+        return new DeferredSlice(other, resolver);
     }
 
     @Override
@@ -58,5 +61,9 @@ public class Root extends AbstractSlice {
             concreteSlice = new ConcreteSlice(resolver.getSliceEntries());
         }
         return concreteSlice;
+    }
+
+    public String toString() {
+        return "root of " + root.getRootFile().getName();
     }
 }

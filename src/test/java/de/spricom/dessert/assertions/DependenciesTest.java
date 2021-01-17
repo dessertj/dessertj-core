@@ -1,21 +1,24 @@
 package de.spricom.dessert.assertions;
 
 import de.spricom.dessert.classfile.ClassFile;
+import de.spricom.dessert.classfile.attribute.AttributeInfo;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
-import de.spricom.dessert.groups.PackageSlice;
-import de.spricom.dessert.groups.SliceGroup;
 import de.spricom.dessert.resolve.ClassResolver;
+import de.spricom.dessert.slicing.PackageSlice;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.slicing.SliceContext;
-import de.spricom.dessert.slicing.Clazz;
-import de.spricom.dessert.util.Predicate;
+import de.spricom.dessert.slicing.Slices;
 import de.spricom.dessert.util.SetHelper;
-import org.junit.BeforeClass;
+import org.fest.assertions.Assertions;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+
+import static de.spricom.dessert.assertions.SliceAssertions.dessert;
 
 /**
  * This test checks the dependencies of the dessert library. It's an example on how
@@ -26,27 +29,16 @@ public class DependenciesTest {
     /**
      * The same SliceContext is used for all tests.
      */
-    private static SliceContext sc;
-
-    /**
-     * For performance reasons the SliceContext uses a specialized resolver that
-     * processes the compiled class and the java runtime classes, only. The default
-     * implementation would consider the whole CLASSPATH.
-     */
-    @BeforeClass
-    public static void init() throws IOException {
-        ClassResolver resolver = ClassResolver.ofClassPathWithoutJars();
-        sc = new SliceContext(resolver);
-    }
+    private static final SliceContext sc = new SliceContext();
+    private final Slice main = sc.rootOf(Slice.class);
+    private final Slice test = sc.rootOf(this.getClass());
 
     /**
      * Make sure there are no cyclic dependencies between dessert packages.
      */
     @Test
     public void testPackagesAreCycleFree() {
-        Slice subPackages = sc.packageTreeOf("de.spricom.dessert")
-                .minus(tests());
-        SliceAssertions.dessert(subPackages).splitByPackage().isCycleFree();
+        dessert(main.splitByPackage()).isCycleFree();
     }
 
     /**
@@ -56,9 +48,11 @@ public class DependenciesTest {
      */
     @Test
     public void testNestedPackagesShouldNotUseOuterPackages() {
-        SliceGroup<PackageSlice> group = SliceGroup.splitByPackage(sc.packageTreeOf("de.spricom.dessert"));
-        for (PackageSlice pckg : group) {
-            SliceAssertions.assertThat(pckg).doesNotUse(pckg.getParentPackage(group));
+        Slice mainAndTest = main.plus(test);
+        SortedMap<String, PackageSlice> packages = mainAndTest.splitByPackage();
+
+        for (PackageSlice pckg : packages.values()) {
+            dessert(pckg).doesNotUse(pckg.getParentPackage());
         }
     }
 
@@ -68,13 +62,32 @@ public class DependenciesTest {
      */
     @Test
     public void testExternalDependencies() {
-        Slice dessert = sc.packageTreeOf("de.spricom.dessert").minus(tests());
-        Slice java = sc.packageTreeOf("java.lang")
-                .plus(sc.packageTreeOf("java.util"))
-                .plus(sc.packageTreeOf("java.io"))
-                .plus(sc.packageTreeOf("java.net"))
-                .plus(sc.packageTreeOf("java.security"));
-        SliceAssertions.assertThat(dessert).usesOnly(java);
+        Slice java = Slices.of(
+                sc.packageTreeOf("java.lang"),
+                sc.packageTreeOf("java.util"),
+                sc.packageTreeOf("java.io"),
+                sc.packageTreeOf("java.net"));
+        dessert(main).usesOnly(java);
+    }
+
+    @Test
+    public void testPackageOrder() {
+        Map<String, PackageSlice> packages = main.splitByPackage();
+        List<PackageSlice> layers = Arrays.asList(
+                packages.remove(packageOf(SliceAssertions.class)),
+                packages.remove(packageOf(Slice.class)),
+                packages.remove(packageOf(ClassResolver.class)),
+                packages.remove(packageOf(ClassFile.class)),
+                packages.remove(packageOf(AttributeInfo.class)),
+                packages.remove(packageOf(ConstantPool.class)),
+                packages.remove(packageOf(DependencyHolder.class)),
+                packages.remove(packageOf(SetHelper.class)));
+        dessert(layers).isLayeredRelaxed();
+        Assertions.assertThat(packages).isEmpty();
+    }
+
+    private String packageOf(Class<?> clazz) {
+        return clazz.getPackage().getName();
     }
 
     /**
@@ -87,51 +100,13 @@ public class DependenciesTest {
      */
     @Test
     public void testClassfileDependencies() {
-        Slice classfile = sc.packageTreeOf(ClassFile.class.getPackage()).minus(tests());
+        Slice classfile = sc.packageTreeOf(ClassFile.class.getPackage()).minus(test);
         Slice javaCore = sc.packageTreeOf("java.lang")
                 .plus(sc.packageTreeOf("java.util"));
         Slice javaIO = sc.packageTreeOf("java.io").plus(javaCore);
         SliceAssertions.assertThat(classfile).usesOnly(javaIO);
-        Slice dependencyHolder = sc.packageTreeOf(DependencyHolder.class.getPackage());
-        SliceAssertions.assertThat(dependencyHolder).usesOnly(javaCore);
-        SliceAssertions.assertThat(sc.packageTreeOf(ConstantPool.class.getPackage()).minus(tests()))
-                .usesOnly(javaIO, dependencyHolder);
-    }
 
-    /**
-     * Checks the dependencies of the dessert library core. The dependencies are
-     * slicing -&gt; resolve -&gt; util -&gt; classfile -&gt; java.x. For the classfile
-     * package only its facade implemented by the ClassFile class must be used.
-     */
-    @Test
-    public void testDessertDependencies() {
-        Slice javaCore = sc.packageTreeOf("java.lang")
-                .plus(sc.packageTreeOf("java.util"));
-        Slice javaIO = sc.packageTreeOf("java.io")
-                .plus(sc.packageTreeOf(URI.class));
-
-        // The ClassFile class is the facade for the classfile package. Nothing but
-        // this class should be used outside this package.
-        Slice classfile = sc.packageTreeOf(ClassFile.class.getPackage().getName())
-                .slice(new Predicate<Clazz>() {
-                    @Override
-                    public boolean test(Clazz sliceEntry) {
-                        return sliceEntry.getName().equals(ClassFile.class.getName());
-                    }
-                });
-        Slice resolve = sc.packageTreeOf(ClassResolver.class.getPackage()).minus(tests());
-        Slice slicing = sc.packageTreeOf(Slice.class.getPackage()).minus(tests());
-        Slice util = sc.packageTreeOf(SetHelper.class.getPackage());
-
-        SliceAssertions.assertThat(util).usesOnly(javaCore, javaIO);
-        SliceAssertions.assertThat(resolve).usesOnly(javaCore, javaIO, classfile, util);
-        SliceAssertions.assertThat(slicing)
-                .uses(javaCore).and(javaIO).and(resolve).and(util).and(classfile)
-                .and(sc.packageTreeOf("java.net"))
-                .only();
-    }
-
-    private Slice tests() {
-        return sc.rootOf(this.getClass());
+        // Packages outside the 'classfile' package must not use anything but the ClassFile facade.
+        dessert(main.minus(classfile)).doesNotUse(classfile.minus(sc.asClazz(ClassFile.class)));
     }
 }

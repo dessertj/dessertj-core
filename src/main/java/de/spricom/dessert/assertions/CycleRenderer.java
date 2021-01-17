@@ -1,8 +1,8 @@
 package de.spricom.dessert.assertions;
 
-import de.spricom.dessert.groups.PartSlice;
+import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.util.DependencyGraph;
 
-public interface CycleRenderer<S extends PartSlice> {
-    String renderCycle(DependencyGraph<S> dag);
+public interface CycleRenderer {
+    String renderCycle(DependencyGraph<Slice> dag);
 }

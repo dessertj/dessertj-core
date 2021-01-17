@@ -54,4 +54,8 @@ final class DerivedSlice extends AbstractSlice {
     public Set<Clazz> getSliceEntries() {
         throw new IllegalStateException("Cannot materialize DerivedSlice");
     }
+
+    public String toString() {
+        return "slice from " + predicate;
+    }
 }

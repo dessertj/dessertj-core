@@ -6,6 +6,10 @@ import java.util.Collections;
 import java.util.Set;
 
 class EmptySlice extends AbstractSlice {
+    final static EmptySlice EMPTY_SLICE = new EmptySlice();
+
+    private EmptySlice() {
+    }
 
     @Override
     public Slice combine(Slice other) {

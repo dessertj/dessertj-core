@@ -1,8 +1,7 @@
-package de.spricom.dessert.groups;
-
-import de.spricom.dessert.slicing.Clazz;
+package de.spricom.dessert.slicing;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -16,9 +15,29 @@ import java.util.Set;
  * convention, all classes implementing some interfaces, all inner classes etc.
  */
 public class PackageSlice extends PartSlice {
+    private final Map<String, PackageSlice> otherPackages;
 
-    PackageSlice(String packageName, Set<Clazz> entries) {
-        super(entries, packageName);
+    private PackageSlice(String packageName, Set<Clazz> entries, Map<String, PackageSlice> otherPackages) {
+        super(packageName, entries);
+        this.otherPackages = otherPackages;
+    }
+
+    public static SlicePartitioner partioner() {
+        return new SlicePartitioner() {
+            @Override
+            public String partKey(Clazz clazz) {
+                return clazz.getPackageName();
+            }
+        };
+    }
+
+    public static PartSliceFactory<PackageSlice> factory() {
+        return new PartSliceFactory<PackageSlice>() {
+            @Override
+            public PackageSlice createPartSlice(String packageName, Set<Clazz> entries, Map<String, PackageSlice> slices) {
+                return new PackageSlice(packageName, entries, slices);
+            }
+        };
     }
 
     public String getPackageName() {
@@ -34,10 +53,10 @@ public class PackageSlice extends PartSlice {
         return packageName.substring(0, pos);
     }
 
-    public PackageSlice getParentPackage(SliceGroup<PackageSlice> group) {
-        PackageSlice parentPackage = group.getByPartKey(getParentPackageName());
+    public PackageSlice getParentPackage() {
+        PackageSlice parentPackage = otherPackages.get(getParentPackageName());
         if (parentPackage == null) {
-            parentPackage = new PackageSlice(getParentPackageName(), Collections.<Clazz>emptySet());
+            parentPackage = new PackageSlice(getParentPackageName(), Collections.<Clazz>emptySet(), otherPackages);
         }
         return parentPackage;
     }
