@@ -42,22 +42,22 @@ public abstract class AbstractSlice implements Slice {
         return new NamedSlice(this, name);
     }
 
-    public SortedMap<String, PackageSlice> splitByPackage() {
-        return splitBy(PackageSlice.partioner(), PackageSlice.factory());
+    public SortedMap<String, PackageSlice> partitionByPackage() {
+        return partitionBy(PackageSlice.partitioner(), PackageSlice.factory());
     }
 
-    public SortedMap<String, PartSlice> splitBy(SlicePartitioner partitioner) {
-        return splitBy(
+    public SortedMap<String, PartitionSlice> partitionBy(SlicePartitioner partitioner) {
+        return partitionBy(
                 partitioner,
-                new PartSliceFactory<PartSlice>() {
+                new PartitionSliceFactory<PartitionSlice>() {
                     @Override
-                    public PartSlice createPartSlice(String partKey, Set<Clazz> entries, Map<String, PartSlice> slices) {
-                        return new PartSlice(partKey, entries);
+                    public PartitionSlice createPartSlice(String partKey, Set<Clazz> entries, Map<String, PartitionSlice> slices) {
+                        return new PartitionSlice(partKey, entries);
                     }
                 });
     }
 
-    public <S extends PartSlice> SortedMap<String, S> splitBy(SlicePartitioner partioner, PartSliceFactory<S> partSliceFactory) {
+    public <S extends PartitionSlice> SortedMap<String, S> partitionBy(SlicePartitioner partioner, PartitionSliceFactory<S> partitionSliceFactory) {
         Map<String, Set<Clazz>> split = new HashMap<String, Set<Clazz>>();
         for (Clazz entry : getSliceEntries()) {
             String key = partioner.partKey(entry);
@@ -72,7 +72,7 @@ public abstract class AbstractSlice implements Slice {
         }
         SortedMap<String, S> slices = new TreeMap<String, S>();
         for (Map.Entry<String, Set<Clazz>> matches : split.entrySet()) {
-            slices.put(matches.getKey(), partSliceFactory.createPartSlice(matches.getKey(), matches.getValue(), slices));
+            slices.put(matches.getKey(), partitionSliceFactory.createPartSlice(matches.getKey(), matches.getValue(), slices));
         }
         return slices;
     }

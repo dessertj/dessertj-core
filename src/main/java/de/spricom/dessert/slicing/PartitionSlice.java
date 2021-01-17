@@ -2,10 +2,10 @@ package de.spricom.dessert.slicing;
 
 import java.util.Set;
 
-public class PartSlice extends ConcreteSlice {
+public class PartitionSlice extends ConcreteSlice {
     private final String partKey;
 
-    public PartSlice(String partKey, Set<Clazz> sliceEntries) {
+    public PartitionSlice(String partKey, Set<Clazz> sliceEntries) {
         super(sliceEntries);
         this.partKey = partKey;
     }

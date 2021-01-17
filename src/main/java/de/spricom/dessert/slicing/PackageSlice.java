@@ -14,7 +14,7 @@ import java.util.Set;
  * package, for example all interfaces, all classes complying some naming
  * convention, all classes implementing some interfaces, all inner classes etc.
  */
-public class PackageSlice extends PartSlice {
+public class PackageSlice extends PartitionSlice {
     private final Map<String, PackageSlice> otherPackages;
 
     private PackageSlice(String packageName, Set<Clazz> entries, Map<String, PackageSlice> otherPackages) {
@@ -22,7 +22,7 @@ public class PackageSlice extends PartSlice {
         this.otherPackages = otherPackages;
     }
 
-    public static SlicePartitioner partioner() {
+    public static SlicePartitioner partitioner() {
         return new SlicePartitioner() {
             @Override
             public String partKey(Clazz clazz) {
@@ -31,8 +31,8 @@ public class PackageSlice extends PartSlice {
         };
     }
 
-    public static PartSliceFactory<PackageSlice> factory() {
-        return new PartSliceFactory<PackageSlice>() {
+    public static PartitionSliceFactory<PackageSlice> factory() {
+        return new PartitionSliceFactory<PackageSlice>() {
             @Override
             public PackageSlice createPartSlice(String packageName, Set<Clazz> entries, Map<String, PackageSlice> slices) {
                 return new PackageSlice(packageName, entries, slices);

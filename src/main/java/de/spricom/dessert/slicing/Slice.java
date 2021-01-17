@@ -31,11 +31,11 @@ public interface Slice {
 
     Set<Clazz> getSliceEntries();
 
-    SortedMap<String, PackageSlice> splitByPackage();
+    SortedMap<String, PackageSlice> partitionByPackage();
 
-    SortedMap<String, PartSlice> splitBy(SlicePartitioner partitioner);
+    SortedMap<String, PartitionSlice> partitionBy(SlicePartitioner partitioner);
 
-    <S extends PartSlice> SortedMap<String, S> splitBy(SlicePartitioner partitioner, PartSliceFactory<S> partSliceFactory);
+    <S extends PartitionSlice> SortedMap<String, S> partitionBy(SlicePartitioner partitioner, PartitionSliceFactory<S> partitionSliceFactory);
 
     /**
      * Creates a new {@link Slice} from this slice for which the

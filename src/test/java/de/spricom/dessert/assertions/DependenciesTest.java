@@ -4,6 +4,7 @@ import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.classfile.attribute.AttributeInfo;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
+import de.spricom.dessert.partitioning.ClazzPredicates;
 import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.slicing.PackageSlice;
 import de.spricom.dessert.slicing.Slice;
@@ -38,7 +39,7 @@ public class DependenciesTest {
      */
     @Test
     public void testPackagesAreCycleFree() {
-        dessert(main.splitByPackage()).isCycleFree();
+        dessert(main.partitionByPackage()).isCycleFree();
     }
 
     /**
@@ -49,7 +50,7 @@ public class DependenciesTest {
     @Test
     public void testNestedPackagesShouldNotUseOuterPackages() {
         Slice mainAndTest = main.plus(test);
-        SortedMap<String, PackageSlice> packages = mainAndTest.splitByPackage();
+        SortedMap<String, PackageSlice> packages = mainAndTest.partitionByPackage();
 
         for (PackageSlice pckg : packages.values()) {
             dessert(pckg).doesNotUse(pckg.getParentPackage());
@@ -72,9 +73,10 @@ public class DependenciesTest {
 
     @Test
     public void testPackageOrder() {
-        Map<String, PackageSlice> packages = main.splitByPackage();
+        Map<String, PackageSlice> packages = main.partitionByPackage();
         List<PackageSlice> layers = Arrays.asList(
                 packages.remove(packageOf(SliceAssertions.class)),
+                packages.remove(packageOf(ClazzPredicates.class)),
                 packages.remove(packageOf(Slice.class)),
                 packages.remove(packageOf(ClassResolver.class)),
                 packages.remove(packageOf(ClassFile.class)),

@@ -79,17 +79,17 @@ final class NamedSlice implements Slice {
     }
 
     @Override
-    public SortedMap<String, PackageSlice> splitByPackage() {
-        return delegate.splitByPackage();
+    public SortedMap<String, PackageSlice> partitionByPackage() {
+        return delegate.partitionByPackage();
     }
 
     @Override
-    public SortedMap<String, PartSlice> splitBy(SlicePartitioner partitioner) {
-        return delegate.splitBy(partitioner);
+    public SortedMap<String, PartitionSlice> partitionBy(SlicePartitioner partitioner) {
+        return delegate.partitionBy(partitioner);
     }
 
     @Override
-    public <S extends PartSlice> SortedMap<String, S> splitBy(SlicePartitioner partitioner, PartSliceFactory<S> partSliceFactory) {
-        return delegate.splitBy(partitioner, partSliceFactory);
+    public <S extends PartitionSlice> SortedMap<String, S> partitionBy(SlicePartitioner partitioner, PartitionSliceFactory<S> partitionSliceFactory) {
+        return delegate.partitionBy(partitioner, partitionSliceFactory);
     }
 }
