@@ -5,6 +5,15 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * A ClassEntry represents a single package within one classes directory or .jar file.
+ * It's either linked to the parent {@link ClassPackage} it belongs to or it is a
+ * {@link ClassRoot} itself. It maintains a probably empty list of all its subpackages
+ * and classes it contains directly.
+ * If there is an other package with the same name in some other classes directory or
+ * .jar file within the {@link ClassResolver} scope it has a reference to a list of all
+ * such packages.
+ */
 public class ClassPackage {
     private final String packageName;
     private final ClassPackage parent;
@@ -82,6 +91,13 @@ public class ClassPackage {
         return null;
     }
 
+    /**
+     * Returns a list of all other packages with the same fully qualified name.
+     * For the root package "" this method returns all roots ({@link ClassRoot})
+     * within the {@link ClassResolver}.
+     *
+     * @return the other packages or null if there are none
+     */
     public List<ClassPackage> getAlternatives() {
         return alternatives;
     }
