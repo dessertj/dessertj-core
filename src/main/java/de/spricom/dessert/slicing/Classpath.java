@@ -13,19 +13,21 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class SliceContext {
-    private static final Logger log = Logger.getLogger(SliceContext.class.getName());
+public final class Classpath extends AbstractSlice {
+    private static final Logger log = Logger.getLogger(Classpath.class.getName());
     private static ClassResolver defaultResolver;
 
     private final ClassResolver resolver;
 
     private final Map<String, Clazz> classes = new HashMap<String, Clazz>();
 
-    public SliceContext() {
+    private Slice classpathSlice;
+
+    public Classpath() {
         this(getDefaultResolver());
     }
 
-    public SliceContext(ClassResolver resolver) {
+    public Classpath(ClassResolver resolver) {
         this.resolver = resolver;
         resolver.freeze();
     }
@@ -203,7 +205,7 @@ public final class SliceContext {
     public Slice packageOf(Root root, String packageName) {
         Assertions.notNull(root, "root");
         Assertions.notNull(packageName, "packageName");
-        final ClassPackage cp = SliceContext.this.resolver.getPackage(root.getClassRoot().getRootFile(), packageName);
+        final ClassPackage cp = Classpath.this.resolver.getPackage(root.getClassRoot().getRootFile(), packageName);
         if (cp == null) {
             throw new ResolveException("There is no " + packageName + " package in " + root);
         }
@@ -226,7 +228,7 @@ public final class SliceContext {
             protected void resolve() {
                 for (File file : rootFiles) {
                     getClassRoot(file);
-                    ClassRoot cr = SliceContext.this.resolver.getRoot(file);
+                    ClassRoot cr = Classpath.this.resolver.getRoot(file);
                     if (cr != null) {
                         addRecursive(cr);
                     }
@@ -333,5 +335,37 @@ public final class SliceContext {
             throw new IllegalArgumentException(rootFile + " has not been registered with this context.");
         }
         return root;
+    }
+
+    @Override
+    public Slice combine(Slice other) {
+        throw new UnsupportedOperationException("Cannot combine anything with class path.");
+    }
+
+    @Override
+    public Slice slice(Predicate<Clazz> predicate) {
+        return classpathSlice().slice(predicate);
+    }
+
+    @Override
+    public boolean contains(Clazz clazz) {
+        return classpathSlice().contains(clazz);
+    }
+
+    @Override
+    public boolean canResolveSliceEntries() {
+        return true;
+    }
+
+    @Override
+    public Set<Clazz> getSliceEntries() {
+        return classpathSlice().getSliceEntries();
+    }
+
+    private Slice classpathSlice() {
+        if (classpathSlice == null) {
+            classpathSlice = packageTreeOf("");
+        }
+        return classpathSlice;
     }
 }

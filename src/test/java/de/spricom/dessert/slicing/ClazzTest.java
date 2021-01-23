@@ -16,7 +16,7 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class ClazzTest {
 
-    private final SliceContext sc = new SliceContext();
+    private final Classpath sc = new Classpath();
 
     @Test
     public void testThisClass() throws MalformedURLException {
@@ -69,7 +69,7 @@ public class ClazzTest {
         root1.add(fakeClassName);
         root2.add(fakeClassName);
 
-        SliceContext sc = new SliceContext(resolver);
+        Classpath sc = new Classpath(resolver);
         Slice slice = sc.packageTreeOf("de.spricom.dessert");
         Set<Clazz> entries = slice.getSliceEntries();
         assertThat(entries).hasSize(2);

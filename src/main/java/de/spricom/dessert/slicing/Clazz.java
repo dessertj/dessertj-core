@@ -20,7 +20,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
     private static final Logger log = Logger.getLogger(Clazz.class.getName());
     public static final Clazz UNDEFINED = new Clazz();
 
-    private final SliceContext context;
+    private final Classpath context;
     private final String className;
     private final ClassFile classFile;
     private final ClassEntry classEntry;
@@ -43,7 +43,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
         alternatives = Collections.emptyList();
     }
 
-    Clazz(SliceContext context, ClassEntry classEntry) {
+    Clazz(Classpath context, ClassEntry classEntry) {
         assert context != null : "context == null";
         assert classEntry != null : "classEntry == null";
         this.context = context;
@@ -74,7 +74,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
         this.alternatives.add(this);
     }
 
-    Clazz(SliceContext context, Class<?> classImpl) throws IOException {
+    Clazz(Classpath context, Class<?> classImpl) throws IOException {
         assert context != null : "context == null";
         assert classImpl != null : "clazz == null";
         this.context = context;
@@ -84,7 +84,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
         this.className = classFile.getThisClass();
     }
 
-    Clazz(SliceContext context, String className) {
+    Clazz(Classpath context, String className) {
         assert context != null : "context == null";
         assert className != null : "className == null";
         this.context = context;

@@ -6,9 +6,9 @@ import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
 import de.spricom.dessert.partitioning.ClazzPredicates;
 import de.spricom.dessert.resolve.ClassResolver;
+import de.spricom.dessert.slicing.Classpath;
 import de.spricom.dessert.slicing.PackageSlice;
 import de.spricom.dessert.slicing.Slice;
-import de.spricom.dessert.slicing.SliceContext;
 import de.spricom.dessert.slicing.Slices;
 import de.spricom.dessert.util.SetHelper;
 import org.fest.assertions.Assertions;
@@ -30,7 +30,7 @@ public class DependenciesTest {
     /**
      * The same SliceContext is used for all tests.
      */
-    private static final SliceContext sc = new SliceContext();
+    private static final Classpath sc = new Classpath();
     private final Slice main = sc.rootOf(Slice.class);
     private final Slice test = sc.rootOf(this.getClass());
 

@@ -9,12 +9,12 @@ import java.io.File;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class SliceContextTest {
-    private static SliceContext sc;
+public class ClasspathTest {
+    private static Classpath sc;
 
     @BeforeClass
     public static void init() {
-        sc = new SliceContext();
+        sc = new Classpath();
     }
 
     @Test

@@ -6,20 +6,20 @@ import de.spricom.dessert.resolve.ClassPackage;
 import java.util.*;
 
 public abstract class AbstractTreeResolver implements EntryResolver {
-    private final SliceContext sc;
-    private Set<Clazz> sliceEntries;
+    private final Classpath cp;
+    private Set<Clazz> clazzes;
 
-    public AbstractTreeResolver(SliceContext sc) {
-        this.sc = sc;
+    public AbstractTreeResolver(Classpath cp) {
+        this.cp = cp;
     }
 
     @Override
     public final Set<Clazz> getSliceEntries() {
-        if (sliceEntries == null) {
-            sliceEntries = new HashSet<Clazz>();
+        if (clazzes == null) {
+            clazzes = new HashSet<Clazz>();
             resolve();
         }
-        return sliceEntries;
+        return clazzes;
     }
 
     protected abstract void resolve();
@@ -58,6 +58,6 @@ public abstract class AbstractTreeResolver implements EntryResolver {
     }
 
     protected final void add(ClassEntry ce) {
-        sliceEntries.add(sc.asClazz(ce));
+        clazzes.add(cp.asClazz(ce));
     }
 }
