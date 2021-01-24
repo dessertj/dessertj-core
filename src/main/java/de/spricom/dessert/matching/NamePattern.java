@@ -53,7 +53,7 @@ public final class NamePattern {
     }
 
     public static NamePattern of(String pattern) {
-        Assertions.notNull(pattern, "pattern");
+        validate(pattern);
         if (pattern.startsWith("..")) {
             pattern = pattern.substring(1);
         }
@@ -63,6 +63,14 @@ public final class NamePattern {
             shortNameMatchers[i] = createShortNameMatcher(shortNameMatchers, i, parts[i]);
         }
         return new NamePattern(shortNameMatchers);
+    }
+
+    private static void validate(String pattern) {
+        Assertions.notNull(pattern, "pattern");
+        if (pattern.contains("...")
+                || pattern.endsWith("..")) {
+            throw new IllegalArgumentException("invalid pattern: " + pattern);
+        }
     }
 
     private static ShortNameMatcher createShortNameMatcher(ShortNameMatcher[] shortNameMatchers, int i, String part) {
@@ -75,11 +83,17 @@ public final class NamePattern {
         }
     }
 
+    /**
+     * Matches 'name' against the pattern.
+     *
+     * @param name the identifier to match
+     * @return true if the identifier matches
+     */
     public boolean matches(String name) {
         String[] parts = name.split("\\.");
-        ShortNameMatcher matcher = shortNameMatchers[0];
+        ShortNameMatcher matcher = matcher();
         for (int i = 0; i < parts.length; i++) {
-            if (!matcher.matchPossible()) {
+            if (!matcher.isMatchPossible()) {
                 return false;
             }
             if (matchesAlternate(parts, i, matcher)) return true;
@@ -88,9 +102,16 @@ public final class NamePattern {
         return matcher.matches();
     }
 
+    /**
+     * @return the first matcher to match the top-level package of the identifier
+     */
+    public ShortNameMatcher matcher() {
+        return shortNameMatchers[0];
+    }
+
     private boolean matches(String[] parts, int index, ShortNameMatcher matcher) {
         for (int i = index; i < parts.length; i++) {
-            if (!matcher.matchPossible()) {
+            if (!matcher.isMatchPossible()) {
                 break;
             }
             if (matchesAlternate(parts, i, matcher)) return true;
@@ -100,7 +121,7 @@ public final class NamePattern {
     }
 
     private boolean matchesAlternate(String[] parts, int index, ShortNameMatcher matcher) {
-        if (matcher instanceof WildcardShortNameMatcher) {
+        if (matcher.isMatchUncertain()) {
             ShortNameMatcher alternate = matcher.next().match(parts[index]);
             if (matches(parts, index + 1, alternate)) {
                 return true;

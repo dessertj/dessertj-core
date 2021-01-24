@@ -11,9 +11,14 @@ class WildcardShortNameMatcher extends AbstractShortNameMatcher {
 
     @Override
     public ShortNameMatcher match(String shortName) {
-        if (next().match(shortName).matchPossible()) {
+        if (next().match(shortName).isMatchPossible()) {
             return next().next();
         }
         return this;
+    }
+
+    @Override
+    public boolean isMatchUncertain() {
+        return true;
     }
 }

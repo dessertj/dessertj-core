@@ -6,7 +6,7 @@ dependencies. It is intended to be used within unit-tests.
 == Goals
 
 - No additional dependencies but plain Java 6 or above (with full support for Java 15)
-- Simple and intuitive API (motivated by [AssertJ](https://joel-costigliola.github.io/assertj/))
+- Simple and intuitive API (motivated by https://joel-costigliola.github.io/assertj/[AssertJ])
 - Assertions should be robust against refactorings (no strings for class or package names required)
 - Easy and seamless integration with other testing or assertion frameworks
 - Speed

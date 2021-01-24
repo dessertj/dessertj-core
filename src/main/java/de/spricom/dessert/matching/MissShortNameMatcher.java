@@ -1,5 +1,9 @@
 package de.spricom.dessert.matching;
 
+/**
+ * This matcher will be returned it the latest consumed short-name does not match after the
+ * prefix consumed so far. This matcher terminates the matching process for the current branch.
+ */
 enum MissShortNameMatcher implements ShortNameMatcher {
     MISS;
 
@@ -19,7 +23,12 @@ enum MissShortNameMatcher implements ShortNameMatcher {
     }
 
     @Override
-    public boolean matchPossible() {
+    public boolean isMatchPossible() {
+        return false;
+    }
+
+    @Override
+    public boolean isMatchUncertain() {
         return false;
     }
 

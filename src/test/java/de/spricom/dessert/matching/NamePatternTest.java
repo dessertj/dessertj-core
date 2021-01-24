@@ -1,5 +1,6 @@
 package de.spricom.dessert.matching;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -59,8 +60,18 @@ public class NamePatternTest {
         check("*..*..*", "sample.Baz", false);
     }
 
+    private void checkInvalid(String pattern) {
+        try {
+            NamePattern.of(pattern);
+            Assert.fail("no exception for: " + pattern);
+        } catch (IllegalArgumentException ex) {
+            // ignore
+        }
+    }
+
+    @Test
     public void testInvalidPatterns() {
-        check("..", "Dummy", false);
-        check("sample...Foo", "Dummy", false);
+        checkInvalid("..");
+        checkInvalid("sample...Foo");
     }
 }

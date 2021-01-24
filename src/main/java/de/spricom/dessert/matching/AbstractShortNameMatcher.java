@@ -30,7 +30,12 @@ abstract class AbstractShortNameMatcher implements ShortNameMatcher {
     }
 
     @Override
-    public boolean matchPossible() {
+    public boolean isMatchPossible() {
         return true;
+    }
+
+    @Override
+    public boolean isMatchUncertain() {
+        return false;
     }
 }
