@@ -53,6 +53,7 @@ public class ClazzTest {
     private void checkName(Class<?> classImpl) {
         Clazz clazz = sc.sliceOf(classImpl).getSliceEntries().iterator().next();
 
+        System.out.println("Checking " + clazz.getName());
         assertThat(clazz.getName()).isEqualTo(classImpl.getName());
         assertThat(clazz.getSimpleName()).isEqualTo(classImpl.getSimpleName());
     }

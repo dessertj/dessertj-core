@@ -41,6 +41,16 @@ public class ClassPackage {
         return packageName;
     }
 
+    /**
+     * @return the package name without parent package prefix
+     */
+    public String getShortName() {
+        if (parent == null) {
+            return "";
+        }
+        return packageName.substring(getParent().getPackageName().length());
+    }
+
     public ClassRoot getRoot() {
         return parent.getRoot();
     }

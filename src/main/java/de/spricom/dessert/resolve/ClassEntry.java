@@ -32,6 +32,13 @@ public abstract class ClassEntry {
     }
 
     /**
+     * @return the classname without package prefix
+     */
+    public String getShortName() {
+        return classname.substring(getPackage().getPackageName().length());
+    }
+
+    /**
      * Resolves the {@link ClassFile} by analyzing the byte code. This is a time consuming operation and
      * should be called as late as possible. For .jar files the most time is spent by decompressing the
      * .class file. The result will be cached for further calls.

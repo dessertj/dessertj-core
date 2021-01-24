@@ -4,6 +4,7 @@ import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.classfile.attribute.AttributeInfo;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
+import de.spricom.dessert.matching.NamePattern;
 import de.spricom.dessert.partitioning.ClazzPredicates;
 import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.slicing.Classpath;
@@ -83,6 +84,7 @@ public class DependenciesTest {
                 packages.remove(packageOf(AttributeInfo.class)),
                 packages.remove(packageOf(ConstantPool.class)),
                 packages.remove(packageOf(DependencyHolder.class)),
+                packages.remove(packageOf(NamePattern.class)),
                 packages.remove(packageOf(SetHelper.class)));
         dessert(layers).isLayeredRelaxed();
         Assertions.assertThat(packages).isEmpty();
