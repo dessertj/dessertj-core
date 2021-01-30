@@ -15,10 +15,6 @@ final class NameResolver extends AbstractClazzResolver implements ClassVisitor {
         this.root = root;
     }
 
-    NameResolver filter(NamePattern pattern) {
-        return new NameResolver(getClasspath(), this.pattern.and(pattern), root);
-    }
-
     @Override
     protected void resolve() {
         root.traverse(pattern, this);

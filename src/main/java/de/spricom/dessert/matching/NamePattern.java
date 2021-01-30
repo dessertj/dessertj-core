@@ -52,20 +52,6 @@ public class NamePattern implements Comparable<NamePattern> {
             return true;
         }
 
-        public NamePattern and(NamePattern other) {
-            return other;
-        }
-    };
-
-    public static final NamePattern NO_NAME = new NamePattern(new ShortNameMatcher[]{MissShortNameMatcher.MISS}) {
-        @Override
-        public boolean matches(String name) {
-            return false;
-        }
-
-        public NamePattern and(NamePattern other) {
-            return this;
-        }
     };
 
     private final ShortNameMatcher[] shortNameMatchers;
@@ -113,14 +99,6 @@ public class NamePattern implements Comparable<NamePattern> {
         } else {
             return new ConstantShortNameMatcher(shortNameMatchers, i, part);
         }
-    }
-
-    public NamePattern and(NamePattern other) {
-        if (other == ANY_NAME) {
-            return this;
-        }
-        // TODO
-        return other;
     }
 
     public boolean isConstant() {

@@ -36,11 +36,6 @@ final class DerivedSlice extends AbstractSlice {
     }
 
     @Override
-    public Slice slice(String pattern) {
-        return new DerivedSlice(namePattern.and(NamePattern.of(pattern)), predicate);
-    }
-
-    @Override
     public Slice slice(final Predicate<Clazz> predicate) {
         return new DerivedSlice(new Predicate<Clazz>() {
             @Override
