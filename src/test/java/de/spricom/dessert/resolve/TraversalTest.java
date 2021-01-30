@@ -34,6 +34,12 @@ public class TraversalTest implements ClassVisitor {
     }
 
     @Test
+    public void testResolver() {
+        resolver.traverse(NamePattern.of("..*"), this);
+        assertThat(visited).hasSize(5);
+    }
+
+    @Test
     public void testOneClass() {
         traverse("de.spricom.aaa.Foo");
         assertThat(visited).containsOnly("de.spricom.aaa.Foo");

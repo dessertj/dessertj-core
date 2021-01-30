@@ -11,7 +11,7 @@ import java.util.Set;
  * A special {@link Slice} that represents a whole JAR file, classes directory, module or other
  * single source of classes. The slice contains all its .class files.
  */
-public class Root extends AbstractSlice {
+public class Root extends AbstractRootSlice {
     private final ClassRoot root;
     private final Classpath classpath;
     private ConcreteSlice concreteSlice;
@@ -31,6 +31,9 @@ public class Root extends AbstractSlice {
 
     @Override
     public Slice slice(String pattern) {
+        if (concreteSlice != null) {
+            return concreteSlice.slice(pattern);
+        }
         NamePattern namePattern = NamePattern.of(pattern);
         NameResolver nameResolver = new NameResolver(classpath, namePattern, root);
         DerivedSlice derivedSlice = new DerivedSlice(namePattern);
@@ -39,12 +42,17 @@ public class Root extends AbstractSlice {
 
     @Override
     public Slice slice(final Predicate<Clazz> predicate) {
-        return getConcreteSlice().slice(predicate);
+        if (concreteSlice != null) {
+            return concreteSlice.slice(predicate);
+        }
+        NameResolver nameResolver = new NameResolver(classpath, NamePattern.ANY_NAME, root);
+        DerivedSlice derivedSlice = new DerivedSlice(predicate);
+        return new DeferredSlice(derivedSlice, nameResolver);
     }
 
     @Override
     public boolean contains(Clazz clazz) {
-        return getConcreteSlice().contains(clazz);
+        return slice(clazz.getName()).contains(clazz);
     }
 
     @Override

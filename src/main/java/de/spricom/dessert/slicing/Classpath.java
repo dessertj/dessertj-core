@@ -2,10 +2,8 @@ package de.spricom.dessert.slicing;
 
 import de.spricom.dessert.matching.NamePattern;
 import de.spricom.dessert.resolve.ClassEntry;
-import de.spricom.dessert.resolve.ClassPackage;
 import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.resolve.ClassRoot;
-import de.spricom.dessert.util.Assertions;
 import de.spricom.dessert.util.Predicate;
 
 import java.io.File;
@@ -14,7 +12,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class Classpath extends AbstractSlice {
+public final class Classpath extends AbstractRootSlice {
     private static final Logger log = Logger.getLogger(Classpath.class.getName());
     private static ClassResolver defaultResolver;
 
@@ -112,127 +110,60 @@ public final class Classpath extends AbstractSlice {
         return new Clazz(this, classname);
     }
 
-    public Slice packageTreeOf(Class<?> clazz) {
-        return packageTreeOf(clazz.getPackage());
-    }
-
-    public Slice packageTreeOf(Package pkg) {
-        return packageTreeOf(pkg.getName());
-    }
-
-    public Slice packageTreeOf(final String packageName) {
-        DerivedSlice derivedSlice = new DerivedSlice(new Predicate<Clazz>() {
-            @Override
-            public boolean test(Clazz sliceEntry) {
-                return sliceEntry.getName().startsWith(packageName);
+    /**
+     * Returns a slice of all duplicate .class files detected by the underlying {@link ClassResolver}.
+     * Hence for each entry in this slice there are at least two .class files with the same classname but
+     * different URL's.
+     *
+     * @return Maybe empty slice of all duplicate .class files
+     */
+    public ConcreteSlice duplicates() {
+        Set<Clazz> sliceEntries = new HashSet<Clazz>();
+        for (List<ClassEntry> alternatives : resolver.getDuplicates().values()) {
+            for (ClassEntry alternative : alternatives) {
+                sliceEntries.add(asClazz(alternative));
             }
-        });
-        return new DeferredSlice(derivedSlice, new AbstractTreeResolver(this) {
-            @Override
-            protected void resolve() {
-                ClassPackage cp = resolver.getPackage(packageName);
-                if (cp == null) {
-                    throw new ResolveException("Cannot resolve " + packageName);
-                }
-                addRecursiveWithAlternatives(cp);
-            }
-        });
-    }
-
-    public Slice packageOf(Class<?> clazz) {
-        return packageOf(clazz.getPackage());
-    }
-
-    public Slice packageOf(Package pkg) {
-        return packageOf(pkg.getName());
-    }
-
-    public Slice packageOf(final String packageName) {
-        DerivedSlice derivedSlice = new DerivedSlice(new Predicate<Clazz>() {
-            @Override
-            public boolean test(Clazz sliceEntry) {
-                return sliceEntry.getName().startsWith(packageName);
-            }
-        });
-        return new DeferredSlice(derivedSlice, new AbstractTreeResolver(this) {
-            @Override
-            protected void resolve() {
-                ClassPackage cp = resolver.getPackage(packageName);
-                if (cp == null) {
-                    throw new ResolveException("Cannot resolve " + packageName);
-                }
-                addWithAlternatives(cp);
-            }
-        });
-    }
-
-    public Slice packageTreeOf(Root root, Class<?> clazz) {
-        return packageTreeOf(root, clazz.getPackage());
-    }
-
-    public Slice packageTreeOf(Root root, Package pkg) {
-        return packageTreeOf(root, pkg.getName());
-    }
-
-    public Slice packageTreeOf(final Root root, final String packageName) {
-        Assertions.notNull(root, "root");
-        Assertions.notNull(packageName, "packageName");
-        DerivedSlice derivedSlice = new DerivedSlice(new Predicate<Clazz>() {
-            @Override
-            public boolean test(Clazz sliceEntry) {
-                return sliceEntry.getName().startsWith(packageName);
-            }
-        });
-        return new DeferredSlice(derivedSlice, new AbstractTreeResolver(this) {
-            @Override
-            protected void resolve() {
-                ClassPackage cp = resolver.getPackage(root.getClassRoot().getRootFile(), packageName);
-                if (cp == null) {
-                    throw new ResolveException("Cannot resolve " + packageName);
-                }
-                addRecursive(cp);
-            }
-        });
-    }
-
-    public Slice packageOf(Root root, Class<?> clazz) {
-        return packageOf(root, clazz.getPackage());
-    }
-
-    public Slice packageOf(Root root, Package pkg) {
-        return packageOf(root, pkg.getName());
-    }
-
-    public Slice packageOf(Root root, String packageName) {
-        Assertions.notNull(root, "root");
-        Assertions.notNull(packageName, "packageName");
-        final ClassPackage cp = Classpath.this.resolver.getPackage(root.getClassRoot().getRootFile(), packageName);
-        if (cp == null) {
-            throw new ResolveException("There is no " + packageName + " package in " + root);
         }
-        AbstractTreeResolver resolver = new AbstractTreeResolver(this) {
-            @Override
-            protected void resolve() {
-                addRecursive(cp);
-            }
-        };
-        return new ConcreteSlice(resolver.getClazzes());
+        return new ConcreteSlice(sliceEntries);
     }
 
-    public Slice packagesOf(final Collection<File> rootFiles) {
-        AbstractTreeResolver resolver = new AbstractTreeResolver(this) {
-            @Override
-            protected void resolve() {
-                for (File file : rootFiles) {
-                    getClassRoot(file);
-                    ClassRoot cr = Classpath.this.resolver.getRoot(file);
-                    if (cr != null) {
-                        addRecursive(cr);
-                    }
-                }
-            }
-        };
-        return new ConcreteSlice(resolver.getClazzes());
+    public Root rootOf(Class<?> clazz) {
+        return rootOfClass(clazz.getName());
+    }
+
+    public Root rootOfClass(String classname) {
+        ClassEntry cf = resolver.getClassEntry(classname);
+        if (cf == null) {
+            throw new IllegalArgumentException(classname + " not found within this context.");
+        }
+        return rootOf(cf.getPackage().getRoot());
+    }
+
+    public Root rootOf(final File rootFile) {
+        return rootOf(getClassRoot(rootFile));
+    }
+
+    private Root rootOf(final ClassRoot root) {
+        return new Root(root, this);
+    }
+
+    /**
+     * Checks whether the corresponding root file has been added to the path.
+     * It's not allowed to add root files to an existing slice context, because
+     * that might change slices after they have been created.
+     *
+     * @param rootFile the classes directory or jar file to check
+     * @return the root
+     */
+    private ClassRoot getClassRoot(File rootFile) {
+        if (rootFile == null) {
+            throw new NullPointerException("rootFile must not be null");
+        }
+        ClassRoot root = resolver.getRoot(rootFile);
+        if (root == null) {
+            throw new IllegalArgumentException(rootFile + " has not been registered with this context.");
+        }
+        return root;
     }
 
     public Slice sliceOf(Class<?>... classes) {
@@ -269,61 +200,6 @@ public final class Classpath extends AbstractSlice {
         });
     }
 
-    /**
-     * Returns a slice of all duplicate .class files detected by the underlying {@link ClassResolver}.
-     * Hence for each entry in this slice there are at least two .class files with the same classname but
-     * different URL's.
-     *
-     * @return Maybe empty slice of all duplicate .class files
-     */
-    public ConcreteSlice duplicates() {
-        Set<Clazz> sliceEntries = new HashSet<Clazz>();
-        for (List<ClassEntry> alternatives : resolver.getDuplicates().values()) {
-            for (ClassEntry alternative : alternatives) {
-                sliceEntries.add(asClazz(alternative));
-            }
-        }
-        return new ConcreteSlice(sliceEntries);
-    }
-
-    public Root rootOfClass(String classname) {
-        ClassEntry cf = resolver.getClassEntry(classname);
-        if (cf == null) {
-            throw new IllegalArgumentException(classname + " not found within this context.");
-        }
-        return rootOf(cf.getPackage().getRoot());
-    }
-
-    public Root rootOf(Class<?> clazz) {
-        return rootOfClass(clazz.getName());
-    }
-
-    public Root rootOf(final File rootFile) {
-        return rootOf(getClassRoot(rootFile));
-    }
-
-    private Root rootOf(final ClassRoot root) {
-        return new Root(root, this);
-    }
-
-    /**
-     * Checks whether the corresponding root file has been added to the path.
-     * It's not allowed to add root files to an existing slice context, because
-     * that might change slices after they have been created.
-     *
-     * @param rootFile the classes directory or jar file to check
-     * @return the root
-     */
-    private ClassRoot getClassRoot(File rootFile) {
-        if (rootFile == null) {
-            throw new NullPointerException("rootFile must not be null");
-        }
-        ClassRoot root = resolver.getRoot(rootFile);
-        if (root == null) {
-            throw new IllegalArgumentException(rootFile + " has not been registered with this context.");
-        }
-        return root;
-    }
 
     @Override
     public Slice combine(Slice other) {
