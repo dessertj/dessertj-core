@@ -1,6 +1,5 @@
 package de.spricom.dessert.slicing;
 
-import de.spricom.dessert.matching.NamePattern;
 import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.resolve.ClassRoot;
@@ -20,13 +19,12 @@ public final class Classpath extends AbstractRootSlice {
 
     private final Map<String, Clazz> classes = new HashMap<String, Clazz>();
 
-    private Slice classpathSlice;
-
     public Classpath() {
         this(getDefaultResolver());
     }
 
     public Classpath(ClassResolver resolver) {
+        super(resolver);
         this.resolver = resolver;
         resolver.freeze();
     }
@@ -200,44 +198,8 @@ public final class Classpath extends AbstractRootSlice {
         });
     }
 
-
     @Override
-    public Slice combine(Slice other) {
-        throw new UnsupportedOperationException("Cannot combine anything with class path.");
-    }
-
-    @Override
-    public Slice slice(String pattern) {
-        NamePattern namePattern = NamePattern.of(pattern);
-        NameResolver nameResolver = new NameResolver(this, namePattern, resolver);
-        DerivedSlice derivedSlice = new DerivedSlice(namePattern);
-        return new DeferredSlice(derivedSlice, nameResolver);
-    }
-
-    @Override
-    public Slice slice(Predicate<Clazz> predicate) {
-        return classpathSlice().slice(predicate);
-    }
-
-    @Override
-    public boolean contains(Clazz clazz) {
-        return classpathSlice().contains(clazz);
-    }
-
-    @Override
-    public boolean isIterable() {
-        return true;
-    }
-
-    @Override
-    public Set<Clazz> getClazzes() {
-        return classpathSlice().getClazzes();
-    }
-
-    private Slice classpathSlice() {
-        if (classpathSlice == null) {
-            classpathSlice = packageTreeOf("");
-        }
-        return classpathSlice;
+    Classpath getClasspath() {
+        return this;
     }
 }
