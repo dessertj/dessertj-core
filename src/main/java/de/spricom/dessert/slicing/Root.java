@@ -1,5 +1,6 @@
 package de.spricom.dessert.slicing;
 
+import de.spricom.dessert.matching.NamePattern;
 import de.spricom.dessert.resolve.ClassRoot;
 import de.spricom.dessert.util.Predicate;
 
@@ -12,12 +13,12 @@ import java.util.Set;
  */
 public class Root extends AbstractSlice {
     private final ClassRoot root;
-    private final EntryResolver resolver;
+    private final Classpath classpath;
     private ConcreteSlice concreteSlice;
 
-    Root(ClassRoot root, EntryResolver resolver) {
+    Root(ClassRoot root, Classpath classpath) {
         this.root = root;
-        this.resolver = resolver;
+        this.classpath = classpath;
     }
 
     @Override
@@ -25,7 +26,15 @@ public class Root extends AbstractSlice {
         if (concreteSlice != null) {
             return concreteSlice.combine(other);
         }
-        return new DeferredSlice(other, resolver);
+        return new DeferredSlice(other, resolver());
+    }
+
+    @Override
+    public Slice slice(String pattern) {
+        NamePattern namePattern = NamePattern.of(pattern);
+        NameResolver nameResolver = new NameResolver(classpath, namePattern, root);
+        DerivedSlice derivedSlice = new DerivedSlice(namePattern);
+        return new DeferredSlice(derivedSlice, nameResolver);
     }
 
     @Override
@@ -39,13 +48,13 @@ public class Root extends AbstractSlice {
     }
 
     @Override
-    public boolean canResolveSliceEntries() {
+    public boolean isIterable() {
         return true;
     }
 
     @Override
-    public Set<Clazz> getSliceEntries() {
-        return getConcreteSlice().getSliceEntries();
+    public Set<Clazz> getClazzes() {
+        return getConcreteSlice().getClazzes();
     }
 
     public URI getURI() {
@@ -58,9 +67,13 @@ public class Root extends AbstractSlice {
 
     private ConcreteSlice getConcreteSlice() {
         if (concreteSlice == null) {
-            concreteSlice = new ConcreteSlice(resolver.getSliceEntries());
+            concreteSlice = new ConcreteSlice(resolver().getClazzes());
         }
         return concreteSlice;
+    }
+
+    private NameResolver resolver() {
+        return new NameResolver(classpath, NamePattern.ANY_NAME, root);
     }
 
     public String toString() {

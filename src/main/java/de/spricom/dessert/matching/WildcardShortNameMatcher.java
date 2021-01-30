@@ -18,7 +18,11 @@ class WildcardShortNameMatcher extends AbstractShortNameMatcher {
     }
 
     @Override
-    public boolean isMatchUncertain() {
+    public boolean isWildcard() {
         return true;
+    }
+
+    public String toString() {
+        return "..";
     }
 }

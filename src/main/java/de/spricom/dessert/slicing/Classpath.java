@@ -1,5 +1,6 @@
 package de.spricom.dessert.slicing;
 
+import de.spricom.dessert.matching.NamePattern;
 import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.resolve.ClassPackage;
 import de.spricom.dessert.resolve.ClassResolver;
@@ -215,11 +216,7 @@ public final class Classpath extends AbstractSlice {
                 addRecursive(cp);
             }
         };
-        return new ConcreteSlice(resolver.getSliceEntries());
-    }
-
-    public Slice packagesOf(File... rootFiles) {
-        return packagesOf(Arrays.asList(rootFiles));
+        return new ConcreteSlice(resolver.getClazzes());
     }
 
     public Slice packagesOf(final Collection<File> rootFiles) {
@@ -235,7 +232,7 @@ public final class Classpath extends AbstractSlice {
                 }
             }
         };
-        return new ConcreteSlice(resolver.getSliceEntries());
+        return new ConcreteSlice(resolver.getClazzes());
     }
 
     public Slice sliceOf(Class<?>... classes) {
@@ -260,9 +257,9 @@ public final class Classpath extends AbstractSlice {
                 return names.contains(sliceEntry.getName());
             }
         });
-        return new DeferredSlice(derivedSlice, new EntryResolver() {
+        return new DeferredSlice(derivedSlice, new ClazzResolver() {
             @Override
-            public Set<Clazz> getSliceEntries() {
+            public Set<Clazz> getClazzes() {
                 Set<Clazz> sliceEntries = new HashSet<Clazz>();
                 for (String name : classnames) {
                     sliceEntries.add(asClazz(name));
@@ -306,16 +303,7 @@ public final class Classpath extends AbstractSlice {
     }
 
     private Root rootOf(final ClassRoot root) {
-        return new Root(root, new AbstractTreeResolver(this) {
-            @Override
-            protected void resolve() {
-                ClassPackage cp = resolver.getPackage(root.getRootFile(), "");
-                if (cp == null) {
-                    throw new ResolveException("Cannot resolve root package of " + root);
-                }
-                addRecursive(cp);
-            }
-        });
+        return new Root(root, this);
     }
 
     /**
@@ -343,6 +331,14 @@ public final class Classpath extends AbstractSlice {
     }
 
     @Override
+    public Slice slice(String pattern) {
+        NamePattern namePattern = NamePattern.of(pattern);
+        NameResolver nameResolver = new NameResolver(this, namePattern, resolver);
+        DerivedSlice derivedSlice = new DerivedSlice(namePattern);
+        return new DeferredSlice(derivedSlice, nameResolver);
+    }
+
+    @Override
     public Slice slice(Predicate<Clazz> predicate) {
         return classpathSlice().slice(predicate);
     }
@@ -353,13 +349,13 @@ public final class Classpath extends AbstractSlice {
     }
 
     @Override
-    public boolean canResolveSliceEntries() {
+    public boolean isIterable() {
         return true;
     }
 
     @Override
-    public Set<Clazz> getSliceEntries() {
-        return classpathSlice().getSliceEntries();
+    public Set<Clazz> getClazzes() {
+        return classpathSlice().getClazzes();
     }
 
     private Slice classpathSlice() {

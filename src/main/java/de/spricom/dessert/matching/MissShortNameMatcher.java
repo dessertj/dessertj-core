@@ -18,7 +18,7 @@ enum MissShortNameMatcher implements ShortNameMatcher {
     }
 
     @Override
-    public boolean matchesPackage() {
+    public boolean isLast() {
         return false;
     }
 
@@ -28,7 +28,7 @@ enum MissShortNameMatcher implements ShortNameMatcher {
     }
 
     @Override
-    public boolean isMatchUncertain() {
+    public boolean isWildcard() {
         return false;
     }
 

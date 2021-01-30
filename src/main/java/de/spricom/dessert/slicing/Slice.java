@@ -23,13 +23,15 @@ public interface Slice {
 
     Slice combine(Slice other);
 
+    Slice slice(String pattern);
+
     Slice slice(Predicate<Clazz> predicate);
 
     boolean contains(Clazz entry);
 
-    boolean canResolveSliceEntries();
+    boolean isIterable();
 
-    Set<Clazz> getSliceEntries();
+    Set<Clazz> getClazzes();
 
     SortedMap<String, PackageSlice> partitionByPackage();
 

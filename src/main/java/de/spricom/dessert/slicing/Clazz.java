@@ -4,7 +4,7 @@ import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.util.ClassUtil;
 import de.spricom.dessert.util.Predicate;
-import de.spricom.dessert.util.SetHelper;
+import de.spricom.dessert.util.Sets;
 
 import java.io.File;
 import java.io.IOException;
@@ -127,7 +127,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
             return other;
         }
         if (other instanceof Concrete) {
-            Set<Clazz> union = SetHelper.union(Collections.singleton(this), other.getSliceEntries());
+            Set<Clazz> union = Sets.union(Collections.singleton(this), other.getClazzes());
             ConcreteSlice slice = new ConcreteSlice(union);
             return slice;
         }
@@ -138,11 +138,11 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
             }
         };
         DerivedSlice derived = new DerivedSlice(combined);
-        if (other.canResolveSliceEntries()) {
-            EntryResolver resolver = new EntryResolver() {
+        if (other.isIterable()) {
+            ClazzResolver resolver = new ClazzResolver() {
                 @Override
-                public Set<Clazz> getSliceEntries() {
-                    return SetHelper.union(Collections.singleton(Clazz.this), other.getSliceEntries());
+                public Set<Clazz> getClazzes() {
+                    return Sets.union(Collections.singleton(Clazz.this), other.getClazzes());
                 }
             };
             return new DeferredSlice(derived, resolver);
@@ -161,12 +161,12 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
     }
 
     @Override
-    public boolean canResolveSliceEntries() {
+    public boolean isIterable() {
         return true;
     }
 
     @Override
-    public Set<Clazz> getSliceEntries() {
+    public Set<Clazz> getClazzes() {
         return Collections.singleton(this);
     }
 

@@ -1,5 +1,7 @@
 package de.spricom.dessert.resolve;
 
+import de.spricom.dessert.matching.ShortNameMatcher;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -48,7 +50,11 @@ public class ClassPackage {
         if (parent == null) {
             return "";
         }
-        return packageName.substring(getParent().getPackageName().length());
+        String parentPackageName = getParent().getPackageName();
+        if (parentPackageName.isEmpty()) {
+            return this.packageName;
+        }
+        return this.packageName.substring(parentPackageName.length() + 1);
     }
 
     public ClassRoot getRoot() {
@@ -121,5 +127,33 @@ public class ClassPackage {
         assert !alternatives.contains(alt) : "alternatives.contains(alt)";
         alternatives.add(alt);
         alt.alternatives = alternatives;
+    }
+
+    protected final void traverse(ShortNameMatcher matcher, ClassVisitor visitor) {
+        if (!matcher.isMatchPossible()) {
+            return;
+        }
+        if (matcher.isLast()) {
+            traverseClasses(matcher, visitor);
+        } else {
+            traverseSubPackages(matcher, visitor);
+            if (matcher.isWildcard()) {
+                traverse(matcher.next(), visitor);
+            }
+        }
+    }
+
+    private void traverseClasses(ShortNameMatcher matcher, ClassVisitor visitor) {
+        for (ClassEntry clazz : classes) {
+            if (matcher.match(clazz.getShortName()).matches()) {
+                visitor.visit(clazz);
+            }
+        }
+    }
+
+    private void traverseSubPackages(ShortNameMatcher matcher, ClassVisitor visitor) {
+        for (ClassPackage subPackage : subPackages) {
+            subPackage.traverse(matcher.match(subPackage.getShortName()), visitor);
+        }
     }
 }

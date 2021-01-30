@@ -9,6 +9,7 @@ public class NamePatternTest {
 
     private void check(String pattern, String name, boolean expectedResult) {
         NamePattern namePattern = NamePattern.of(pattern);
+        assertThat(namePattern.toString()).isEqualTo(pattern);
         assertThat(namePattern.matches(name))
                 .as("\"" + name + "\"/" + pattern + "/")
                 .isEqualTo(expectedResult);

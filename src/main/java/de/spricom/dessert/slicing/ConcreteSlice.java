@@ -1,7 +1,7 @@
 package de.spricom.dessert.slicing;
 
 import de.spricom.dessert.util.Predicate;
-import de.spricom.dessert.util.SetHelper;
+import de.spricom.dessert.util.Sets;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,7 +23,7 @@ public class ConcreteSlice extends AbstractSlice implements Concrete {
     @Override
     public Slice combine(final Slice other) {
         if (other instanceof Concrete) {
-            ConcreteSlice slice = new ConcreteSlice(SetHelper.union(entries, other.getSliceEntries()));
+            ConcreteSlice slice = new ConcreteSlice(Sets.union(entries, other.getClazzes()));
             return slice;
         }
         Predicate<Clazz> combined = new Predicate<Clazz>() {
@@ -33,11 +33,11 @@ public class ConcreteSlice extends AbstractSlice implements Concrete {
             }
         };
         DerivedSlice derived = new DerivedSlice(combined);
-        if (other.canResolveSliceEntries()) {
-            EntryResolver resolver = new EntryResolver() {
+        if (other.isIterable()) {
+            ClazzResolver resolver = new ClazzResolver() {
                 @Override
-                public Set<Clazz> getSliceEntries() {
-                    return SetHelper.union(entries, other.getSliceEntries());
+                public Set<Clazz> getClazzes() {
+                    return Sets.union(entries, other.getClazzes());
                 }
             };
             return new DeferredSlice(derived, resolver);
@@ -62,11 +62,11 @@ public class ConcreteSlice extends AbstractSlice implements Concrete {
     }
 
     @Override
-    public boolean canResolveSliceEntries() {
+    public boolean isIterable() {
         return true;
     }
 
-    public Set<Clazz> getSliceEntries() {
+    public Set<Clazz> getClazzes() {
         return entries;
     }
 

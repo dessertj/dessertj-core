@@ -59,6 +59,11 @@ final class NamedSlice implements Slice {
     }
 
     @Override
+    public Slice slice(String pattern) {
+        return delegate.slice(pattern);
+    }
+
+    @Override
     public Slice slice(Predicate<Clazz> predicate) {
         return delegate.slice(predicate);
     }
@@ -69,13 +74,13 @@ final class NamedSlice implements Slice {
     }
 
     @Override
-    public boolean canResolveSliceEntries() {
-        return delegate.canResolveSliceEntries();
+    public boolean isIterable() {
+        return delegate.isIterable();
     }
 
     @Override
-    public Set<Clazz> getSliceEntries() {
-        return delegate.getSliceEntries();
+    public Set<Clazz> getClazzes() {
+        return delegate.getClazzes();
     }
 
     @Override

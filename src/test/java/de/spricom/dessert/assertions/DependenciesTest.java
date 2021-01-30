@@ -11,7 +11,7 @@ import de.spricom.dessert.slicing.Classpath;
 import de.spricom.dessert.slicing.PackageSlice;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.slicing.Slices;
-import de.spricom.dessert.util.SetHelper;
+import de.spricom.dessert.util.Sets;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
 
@@ -85,7 +85,7 @@ public class DependenciesTest {
                 packages.remove(packageOf(ConstantPool.class)),
                 packages.remove(packageOf(DependencyHolder.class)),
                 packages.remove(packageOf(NamePattern.class)),
-                packages.remove(packageOf(SetHelper.class)));
+                packages.remove(packageOf(Sets.class)));
         dessert(layers).isLayeredRelaxed();
         Assertions.assertThat(packages).isEmpty();
     }

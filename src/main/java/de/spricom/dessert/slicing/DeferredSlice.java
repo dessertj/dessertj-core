@@ -6,10 +6,10 @@ import java.util.Set;
 
 public class DeferredSlice extends AbstractSlice {
     private final Slice derivedSlice;
-    private final EntryResolver resolver;
+    private final ClazzResolver resolver;
     private ConcreteSlice concreteSlice;
 
-    DeferredSlice(Slice derivedSlice, EntryResolver resolver) {
+    DeferredSlice(Slice derivedSlice, ClazzResolver resolver) {
         this.derivedSlice = derivedSlice;
         this.resolver = resolver;
     }
@@ -39,14 +39,14 @@ public class DeferredSlice extends AbstractSlice {
     }
 
     @Override
-    public boolean canResolveSliceEntries() {
+    public boolean isIterable() {
         return true;
     }
 
     @Override
-    public Set<Clazz> getSliceEntries() {
+    public Set<Clazz> getClazzes() {
         if (concreteSlice == null) {
-            ConcreteSlice cs = new ConcreteSlice(resolver.getSliceEntries());
+            ConcreteSlice cs = new ConcreteSlice(resolver.getClazzes());
             concreteSlice = cs.slice(new Predicate<Clazz>() {
                 @Override
                 public boolean test(Clazz clazz) {
@@ -54,11 +54,11 @@ public class DeferredSlice extends AbstractSlice {
                 }
             });
         }
-        return concreteSlice.getSliceEntries();
+        return concreteSlice.getClazzes();
     }
 
     public String toString() {
-        getSliceEntries(); // ensure concrete slice is resolved
+        getClazzes(); // ensure concrete slice is resolved
         return concreteSlice.toString();
     }
 }

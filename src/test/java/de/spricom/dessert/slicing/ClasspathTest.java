@@ -20,7 +20,7 @@ public class ClasspathTest {
     @Test
     public void testSliceOfClasses() {
         Slice slice = sc.sliceOf(Slice.class, ClassFile.class, File.class);
-        assertThat(slice.getSliceEntries()).hasSize(3);
+        assertThat(slice.getClazzes()).hasSize(3);
     }
 
     /**
@@ -31,7 +31,7 @@ public class ClasspathTest {
     public void testPackageTreeForSinglePackage() {
         int expectedNumberOfClasses = 25;
         Slice slice = sc.packageTreeOf(ConstantPool.class);
-        assertThat(slice.getSliceEntries()).hasSize(expectedNumberOfClasses);
+        assertThat(slice.getClazzes()).hasSize(expectedNumberOfClasses);
     }
 
 
@@ -45,6 +45,6 @@ public class ClasspathTest {
         int expectedNumberOfClasses = 46;
         int expectedNumberOfTestClasses = 14;
         Slice slice = sc.packageTreeOf(ClassFile.class);
-        assertThat(slice.getSliceEntries()).hasSize(expectedNumberOfClasses + expectedNumberOfTestClasses);
+        assertThat(slice.getClazzes()).hasSize(expectedNumberOfClasses + expectedNumberOfTestClasses);
     }
 }

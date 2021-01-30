@@ -20,13 +20,13 @@ abstract class AbstractShortNameMatcher implements ShortNameMatcher {
     }
 
     @Override
-    public boolean matches() {
+    public boolean isWildcard() {
         return false;
     }
 
     @Override
-    public boolean matchesPackage() {
-        return index + 2 >= shortNameMatchers.length;
+    public boolean isLast() {
+        return index + 1 == shortNameMatchers.length;
     }
 
     @Override
@@ -35,7 +35,7 @@ abstract class AbstractShortNameMatcher implements ShortNameMatcher {
     }
 
     @Override
-    public boolean isMatchUncertain() {
+    public boolean matches() {
         return false;
     }
 }

@@ -21,7 +21,7 @@ public class ClazzTest {
     @Test
     public void testThisClass() throws MalformedURLException {
         Slice slice = sc.sliceOf(ClazzTest.class.getName());
-        Set<Clazz> entries = slice.getSliceEntries();
+        Set<Clazz> entries = slice.getClazzes();
         assertThat(entries).hasSize(1);
         Clazz entry = entries.iterator().next();
         assertThat(entry.getAlternatives()).hasSize(1);
@@ -51,7 +51,7 @@ public class ClazzTest {
     }
 
     private void checkName(Class<?> classImpl) {
-        Clazz clazz = sc.sliceOf(classImpl).getSliceEntries().iterator().next();
+        Clazz clazz = sc.sliceOf(classImpl).getClazzes().iterator().next();
 
         System.out.println("Checking " + clazz.getName());
         assertThat(clazz.getName()).isEqualTo(classImpl.getName());
@@ -72,12 +72,12 @@ public class ClazzTest {
 
         Classpath sc = new Classpath(resolver);
         Slice slice = sc.packageTreeOf("de.spricom.dessert");
-        Set<Clazz> entries = slice.getSliceEntries();
+        Set<Clazz> entries = slice.getClazzes();
         assertThat(entries).hasSize(2);
         Clazz entry = entries.iterator().next();
         assertThat(new HashSet<Clazz>(entry.getAlternatives())).isEqualTo(entries);
 
         Slice duplicates = sc.duplicates();
-        assertThat(duplicates.getSliceEntries()).isEqualTo(entries);
+        assertThat(duplicates.getClazzes()).isEqualTo(entries);
     }
 }

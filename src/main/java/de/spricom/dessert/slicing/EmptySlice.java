@@ -27,12 +27,12 @@ class EmptySlice extends AbstractSlice {
     }
 
     @Override
-    public boolean canResolveSliceEntries() {
+    public boolean isIterable() {
         return true;
     }
 
     @Override
-    public Set<Clazz> getSliceEntries() {
+    public Set<Clazz> getClazzes() {
         return Collections.emptySet();
     }
 }

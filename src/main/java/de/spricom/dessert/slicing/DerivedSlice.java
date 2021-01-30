@@ -1,16 +1,28 @@
 package de.spricom.dessert.slicing;
 
+import de.spricom.dessert.matching.NamePattern;
 import de.spricom.dessert.util.Predicate;
+import de.spricom.dessert.util.Predicates;
 
 import java.util.HashSet;
 import java.util.Set;
 
 final class DerivedSlice extends AbstractSlice {
+    private final NamePattern namePattern;
     private final Predicate<Clazz> predicate;
     private final Set<Clazz> cache = new HashSet<Clazz>();
 
-    DerivedSlice(Predicate<Clazz> predicate) {
+    DerivedSlice(NamePattern namePattern, Predicate<Clazz> predicate) {
+        this.namePattern = namePattern;
         this.predicate = predicate;
+    }
+
+    DerivedSlice(NamePattern namePattern) {
+        this(namePattern, Predicates.<Clazz>any());
+    }
+
+    DerivedSlice(Predicate<Clazz> predicate) {
+        this(NamePattern.ANY_NAME, predicate);
     }
 
     @Override
@@ -21,6 +33,11 @@ final class DerivedSlice extends AbstractSlice {
                 return contains(clazz) || other.contains(clazz);
             }
         });
+    }
+
+    @Override
+    public Slice slice(String pattern) {
+        return new DerivedSlice(namePattern.and(NamePattern.of(pattern)), predicate);
     }
 
     @Override
@@ -35,6 +52,9 @@ final class DerivedSlice extends AbstractSlice {
 
     @Override
     public boolean contains(Clazz entry) {
+        if (!namePattern.matches(entry.getName())) {
+            return false;
+        }
         if (cache.contains(entry)) {
             return true;
         }
@@ -46,13 +66,13 @@ final class DerivedSlice extends AbstractSlice {
     }
 
     @Override
-    public boolean canResolveSliceEntries() {
+    public boolean isIterable() {
         return false;
     }
 
     @Override
-    public Set<Clazz> getSliceEntries() {
-        throw new IllegalStateException("Cannot materialize DerivedSlice");
+    public Set<Clazz> getClazzes() {
+        throw new UnsupportedOperationException("Cannot materialize DerivedSlice");
     }
 
     public String toString() {

@@ -35,7 +35,7 @@ public abstract class ClassEntry {
      * @return the classname without package prefix
      */
     public String getShortName() {
-        return classname.substring(getPackage().getPackageName().length());
+        return classname.substring(getPackage().getPackageName().length() + 1);
     }
 
     /**

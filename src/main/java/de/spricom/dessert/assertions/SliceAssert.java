@@ -4,7 +4,7 @@ import de.spricom.dessert.slicing.Clazz;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.slicing.Slices;
 import de.spricom.dessert.util.DependencyGraph;
-import de.spricom.dessert.util.SetHelper;
+import de.spricom.dessert.util.Sets;
 
 import java.util.*;
 
@@ -37,7 +37,7 @@ public class SliceAssert {
      */
     public SliceAssert usesOnly(Iterable<Slice> others) {
         IllegalDependencies illegalDependencies = new IllegalDependencies();
-        for (Clazz entry : union.getSliceEntries()) {
+        for (Clazz entry : union.getClazzes()) {
             for (Clazz dependency : entry.getDependencies()) {
                 if (!union.contains(dependency) && !containedByAny(dependency, others)) {
                     illegalDependencies.add(entry, dependency);
@@ -80,7 +80,7 @@ public class SliceAssert {
     }
 
     private void addIllegalDependencies(IllegalDependencies illegalDependencies, Slice slice, Iterable<Slice> illegals) {
-        for (Clazz entry : slice.getSliceEntries()) {
+        for (Clazz entry : slice.getClazzes()) {
             for (Clazz dependency : entry.getDependencies()) {
                 if (containedByAny(dependency, illegals)) {
                     illegalDependencies.add(entry, dependency);
@@ -107,7 +107,7 @@ public class SliceAssert {
         DependencyGraph<Slice> dag = new DependencyGraph<Slice>();
         for (Slice n : slices) {
             for (Slice m : slices) {
-                if (n != m && SetHelper.containsAny(dependencies.get(n), m.getSliceEntries())) {
+                if (n != m && Sets.containsAny(dependencies.get(n), m.getClazzes())) {
                     dag.addDependency(n, m);
                 }
             }
@@ -185,7 +185,7 @@ public class SliceAssert {
 
     private Set<Clazz> getDependencies(Slice slice) {
         Set<Clazz> dependencies = new HashSet<Clazz>();
-        for (Clazz entry : slice.getSliceEntries()) {
+        for (Clazz entry : slice.getClazzes()) {
             dependencies.addAll(entry.getDependencies());
         }
         return dependencies;

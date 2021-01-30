@@ -3,26 +3,17 @@ package de.spricom.dessert.slicing;
 import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.resolve.ClassPackage;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
-public abstract class AbstractTreeResolver implements EntryResolver {
+public abstract class AbstractTreeResolver extends AbstractClazzResolver {
     private final Classpath cp;
-    private Set<Clazz> clazzes;
 
     public AbstractTreeResolver(Classpath cp) {
+        super(cp);
         this.cp = cp;
     }
-
-    @Override
-    public final Set<Clazz> getSliceEntries() {
-        if (clazzes == null) {
-            clazzes = new HashSet<Clazz>();
-            resolve();
-        }
-        return clazzes;
-    }
-
-    protected abstract void resolve();
 
     protected final void addRecursiveWithAlternatives(ClassPackage cp) {
         Collection<ClassPackage> alternatives = cp.getAlternatives() == null ? Collections.singleton(cp) : cp.getAlternatives();
@@ -55,9 +46,5 @@ public abstract class AbstractTreeResolver implements EntryResolver {
         for (ClassPackage alt : alternatives) {
             add(alt);
         }
-    }
-
-    protected final void add(ClassEntry ce) {
-        clazzes.add(cp.asClazz(ce));
     }
 }

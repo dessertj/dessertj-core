@@ -44,7 +44,29 @@ import de.spricom.dessert.util.Assertions;
  *     </tr>
  * </table>
  */
-public final class NamePattern {
+public class NamePattern implements Comparable<NamePattern> {
+    public static final NamePattern ANY_NAME = new NamePattern(NamePattern.createShortNameMatchers("..*")) {
+
+        @Override
+        public boolean matches(String name) {
+            return true;
+        }
+
+        public NamePattern and(NamePattern other) {
+            return other;
+        }
+    };
+
+    public static final NamePattern NO_NAME = new NamePattern(new ShortNameMatcher[]{MissShortNameMatcher.MISS}) {
+        @Override
+        public boolean matches(String name) {
+            return false;
+        }
+
+        public NamePattern and(NamePattern other) {
+            return this;
+        }
+    };
 
     private final ShortNameMatcher[] shortNameMatchers;
 
@@ -53,7 +75,15 @@ public final class NamePattern {
     }
 
     public static NamePattern of(String pattern) {
+        if ("..*".equals(pattern)) {
+            return ANY_NAME;
+        }
         validate(pattern);
+        ShortNameMatcher[] shortNameMatchers = createShortNameMatchers(pattern);
+        return new NamePattern(shortNameMatchers);
+    }
+
+    private static ShortNameMatcher[] createShortNameMatchers(String pattern) {
         if (pattern.startsWith("..")) {
             pattern = pattern.substring(1);
         }
@@ -62,7 +92,7 @@ public final class NamePattern {
         for (int i = 0; i < parts.length; i++) {
             shortNameMatchers[i] = createShortNameMatcher(shortNameMatchers, i, parts[i]);
         }
-        return new NamePattern(shortNameMatchers);
+        return shortNameMatchers;
     }
 
     private static void validate(String pattern) {
@@ -76,11 +106,43 @@ public final class NamePattern {
     private static ShortNameMatcher createShortNameMatcher(ShortNameMatcher[] shortNameMatchers, int i, String part) {
         if ("".equals(part)) {
             return new WildcardShortNameMatcher(shortNameMatchers, i);
+        } else if (part.equals("*")) {
+            return new AnyShortNameMatcher(shortNameMatchers, i);
         } else if (part.contains("*")) {
             return new RegexShortNameMatcher(shortNameMatchers, i, part);
         } else {
-            return new ExactShortNameMatcher(shortNameMatchers, i, part);
+            return new ConstantShortNameMatcher(shortNameMatchers, i, part);
         }
+    }
+
+    public NamePattern and(NamePattern other) {
+        if (other == ANY_NAME) {
+            return this;
+        }
+        // TODO
+        return other;
+    }
+
+    public boolean isConstant() {
+        for (ShortNameMatcher matcher : shortNameMatchers) {
+            if (!(matcher instanceof ConstantShortNameMatcher)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isPackageConstant() {
+        for (int i = 0; i < shortNameMatchers.length - 1; i++) {
+            if (!(shortNameMatchers[i] instanceof ConstantShortNameMatcher)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isAllClasses() {
+        return shortNameMatchers[shortNameMatchers.length - 1] instanceof AnyShortNameMatcher;
     }
 
     /**
@@ -121,12 +183,31 @@ public final class NamePattern {
     }
 
     private boolean matchesAlternate(String[] parts, int index, ShortNameMatcher matcher) {
-        if (matcher.isMatchUncertain()) {
-            ShortNameMatcher alternate = matcher.next().match(parts[index]);
-            if (matches(parts, index + 1, alternate)) {
-                return true;
+        if (!matcher.isWildcard()) {
+            return false;
+        }
+        ShortNameMatcher alternate = matcher.next().match(parts[index]);
+        return matches(parts, index + 1, alternate);
+    }
+
+    @Override
+    public int compareTo(NamePattern o) {
+        return Integer.valueOf(shortNameMatchers.length).compareTo(o.shortNameMatchers.length);
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (shortNameMatchers[0].isWildcard()) {
+            sb.append(".");
+        } else {
+            sb.append(shortNameMatchers[0]);
+        }
+        for (int i = 1; i < shortNameMatchers.length; i++) {
+            sb.append(".");
+            if (!shortNameMatchers[i].isWildcard()) {
+                sb.append(shortNameMatchers[i]);
             }
         }
-        return false;
+        return sb.toString();
     }
 }

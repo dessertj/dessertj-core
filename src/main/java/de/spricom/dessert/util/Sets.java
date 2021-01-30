@@ -3,8 +3,8 @@ package de.spricom.dessert.util;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class SetHelper {
-    private SetHelper() {
+public final class Sets {
+    private Sets() {
     }
     
     public static <T> boolean containsAny(Set<T> s, Set<T> t) {

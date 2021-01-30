@@ -1,5 +1,6 @@
 package de.spricom.dessert.slicing;
 
+import de.spricom.dessert.matching.NamePattern;
 import de.spricom.dessert.util.Predicate;
 
 import java.util.*;
@@ -38,6 +39,18 @@ public abstract class AbstractSlice implements Slice {
     }
 
     @Override
+    public Slice slice(String pattern) {
+        final NamePattern namePattern = NamePattern.of(pattern);
+        return slice(new Predicate<Clazz>() {
+
+            @Override
+            public boolean test(Clazz clazz) {
+                return namePattern.matches(clazz.getName());
+            }
+        });
+    }
+
+    @Override
     public Slice as(String name) {
         return new NamedSlice(this, name);
     }
@@ -59,7 +72,7 @@ public abstract class AbstractSlice implements Slice {
 
     public <S extends PartitionSlice> SortedMap<String, S> partitionBy(SlicePartitioner partioner, PartitionSliceFactory<S> partitionSliceFactory) {
         Map<String, Set<Clazz>> split = new HashMap<String, Set<Clazz>>();
-        for (Clazz entry : getSliceEntries()) {
+        for (Clazz entry : getClazzes()) {
             String key = partioner.partKey(entry);
             if (key != null) {
                 Set<Clazz> matches = split.get(key);

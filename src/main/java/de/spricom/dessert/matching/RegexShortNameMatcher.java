@@ -21,4 +21,10 @@ class RegexShortNameMatcher extends AbstractShortNameMatcher {
         }
         return MissShortNameMatcher.MISS;
     }
+
+    public String toString() {
+        return pattern.toString()
+                .replace("\\$", "$")
+                .replace(".*", "*");
+    }
 }

@@ -1,5 +1,6 @@
 package de.spricom.dessert.resolve;
 
+import de.spricom.dessert.matching.NamePattern;
 import de.spricom.dessert.util.Predicate;
 
 import java.io.File;
@@ -29,7 +30,7 @@ import java.util.logging.Logger;
  * <p>Typically one of the static <i>of</i> methods should be used to create
  * a ClassResolver.</p>
  */
-public final class ClassResolver {
+public final class ClassResolver implements TraversalRoot {
     private static Logger log = Logger.getLogger(ClassResolver.class.getName());
 
     private final List<ClassRoot> path = new ArrayList<ClassRoot>(60);
@@ -177,6 +178,12 @@ public final class ClassResolver {
             }
         }
         return null;
+    }
+
+    public void traverse(NamePattern pattern, ClassVisitor visitor) {
+        for (ClassRoot classRoot : path) {
+            classRoot.traverse(pattern, visitor);
+        }
     }
 
     public Set<File> getRootFiles() {
