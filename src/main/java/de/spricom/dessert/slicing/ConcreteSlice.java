@@ -3,6 +3,7 @@ package de.spricom.dessert.slicing;
 import de.spricom.dessert.util.Predicate;
 import de.spricom.dessert.util.Sets;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -14,6 +15,8 @@ import java.util.Set;
  * produce a concrete slice again.
  */
 public class ConcreteSlice extends AbstractSlice implements Concrete {
+    public static final ConcreteSlice EMPTY_SLICE = new ConcreteSlice(Collections.<Clazz>emptySet());
+
     private final Set<Clazz> entries;
 
     protected ConcreteSlice(Set<Clazz> entries) {

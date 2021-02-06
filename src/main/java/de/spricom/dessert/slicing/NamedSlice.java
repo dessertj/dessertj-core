@@ -84,6 +84,16 @@ final class NamedSlice implements Slice {
     }
 
     @Override
+    public ConcreteSlice getDependencies() {
+        return delegate.getDependencies();
+    }
+
+    @Override
+    public boolean uses(Slice other) {
+        return delegate.uses(other);
+    }
+
+    @Override
     public SortedMap<String, PackageSlice> partitionByPackage() {
         return delegate.partitionByPackage();
     }

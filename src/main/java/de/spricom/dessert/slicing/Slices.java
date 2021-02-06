@@ -6,7 +6,7 @@ import java.util.Arrays;
  * Factory methods for {@link Slice}.
  */
 public final class Slices {
-    public static final EmptySlice EMPTY_SLICE = EmptySlice.EMPTY_SLICE;
+    public static final ConcreteSlice EMPTY_SLICE = ConcreteSlice.EMPTY_SLICE;
 
     private Slices() {
     }

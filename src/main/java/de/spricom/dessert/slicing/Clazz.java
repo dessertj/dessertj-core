@@ -20,7 +20,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
     private static final Logger log = Logger.getLogger(Clazz.class.getName());
     public static final Clazz UNDEFINED = new Clazz();
 
-    private final Classpath context;
+    private final Classpath classpath;
     private final String className;
     private final ClassFile classFile;
     private final ClassEntry classEntry;
@@ -29,24 +29,24 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
 
     private Clazz superclass;
     private List<Clazz> implementedInterfaces;
-    private Set<Clazz> dependencies;
+    private ConcreteSlice dependencies;
     private List<Clazz> alternatives;
 
     private Clazz() {
-        context = null;
+        classpath = null;
         className = "undefined";
         classFile = null;
         classEntry = null;
         superclass = this;
         implementedInterfaces = Collections.emptyList();
-        dependencies = Collections.emptySet();
+        dependencies = ConcreteSlice.EMPTY_SLICE;
         alternatives = Collections.emptyList();
     }
 
-    Clazz(Classpath context, ClassEntry classEntry) {
-        assert context != null : "context == null";
+    Clazz(Classpath classpath, ClassEntry classEntry) {
+        assert classpath != null : "context == null";
         assert classEntry != null : "classEntry == null";
-        this.context = context;
+        this.classpath = classpath;
         this.classFile = classEntry.getClassfile();
         this.className = classFile.getThisClass();
         this.classEntry = classEntry;
@@ -62,7 +62,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
     Clazz(Clazz alternative, ClassEntry classEntry) {
         assert alternative != null : "alternative == null";
         assert classEntry != null : "classEntry == null";
-        this.context = alternative.context;
+        this.classpath = alternative.classpath;
         this.classEntry = classEntry;
         this.classFile = classEntry.getClassfile();
         this.className = classFile.getThisClass();
@@ -74,26 +74,26 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
         this.alternatives.add(this);
     }
 
-    Clazz(Classpath context, Class<?> classImpl) throws IOException {
-        assert context != null : "context == null";
+    Clazz(Classpath classpath, Class<?> classImpl) throws IOException {
+        assert classpath != null : "context == null";
         assert classImpl != null : "clazz == null";
-        this.context = context;
+        this.classpath = classpath;
         this.classImpl = classImpl;
         this.classEntry = null;
         this.classFile = new ClassFile(classImpl);
         this.className = classFile.getThisClass();
     }
 
-    Clazz(Classpath context, String className) {
-        assert context != null : "context == null";
+    Clazz(Classpath classpath, String className) {
+        assert classpath != null : "context == null";
         assert className != null : "className == null";
-        this.context = context;
+        this.classpath = classpath;
         this.classEntry = null;
         this.classFile = null;
         this.className = className;
         superclass = UNDEFINED;
         implementedInterfaces = Collections.emptyList();
-        dependencies = Collections.emptySet();
+        dependencies = ConcreteSlice.EMPTY_SLICE;
         alternatives = Collections.emptyList();
     }
 
@@ -221,7 +221,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
 
     public Clazz getSuperclass() {
         if (superclass == null && classFile != null) {
-            superclass = context.asClazz(classFile.getSuperClass());
+            superclass = classpath.asClazz(classFile.getSuperClass());
         }
         return superclass;
     }
@@ -230,18 +230,19 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
         if (implementedInterfaces == null && classFile != null) {
             implementedInterfaces = new ArrayList<Clazz>(classFile.getInterfaces().length);
             for (String in : classEntry.getClassfile().getInterfaces()) {
-                implementedInterfaces.add(context.asClazz(in));
+                implementedInterfaces.add(classpath.asClazz(in));
             }
         }
         return implementedInterfaces;
     }
 
-    public Set<Clazz> getDependencies() {
+    public ConcreteSlice getDependencies() {
         if (dependencies == null && classFile != null) {
-            dependencies = new HashSet<Clazz>(classFile.getDependentClasses().size());
+            Set<Clazz> deps = new HashSet<Clazz>(classFile.getDependentClasses().size());
             for (String cn : classFile.getDependentClasses()) {
-                dependencies.add(context.asClazz(cn));
+                deps.add(classpath.asClazz(cn));
             }
+            dependencies = new ConcreteSlice(deps);
         }
         return dependencies;
     }

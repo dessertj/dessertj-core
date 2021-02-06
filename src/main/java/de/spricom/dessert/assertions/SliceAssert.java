@@ -1,10 +1,10 @@
 package de.spricom.dessert.assertions;
 
 import de.spricom.dessert.slicing.Clazz;
+import de.spricom.dessert.slicing.ConcreteSlice;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.slicing.Slices;
 import de.spricom.dessert.util.DependencyGraph;
-import de.spricom.dessert.util.Sets;
 
 import java.util.*;
 
@@ -38,7 +38,7 @@ public class SliceAssert {
     public SliceAssert usesOnly(Iterable<Slice> others) {
         IllegalDependencies illegalDependencies = new IllegalDependencies();
         for (Clazz entry : union.getClazzes()) {
-            for (Clazz dependency : entry.getDependencies()) {
+            for (Clazz dependency : entry.getDependencies().getClazzes()) {
                 if (!union.contains(dependency) && !containedByAny(dependency, others)) {
                     illegalDependencies.add(entry, dependency);
                 }
@@ -63,7 +63,7 @@ public class SliceAssert {
      * @param others the slices to check dependencies for
      * @return this {@link SliceAssert}
      */
-    public SliceAssert doesNotUse(Iterable<Slice> others) {
+    public SliceAssert usesNot(Iterable<Slice> others) {
         IllegalDependencies illegalDependencies = new IllegalDependencies();
         addIllegalDependencies(illegalDependencies, union, others);
         if (!illegalDependencies.isEmpty()) {
@@ -73,25 +73,25 @@ public class SliceAssert {
     }
 
     /**
-     * @see #doesNotUse(Iterable)
+     * @see #usesNot(Iterable)
      */
-    public SliceAssert doesNotUse(Slice... others) {
-        return doesNotUse(Arrays.asList(others));
+    public SliceAssert usesNot(Slice... others) {
+        return usesNot(Arrays.asList(others));
     }
 
     private void addIllegalDependencies(IllegalDependencies illegalDependencies, Slice slice, Iterable<Slice> illegals) {
-        for (Clazz entry : slice.getClazzes()) {
-            for (Clazz dependency : entry.getDependencies()) {
+        for (Clazz clazz : slice.getClazzes()) {
+            for (Clazz dependency : clazz.getDependencies().getClazzes()) {
                 if (containedByAny(dependency, illegals)) {
-                    illegalDependencies.add(entry, dependency);
+                    illegalDependencies.add(clazz, dependency);
                 }
             }
         }
     }
 
-    private boolean containedByAny(Clazz entry, Iterable<Slice> sets) {
+    private boolean containedByAny(Clazz clazz, Iterable<Slice> sets) {
         for (Slice slice : sets) {
-            if (slice.contains(entry)) {
+            if (slice.contains(clazz)) {
                 return true;
             }
         }
@@ -103,11 +103,11 @@ public class SliceAssert {
      * @return this {@link SliceAssert}
      */
     public SliceAssert isCycleFree() {
-        Map<Slice, Set<Clazz>> dependencies = mapDependencies();
+        Map<Slice, ConcreteSlice> dependencies = mapDependencies();
         DependencyGraph<Slice> dag = new DependencyGraph<Slice>();
         for (Slice n : slices) {
             for (Slice m : slices) {
-                if (n != m && Sets.containsAny(dependencies.get(n), m.getClazzes())) {
+                if (n.uses(m)) {
                     dag.addDependency(n, m);
                 }
             }
@@ -175,18 +175,10 @@ public class SliceAssert {
         return list;
     }
 
-    private Map<Slice, Set<Clazz>> mapDependencies() {
-        Map<Slice, Set<Clazz>> dependencies = new HashMap<Slice, Set<Clazz>>();
+    private Map<Slice, ConcreteSlice> mapDependencies() {
+        Map<Slice, ConcreteSlice> dependencies = new HashMap<Slice, ConcreteSlice>();
         for (Slice slice : slices) {
-            dependencies.put(slice, getDependencies(slice));
-        }
-        return dependencies;
-    }
-
-    private Set<Clazz> getDependencies(Slice slice) {
-        Set<Clazz> dependencies = new HashSet<Clazz>();
-        for (Clazz entry : slice.getClazzes()) {
-            dependencies.addAll(entry.getDependencies());
+            dependencies.put(slice, slice.getDependencies());
         }
         return dependencies;
     }

@@ -54,7 +54,7 @@ public class DependenciesTest {
         SortedMap<String, PackageSlice> packages = mainAndTest.partitionByPackage();
 
         for (PackageSlice pckg : packages.values()) {
-            dessert(pckg).doesNotUse(pckg.getParentPackage());
+            dessert(pckg).usesNot(pckg.getParentPackage());
         }
     }
 
@@ -111,6 +111,6 @@ public class DependenciesTest {
         SliceAssertions.assertThat(classfile).usesOnly(javaIO);
 
         // Packages outside the 'classfile' package must not use anything but the ClassFile facade.
-        dessert(main.minus(classfile)).doesNotUse(classfile.minus(sc.asClazz(ClassFile.class)));
+        dessert(main.minus(classfile)).usesNot(classfile.minus(sc.asClazz(ClassFile.class)));
     }
 }

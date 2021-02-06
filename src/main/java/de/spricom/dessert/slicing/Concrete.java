@@ -1,4 +1,4 @@
 package de.spricom.dessert.slicing;
 
-interface Concrete {
+interface Concrete extends Slice {
 }

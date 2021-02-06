@@ -33,6 +33,14 @@ public interface Slice {
 
     Set<Clazz> getClazzes();
 
+    ConcreteSlice getDependencies();
+
+    /**
+     * @param other the other slice
+     * @return true if this != other and there is one class in this slice that has a dependency contained in other
+     */
+    boolean uses(Slice other);
+
     SortedMap<String, PackageSlice> partitionByPackage();
 
     SortedMap<String, PartitionSlice> partitionBy(SlicePartitioner partitioner);

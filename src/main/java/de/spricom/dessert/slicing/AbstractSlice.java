@@ -51,6 +51,32 @@ public abstract class AbstractSlice implements Slice {
     }
 
     @Override
+    public ConcreteSlice getDependencies() {
+        Set<Clazz> dependencies = new HashSet<Clazz>();
+        for (Clazz clazz : getClazzes()) {
+            dependencies.addAll(clazz.getDependencies().getClazzes());
+        }
+        return new ConcreteSlice(dependencies);
+    }
+
+    @Override
+    public boolean uses(Slice other) {
+        if (this == other) {
+            return false;
+        }
+        for (Clazz clazz : getClazzes()) {
+            for (Clazz dependency : clazz.getDependencies().getClazzes()) {
+                for (Clazz alternative : dependency.getAlternatives()) {
+                    if (other.contains(alternative)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
     public Slice as(String name) {
         return new NamedSlice(this, name);
     }
