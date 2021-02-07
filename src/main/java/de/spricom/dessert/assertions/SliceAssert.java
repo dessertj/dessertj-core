@@ -71,6 +71,8 @@ public class SliceAssert {
     }
 
     /**
+     * @param others the slices to check dependencies for
+     * @return this {@link SliceAssert}
      * @see #usesOnly(Iterable)
      */
     public SliceAssert usesOnly(Slice... others) {
@@ -93,6 +95,8 @@ public class SliceAssert {
     }
 
     /**
+     * @param others the slices to check dependencies for
+     * @return this {@link SliceAssert}
      * @see #usesNot(Iterable)
      */
     public SliceAssert usesNot(Slice... others) {

@@ -69,7 +69,7 @@ public interface Slice {
 
     /**
      * Creates a new {@link Slice} from this slice for which the
-     * {@link #toString()} returns <i>name</i>.
+     * {@link Object#toString()} returns <i>name</i>.
      *
      * @param name the name of this slice
      * @return a new slice with that name

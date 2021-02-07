@@ -40,7 +40,11 @@ import de.spricom.dessert.util.Assertions;
  *     <li>A leading .. additionally matches the root package.</li>
  * </ul>
  * Examples:
- * <table>
+ * <table summary="Some examples for name patterns">
+ *     <thead>
+ *         <tr><th>Sample</th><th>Description</th></tr>
+ *     </thead>
+ *     <tbody>
  *     <tr>
  *         <td>sample.Foo</td><td>Matches only sample.Foo</td>
  *     </tr>
@@ -62,6 +66,7 @@ import de.spricom.dessert.util.Assertions;
  *     <tr>
  *         <td>..*</td><td>Matches all types</td>
  *     </tr>
+ *     </tbody>
  * </table>
  */
 public class NamePattern implements Comparable<NamePattern> {
