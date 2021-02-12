@@ -32,13 +32,26 @@ public final class ClassUtil {
     private ClassUtil(){}
 
     public static URI getURI(Class<?> clazz) {
-        URL url = clazz.getResource(clazz.getSimpleName() + ".class");
+        URL url = clazz.getResource(getShortName(clazz) + ".class");
         assert url != null : "Cannot find resource for " + clazz;
         try {
             return url.toURI();
         } catch (URISyntaxException ex) {
             throw new IllegalStateException("Cannot convert '" + url + "' to URI", ex);
         }
+    }
+
+    /**
+     * Gets the classname without the package prefix.
+     * For inner classes this is different from {@link Class#getSimpleName()}.
+     *
+     * @param clazz the class the determine the name for
+     * @return the classname without package prefix
+     */
+    public static String getShortName(Class<?> clazz) {
+        String name = clazz.getName();
+        int index = name.lastIndexOf('.');
+        return name.substring(index + 1);
     }
 
     public static final File getRootFile(Class<?> clazz) {

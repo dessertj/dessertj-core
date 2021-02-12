@@ -52,7 +52,7 @@ import de.spricom.dessert.util.Assertions;
  *         <td>sample.Foo*</td><td>Matches all types in sample starting with "Foo" and all inner-types of Foo</td>
  *     </tr>
  *     <tr>
- *         <td>sample.Foo$*</td><td>Matches only the inner-types of Foo</td>
+ *         <td>sample.Foo$*</td><td>Matches only inner-types of Foo</td>
  *     </tr>
  *     <tr>
  *         <td>..Foo</td><td>Matches all Foo in any package (incl. root package)</td>

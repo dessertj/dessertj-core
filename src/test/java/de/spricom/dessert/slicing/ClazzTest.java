@@ -100,4 +100,12 @@ public class ClazzTest {
         Slice duplicates = sc.duplicates();
         assertThat(duplicates.getClazzes()).isEqualTo(entries);
     }
+
+    @Test
+    public void testGetClassImpl() {
+        Slice slice = sc.packageOf(Slice.class);
+        for (Clazz clazz : slice.getClazzes()) {
+            assertThat(clazz.getName()).isEqualTo(clazz.getClassImpl().getName());
+        }
+    }
 }
