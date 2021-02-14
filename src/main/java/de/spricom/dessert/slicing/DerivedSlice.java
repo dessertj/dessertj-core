@@ -32,7 +32,7 @@ final class DerivedSlice extends AbstractSlice {
     private final Predicate<Clazz> predicate;
     private final Set<Clazz> cache = new HashSet<Clazz>();
 
-    DerivedSlice(NamePattern namePattern, Predicate<Clazz> predicate) {
+    private DerivedSlice(NamePattern namePattern, Predicate<Clazz> predicate) {
         this.namePattern = namePattern;
         this.predicate = predicate;
     }

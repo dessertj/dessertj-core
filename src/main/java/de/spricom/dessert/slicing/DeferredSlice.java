@@ -21,6 +21,7 @@ package de.spricom.dessert.slicing;
  */
 
 import de.spricom.dessert.util.Predicate;
+import de.spricom.dessert.util.Sets;
 
 import java.util.Set;
 
@@ -39,7 +40,13 @@ class DeferredSlice extends AbstractSlice {
         if (concreteSlice != null) {
             return concreteSlice.combine(other);
         }
-        return new DeferredSlice(derivedSlice.combine(other), resolver);
+        ClazzResolver combinedResolver = new ClazzResolver() {
+            @Override
+            public Set<Clazz> getClazzes() {
+                return Sets.union(resolver.getClazzes(), other.getClazzes());
+            }
+        };
+        return new DeferredSlice(derivedSlice.combine(other), combinedResolver);
     }
 
     @Override

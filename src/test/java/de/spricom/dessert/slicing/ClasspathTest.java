@@ -26,20 +26,21 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
+import java.net.URL;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 public class ClasspathTest {
-    private static Classpath sc;
+    private static Classpath cp;
 
     @BeforeClass
     public static void init() {
-        sc = new Classpath();
+        cp = new Classpath();
     }
 
     @Test
     public void testSliceOfClasses() {
-        Slice slice = sc.sliceOf(Slice.class, ClassFile.class, File.class);
+        Slice slice = cp.sliceOf(Slice.class, ClassFile.class, File.class);
         assertThat(slice.getClazzes()).hasSize(3);
     }
 
@@ -50,7 +51,7 @@ public class ClasspathTest {
     @Test
     public void testPackageTreeForSinglePackage() {
         int expectedNumberOfClasses = 25;
-        Slice slice = sc.packageTreeOf(ConstantPool.class);
+        Slice slice = cp.packageTreeOf(ConstantPool.class);
         assertThat(slice.getClazzes()).hasSize(expectedNumberOfClasses);
     }
 
@@ -64,7 +65,34 @@ public class ClasspathTest {
     public void testPackageTreeForSubpackages() {
         int expectedNumberOfClasses = 46;
         int expectedNumberOfTestClasses = 14;
-        Slice slice = sc.packageTreeOf(ClassFile.class);
+        Slice slice = cp.packageTreeOf(ClassFile.class);
         assertThat(slice.getClazzes()).hasSize(expectedNumberOfClasses + expectedNumberOfTestClasses);
+    }
+
+    @Test
+    public void testDeferredSlice() {
+        Slice java = cp.slice("java.lang|util..*");
+        assertThat(java.contains(cp.asClazz(File.class))).isFalse();
+        assertThat(java.contains(cp.asClazz(String.class))).isTrue();
+    }
+
+    @Test
+    public void testCombiningSlices() {
+        Slice lang = cp.slice("java.lang..*");
+        Slice util = cp.slice("java.util..*");
+        Slice io = cp.slice("java.io..*");
+
+        Slice combined = lang.plus(util).plus(io);
+
+        assertThat(combined.contains(cp.asClazz(File.class))).isTrue();
+        assertThat(combined.contains(cp.asClazz(String.class))).isTrue();
+        assertThat(combined.contains(cp.asClazz(URL.class))).isFalse();
+
+        assertThat(combined.getClazzes())
+                .hasSize(lang.getClazzes().size() + util.getClazzes().size() + io.getClazzes().size());
+
+        assertThat(lang.getClazzes().size()).isGreaterThan(100);
+        assertThat(util.getClazzes().size()).isGreaterThan(100);
+        assertThat(io.getClazzes().size()).isGreaterThan(100);
     }
 }

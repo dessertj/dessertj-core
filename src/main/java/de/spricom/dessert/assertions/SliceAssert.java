@@ -59,7 +59,7 @@ public class SliceAssert {
         IllegalDependencies illegalDependencies = new IllegalDependencies();
         for (Clazz entry : union.getClazzes()) {
             for (Clazz dependency : entry.getDependencies().getClazzes()) {
-                if (!union.contains(dependency) && !containedByAny(dependency, others)) {
+                if (!union.contains(dependency) && !containsAny(others, dependency)) {
                     illegalDependencies.add(entry, dependency);
                 }
             }
@@ -106,15 +106,15 @@ public class SliceAssert {
     private void addIllegalDependencies(IllegalDependencies illegalDependencies, Slice slice, Iterable<Slice> illegals) {
         for (Clazz clazz : slice.getClazzes()) {
             for (Clazz dependency : clazz.getDependencies().getClazzes()) {
-                if (containedByAny(dependency, illegals)) {
+                if (containsAny(illegals, dependency)) {
                     illegalDependencies.add(clazz, dependency);
                 }
             }
         }
     }
 
-    private boolean containedByAny(Clazz clazz, Iterable<Slice> sets) {
-        for (Slice slice : sets) {
+    private boolean containsAny(Iterable<Slice> slices, Clazz clazz) {
+        for (Slice slice : slices) {
             if (slice.contains(clazz)) {
                 return true;
             }
