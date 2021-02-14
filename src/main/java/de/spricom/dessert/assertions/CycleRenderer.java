@@ -21,8 +21,8 @@ package de.spricom.dessert.assertions;
  */
 
 import de.spricom.dessert.slicing.Slice;
-import de.spricom.dessert.util.DependencyGraph;
+import de.spricom.dessert.util.Dag;
 
 public interface CycleRenderer {
-    String renderCycle(DependencyGraph<Slice> dag);
+    String renderCycle(Dag<Slice> dag);
 }

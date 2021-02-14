@@ -24,7 +24,7 @@ import de.spricom.dessert.util.Predicate;
 
 import java.util.Set;
 
-public class DeferredSlice extends AbstractSlice {
+class DeferredSlice extends AbstractSlice {
     private final Slice derivedSlice;
     private final ClazzResolver resolver;
     private ConcreteSlice concreteSlice;
@@ -55,7 +55,8 @@ public class DeferredSlice extends AbstractSlice {
         if (concreteSlice != null) {
             return concreteSlice.contains(entry);
         }
-        return derivedSlice.contains(entry);
+        return derivedSlice.contains(entry)
+                && getClazzes().contains(entry);
     }
 
     @Override

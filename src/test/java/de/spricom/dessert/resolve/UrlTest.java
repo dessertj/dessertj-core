@@ -20,7 +20,7 @@ package de.spricom.dessert.resolve;
  * #L%
  */
 
-import de.spricom.dessert.util.ClassUtil;
+import de.spricom.dessert.util.ClassUtils;
 import org.junit.Test;
 
 import java.io.File;
@@ -71,6 +71,6 @@ public class UrlTest {
     }
 
     private File getRootFile(Class<?> clazz) {
-        return ClassUtil.getRootFile(clazz);
+        return ClassUtils.getRootFile(clazz);
     }
 }

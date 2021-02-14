@@ -22,7 +22,7 @@ package de.spricom.dessert.slicing;
 
 import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.resolve.ClassEntry;
-import de.spricom.dessert.util.ClassUtil;
+import de.spricom.dessert.util.ClassUtils;
 import de.spricom.dessert.util.Predicate;
 import de.spricom.dessert.util.Sets;
 
@@ -121,7 +121,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
         if (classEntry != null) {
             return classEntry.getPackage().getRootFile();
         } else if (classImpl != null) {
-            return ClassUtil.getRootFile(classImpl);
+            return ClassUtils.getRootFile(classImpl);
         } else {
             return null;
         }
@@ -228,9 +228,9 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
         if (classImpl == null && !isUnknown()) {
             try {
                 classImpl = Class.forName(className);
-                if (!getURI().equals(ClassUtil.getURI(classImpl))) {
+                if (!getURI().equals(ClassUtils.getURI(classImpl))) {
                     // TODO: Use specialized classloader to prevent this
-                    log.warning("Loaded class " + ClassUtil.getURI(classImpl) + " for entry " + getURI() + "!");
+                    log.warning("Loaded class " + ClassUtils.getURI(classImpl) + " for entry " + getURI() + "!");
                 }
             } catch (ClassNotFoundException ex) {
                 throw new ResolveException("Unable to load " + className, ex);
@@ -326,7 +326,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
         }
         // either there is a classEntry or a classImpl or it's unknown
         if (classImpl != null) {
-            uri = ClassUtil.getURI(classImpl);
+            uri = ClassUtils.getURI(classImpl);
         } else {
             String unknown = "dessert:unknown:" + className;
             try {

@@ -65,6 +65,15 @@ public class NamePatternTest {
     }
 
     @Test
+    public void testAlternatives() {
+        check("sample.bar|baz.*", "sample.bar.Foo", true);
+        check("sample.bar|baz.*", "sample.baz.Foo", true);
+        check("sample.Foo|*", "sample.Bar", true);
+        check("|.Foo", "sample.Foo", false);
+        check("|*|.Foo", "sample.Foo", true);
+    }
+
+    @Test
     public void testPackage() {
         check("sample..Baz", "sample.foo.bar.Baz", true);
         check("sample..bar.Baz", "sample.foo.bar.Baz", true);

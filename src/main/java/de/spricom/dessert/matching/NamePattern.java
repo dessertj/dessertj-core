@@ -29,9 +29,10 @@ import de.spricom.dessert.util.Assertions;
  * with slight modifications:
  * <ul>
  *     <li>The pattern can either be a plain type name, the wildcard *, or an
- *     identifier with embedded * and .. wildcards</li>
+ *     identifier with embedded * or .. wildcards or the | separator</li>
  *     <li>An * matches any sequence of characters, but does not match the package
  *     separator "."</li>
+ *     <li>An | separates alternatives that do not contain a package separator "."</li>
  *     <li>An .. matches any sequence of characters that starts and ends with the package
  *     separator "."</li>
  *     <li>The identifier to match with is always the name returned by {@link Class#getName()}. Thus
@@ -50,6 +51,9 @@ import de.spricom.dessert.util.Assertions;
  *     </tr>
  *     <tr>
  *         <td>sample.Foo*</td><td>Matches all types in sample starting with "Foo" and all inner-types of Foo</td>
+ *     </tr>
+ *     <tr>
+ *         <td>sample.bar|baz.*</td><td>Matches all types in sample.bar and sample.baz</td>
  *     </tr>
  *     <tr>
  *         <td>sample.Foo$*</td><td>Matches only inner-types of Foo</td>
@@ -119,7 +123,7 @@ public class NamePattern implements Comparable<NamePattern> {
             return new WildcardShortNameMatcher(shortNameMatchers, i);
         } else if (part.equals("*")) {
             return new AnyShortNameMatcher(shortNameMatchers, i);
-        } else if (part.contains("*")) {
+        } else if (part.contains("*") || part.contains("|")) {
             return new RegexShortNameMatcher(shortNameMatchers, i, part);
         } else {
             return new ConstantShortNameMatcher(shortNameMatchers, i, part);

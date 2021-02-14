@@ -24,7 +24,7 @@ import de.spricom.dessert.slicing.Clazz;
 import de.spricom.dessert.slicing.ConcreteSlice;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.slicing.Slices;
-import de.spricom.dessert.util.DependencyGraph;
+import de.spricom.dessert.util.Dag;
 
 import java.util.*;
 
@@ -128,11 +128,11 @@ public class SliceAssert {
      */
     public SliceAssert isCycleFree() {
         Map<Slice, ConcreteSlice> dependencies = mapDependencies();
-        DependencyGraph<Slice> dag = new DependencyGraph<Slice>();
+        Dag<Slice> dag = new Dag<Slice>();
         for (Slice n : slices) {
             for (Slice m : slices) {
                 if (n.uses(m)) {
-                    dag.addDependency(n, m);
+                    dag.addEdge(n, m);
                 }
             }
         }
@@ -207,7 +207,7 @@ public class SliceAssert {
         return dependencies;
     }
 
-    private String renderCycle(DependencyGraph<Slice> dag) {
+    private String renderCycle(Dag<Slice> dag) {
         return cycleRenderer.renderCycle(dag);
     }
 }

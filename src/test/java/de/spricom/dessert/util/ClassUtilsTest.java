@@ -27,13 +27,13 @@ import java.net.URI;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class ClassUtilTest {
+public class ClassUtilsTest {
 
     @Test
     public void testDirectory() {
         Class<?> clazz = this.getClass();
-        URI uri = ClassUtil.getURI(clazz);
-        File rootFile = ClassUtil.getRootFile(clazz);
+        URI uri = ClassUtils.getURI(clazz);
+        File rootFile = ClassUtils.getRootFile(clazz);
 
         assertThat(uri.toASCIIString())
                 .startsWith("file:/")
@@ -44,8 +44,8 @@ public class ClassUtilTest {
     @Test
     public void testJar() {
         Class<?> clazz = org.fest.assertions.Assertions.class;
-        URI uri = ClassUtil.getURI(clazz);
-        File rootFile = ClassUtil.getRootFile(clazz);
+        URI uri = ClassUtils.getURI(clazz);
+        File rootFile = ClassUtils.getRootFile(clazz);
 
         assertThat(uri.toASCIIString())
                 .startsWith("jar:file:/")

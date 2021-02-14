@@ -22,15 +22,26 @@ package de.spricom.dessert.util;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 
-public final class ClassUtil {
+/**
+ * Collection of utility methods to work with classes.
+ */
+public final class ClassUtils {
 
-    private ClassUtil(){}
+    private ClassUtils(){}
 
+    /**
+     * Each .class file has a unique URI combined from the URI to its root, the path within
+     * the package structure and the filename.
+     *
+     * @param clazz the {@link Class} to determine the {@link URI} for
+     * @return the URI
+     */
     public static URI getURI(Class<?> clazz) {
         URL url = clazz.getResource(getShortName(clazz) + ".class");
         assert url != null : "Cannot find resource for " + clazz;
@@ -72,5 +83,13 @@ public final class ClassUtil {
         } else {
             throw new IllegalArgumentException("Unknown protocol in " + url);
         }
+    }
+
+    public boolean isPublic(Class<?> clazz) {
+        return Modifier.isPublic(clazz.getModifiers());
+    }
+
+    public boolean isInnerClass(Class<?> clazz) {
+        return clazz.getEnclosingClass() != null;
     }
 }

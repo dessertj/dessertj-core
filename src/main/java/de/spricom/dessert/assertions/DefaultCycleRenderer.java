@@ -21,15 +21,15 @@ package de.spricom.dessert.assertions;
  */
 
 import de.spricom.dessert.slicing.Slice;
-import de.spricom.dessert.util.DependencyGraph;
+import de.spricom.dessert.util.Dag;
 
 public class DefaultCycleRenderer implements CycleRenderer {
 
     @Override
-    public String renderCycle(DependencyGraph<Slice> dag) {
+    public String renderCycle(Dag<Slice> dag) {
         StringBuilder sb = new StringBuilder("Cycle:\n");
         int count = 0;
-        for (Slice n : dag.getCycle()) {
+        for (Slice n : dag.cycle()) {
             sb.append(count == 0 ? "" : ",\n");
             sb.append(n.toString());
             count++;

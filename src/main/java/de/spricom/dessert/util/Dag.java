@@ -9,9 +9,9 @@ package de.spricom.dessert.util;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,18 +25,18 @@ import java.util.*;
 /**
  * This class implements the Depth-first search algorithm (see <a href=
  * "https://en.wikipedia.org/wiki/Topological_sorting">https://en.wikipedia.org/wiki/Topological_sorting</a>)
- * to detect cyclic dependencies.
+ * to detect illegal cycles on a directed acyclic graph.
  *
- * @param <T> The type of object to sort.
+ * @param <T> The node type.
  */
-public final class DependencyGraph<T> {
-    static enum Mark {
+public final class Dag<T> {
+    enum Mark {
         NONE, TEMPORARY, PERMANENT
     }
 
     static final class Node<T> {
         final T value;
-        final Set<Node<T>> directDependencies = new HashSet<Node<T>>();
+        final Set<Node<T>> edges = new HashSet<Node<T>>();
         Mark mark = Mark.NONE;
 
         public Node(T value) {
@@ -67,9 +67,9 @@ public final class DependencyGraph<T> {
     private LinkedList<Node<T>> sorted;
     private LinkedList<Node<T>> cycle;
 
-    public void addDependency(T from, T to) {
+    public void addEdge(T from, T to) {
         sorted = null;
-        getNode(from).directDependencies.add(getNode(to));
+        getNode(from).edges.add(getNode(to));
     }
 
     private Node<T> getNode(T value) {
@@ -88,17 +88,17 @@ public final class DependencyGraph<T> {
         return cycle == null;
     }
 
-    public List<T> getSorted() {
+    public List<T> sorted() {
         if (sorted == null) {
             sort();
         }
         if (cycle != null) {
-            throw new IllegalStateException("Not a DAG, cycle: " + getCycle());
+            throw new IllegalStateException("Not a DAG, cycle: " + cycle());
         }
         return values(sorted);
     }
 
-    public List<T> getCycle() {
+    public List<T> cycle() {
         return values(cycle);
     }
 
@@ -116,7 +116,6 @@ public final class DependencyGraph<T> {
             if (visit(n)) {
                 return;
             }
-            ;
         }
     }
 
@@ -129,7 +128,7 @@ public final class DependencyGraph<T> {
             return true;
         } else {
             n.mark = Mark.TEMPORARY;
-            for (Node<T> m : n.directDependencies) {
+            for (Node<T> m : n.edges) {
                 if (visit(m)) {
                     cycle.addFirst(n);
                     return true;
