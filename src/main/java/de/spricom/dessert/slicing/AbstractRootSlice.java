@@ -59,29 +59,32 @@ public abstract class AbstractRootSlice extends AbstractSlice {
     }
 
     @Override
-    public Slice combine(final Slice other) {
-        if (concreteSlice != null) {
-            return concreteSlice.combine(other);
-        }
-        return new DeferredSlice(other, resolver());
-    }
-
-    @Override
     public Slice slice(String pattern) {
         if (concreteSlice != null) {
-            return concreteSlice.slice(pattern);
+            Slice slice = concreteSlice.slice(pattern);
+            if (slice.getClazzes().isEmpty()) {
+                if (isConcrete()) {
+                    return Slices.EMPTY_SLICE;
+                } else {
+                    return new DerivedSlice(NamePattern.of(pattern));
+                }
+            }
+            return slice;
         }
         NamePattern namePattern = NamePattern.of(pattern);
-        return new DeferredSlice(new DerivedSlice(namePattern), resolver(namePattern));
+        Set<Clazz> clazzes = resolver(namePattern).getClazzes();
+        if (!clazzes.isEmpty()) {
+            return new ConcreteSlice(clazzes);
+        }
+        if (isConcrete()) {
+            return Slices.EMPTY_SLICE;
+        }
+        return new DerivedSlice(namePattern);
     }
 
     @Override
     public Slice slice(final Predicate<Clazz> predicate) {
-        if (concreteSlice != null) {
-            return concreteSlice.slice(predicate);
-        }
-        DerivedSlice derivedSlice = new DerivedSlice(predicate);
-        return new DeferredSlice(derivedSlice, resolver());
+        return getConcreteSlice().slice(predicate);
     }
 
     @Override
@@ -89,12 +92,8 @@ public abstract class AbstractRootSlice extends AbstractSlice {
         if (concreteSlice != null) {
             return concreteSlice.contains(clazz);
         }
-        return slice(clazz.getName()).contains(clazz);
-    }
-
-    @Override
-    public boolean isIterable() {
-        return true;
+        NamePattern name = NamePattern.of(clazz.getName());
+        return resolver(name).getClazzes().contains(clazz);
     }
 
     @Override
@@ -109,13 +108,24 @@ public abstract class AbstractRootSlice extends AbstractSlice {
         return concreteSlice;
     }
 
-    private NameResolver resolver() {
-        return resolver(NamePattern.ANY_NAME);
+    private ClazzResolver resolver() {
+        return new ClazzResolver() {
+            @Override
+            public Set<Clazz> getClazzes() {
+                Set<Clazz> clazzes = resolver(NamePattern.ANY_NAME).getClazzes();
+                if (clazzes.isEmpty()) {
+                    throw new ResolveException("No classes found in " + traversalRoot);
+                }
+                return clazzes;
+            }
+        };
     }
 
-    private NameResolver resolver(NamePattern namePattern) {
+    private ClazzResolver resolver(NamePattern namePattern) {
         return new NameResolver(getClasspath(), namePattern, traversalRoot);
     }
 
     abstract Classpath getClasspath();
+
+    abstract boolean isConcrete();
 }

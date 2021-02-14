@@ -23,7 +23,6 @@ package de.spricom.dessert.slicing;
 import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.resolve.ClassRoot;
-import de.spricom.dessert.util.Predicate;
 
 import java.io.File;
 import java.io.IOException;
@@ -131,7 +130,7 @@ public final class Classpath extends AbstractRootSlice {
     /**
      * Returns a slice of all duplicate .class files detected by the underlying {@link ClassResolver}.
      * Hence for each entry in this slice there are at least two .class files with the same classname but
-     * different URL's.
+     * different URI's.
      *
      * @return Maybe empty slice of all duplicate .class files
      */
@@ -190,36 +189,33 @@ public final class Classpath extends AbstractRootSlice {
         } else if (classes.length == 1) {
             return asClazz(classes[0]);
         }
-        Set<Clazz> sliceEntries = new HashSet<Clazz>();
+        Set<Clazz> clazzes = new HashSet<Clazz>();
         for (Class<?> clazz : classes) {
-            sliceEntries.add(asClazz(clazz));
+            clazzes.add(asClazz(clazz));
         }
-        return new ConcreteSlice(sliceEntries);
+        return new ConcreteSlice(clazzes);
     }
 
     public Slice sliceOf(final String... classnames) {
-        DerivedSlice derivedSlice = new DerivedSlice(new Predicate<Clazz>() {
-            private final Set<String> names = new HashSet<String>(Arrays.asList(classnames));
-
-            @Override
-            public boolean test(Clazz sliceEntry) {
-                return names.contains(sliceEntry.getName());
-            }
-        });
-        return new DeferredSlice(derivedSlice, new ClazzResolver() {
-            @Override
-            public Set<Clazz> getClazzes() {
-                Set<Clazz> sliceEntries = new HashSet<Clazz>();
-                for (String name : classnames) {
-                    sliceEntries.add(asClazz(name));
-                }
-                return sliceEntries;
-            }
-        });
+        if (classnames.length == 0) {
+            return Slices.EMPTY_SLICE;
+        } else if (classnames.length == 1) {
+            return asClazz(classnames[0]);
+        }
+        Set<Clazz> clazzes = new HashSet<Clazz>();
+        for (String classname : classnames) {
+            clazzes.add(asClazz(classname));
+        }
+        return new ConcreteSlice(clazzes);
     }
 
     @Override
     Classpath getClasspath() {
         return this;
+    }
+
+    @Override
+    boolean isConcrete() {
+        return false;
     }
 }

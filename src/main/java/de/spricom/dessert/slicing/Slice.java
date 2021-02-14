@@ -41,15 +41,11 @@ public interface Slice {
 
     Slice minus(Slice... slices);
 
-    Slice combine(Slice other);
-
     Slice slice(String pattern);
 
     Slice slice(Predicate<Clazz> predicate);
 
     boolean contains(Clazz entry);
-
-    boolean isIterable();
 
     Set<Clazz> getClazzes();
 

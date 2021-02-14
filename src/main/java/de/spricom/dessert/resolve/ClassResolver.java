@@ -257,4 +257,18 @@ public final class ClassResolver implements TraversalRoot {
     public int getClassCount() {
         return cache.getClassCount();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (File root : getRootFiles()) {
+            if (sb.length() == 0) {
+                sb.append("classpath ");
+            } else {
+                sb.append(File.pathSeparator);
+            }
+            sb.append(root.getAbsolutePath());
+        }
+        return sb.toString();
+    }
 }

@@ -47,6 +47,11 @@ public class Root extends AbstractRootSlice {
         return classpath;
     }
 
+    @Override
+    boolean isConcrete() {
+        return true;
+    }
+
     public String toString() {
         return "root of " + root.getRootFile().getName();
     }

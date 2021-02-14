@@ -21,6 +21,8 @@ package de.spricom.dessert.slicing;
  */
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Factory methods for {@link Slice}.
@@ -39,10 +41,24 @@ public final class Slices {
      * @return the union of the the slices
      */
     public static Slice of(Iterable<? extends Slice> slices) {
-        return EMPTY_SLICE.plus(slices);
+        List<Slice> list = new LinkedList<Slice>();
+        for (Slice slice : slices) {
+            list.add(slice);
+        }
+        if (list.isEmpty()) {
+            return EMPTY_SLICE;
+        } else if (list.size() == 1) {
+            return list.get(0);
+        }
+        return new UnionSlice(list);
     }
 
     public static Slice of(Slice... slices) {
-        return of(Arrays.asList(slices));
+        if (slices.length == 0) {
+            return EMPTY_SLICE;
+        } else if (slices.length == 1) {
+            return slices[0];
+        }
+        return new UnionSlice(Arrays.asList(slices));
     }
 }

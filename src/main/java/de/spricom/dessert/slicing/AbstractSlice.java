@@ -31,15 +31,27 @@ import java.util.*;
 public abstract class AbstractSlice implements Slice {
 
     public Slice plus(Iterable<? extends Slice> slices) {
-        Slice sum = this;
+        List<Slice> list = new LinkedList<Slice>();
+        list.add(this);
         for (Slice slice : slices) {
-            sum = sum.combine(slice);
+            list.add(slice);
         }
-        return sum;
+        if (list.size() == 1) {
+            return list.get(0);
+        }
+        return new UnionSlice(list);
     }
 
     public Slice plus(Slice... slices) {
-        return plus(Arrays.asList(slices));
+        if (slices.length == 0) {
+            return this;
+        }
+        List<Slice> list = new ArrayList<Slice>(slices.length + 1);
+        list.add(this);
+        for (Slice slice : slices) {
+            list.add(slice);
+        }
+        return new UnionSlice(list);
     }
 
     public Slice minus(Iterable<? extends Slice> slices) {

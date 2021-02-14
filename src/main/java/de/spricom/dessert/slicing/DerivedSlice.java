@@ -46,16 +46,6 @@ final class DerivedSlice extends AbstractSlice {
     }
 
     @Override
-    public Slice combine(final Slice other) {
-        return new DerivedSlice(new Predicate<Clazz>() {
-            @Override
-            public boolean test(Clazz clazz) {
-                return contains(clazz) || other.contains(clazz);
-            }
-        });
-    }
-
-    @Override
     public Slice slice(final Predicate<Clazz> predicate) {
         return new DerivedSlice(new Predicate<Clazz>() {
             @Override
@@ -81,16 +71,15 @@ final class DerivedSlice extends AbstractSlice {
     }
 
     @Override
-    public boolean isIterable() {
-        return false;
-    }
-
-    @Override
     public Set<Clazz> getClazzes() {
         throw new UnsupportedOperationException("Cannot materialize DerivedSlice");
     }
 
     public String toString() {
-        return "slice from " + predicate;
+        if (namePattern == NamePattern.ANY_NAME) {
+            return "slice from " + predicate;
+        } else {
+            return "slice " + namePattern;
+        }
     }
 }

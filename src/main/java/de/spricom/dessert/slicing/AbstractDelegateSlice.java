@@ -58,11 +58,6 @@ public abstract class AbstractDelegateSlice implements Slice {
     }
 
     @Override
-    public Slice combine(Slice other) {
-        return delegate.combine(other);
-    }
-
-    @Override
     public Slice slice(String pattern) {
         return delegate.slice(pattern);
     }
@@ -75,11 +70,6 @@ public abstract class AbstractDelegateSlice implements Slice {
     @Override
     public boolean contains(Clazz entry) {
         return delegate.contains(entry);
-    }
-
-    @Override
-    public boolean isIterable() {
-        return delegate.isIterable();
     }
 
     @Override

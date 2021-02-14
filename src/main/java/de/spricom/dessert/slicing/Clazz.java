@@ -24,7 +24,6 @@ import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.util.ClassUtils;
 import de.spricom.dessert.util.Predicate;
-import de.spricom.dessert.util.Sets;
 
 import java.io.File;
 import java.io.IOException;
@@ -142,35 +141,6 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
     }
 
     @Override
-    public Slice combine(final Slice other) {
-        if (other.contains(this)) {
-            return other;
-        }
-        if (other instanceof Concrete) {
-            Set<Clazz> union = Sets.union(Collections.singleton(this), other.getClazzes());
-            ConcreteSlice slice = new ConcreteSlice(union);
-            return slice;
-        }
-        Predicate<Clazz> combined = new Predicate<Clazz>() {
-            @Override
-            public boolean test(Clazz clazz) {
-                return this.equals(clazz) || other.contains(clazz);
-            }
-        };
-        DerivedSlice derived = new DerivedSlice(combined);
-        if (other.isIterable()) {
-            ClazzResolver resolver = new ClazzResolver() {
-                @Override
-                public Set<Clazz> getClazzes() {
-                    return Sets.union(Collections.singleton(Clazz.this), other.getClazzes());
-                }
-            };
-            return new DeferredSlice(derived, resolver);
-        }
-        return derived;
-    }
-
-    @Override
     public Slice slice(Predicate<Clazz> predicate) {
         return predicate.test(this) ? this : Slices.EMPTY_SLICE;
     }
@@ -178,11 +148,6 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
     @Override
     public boolean contains(Clazz clazz) {
         return equals(clazz);
-    }
-
-    @Override
-    public boolean isIterable() {
-        return true;
     }
 
     @Override
