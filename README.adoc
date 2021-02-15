@@ -1,16 +1,18 @@
 = The Dessert Library
 
-The name is a short form of **de**pendency a**ssert**. Hence Dessert is a library to check assertions for
+The name is a short form of **de**pendency a**ssert**.
+Hence, _dessert_ is a library to check assertions for
 dependencies. It is intended to be used within unit-tests.
+For details see the links below:
 
-== Goals
-
-- No additional dependencies but plain Java 6 or above (with full support for Java 15)
-- Simple and intuitive API (motivated by https://joel-costigliola.github.io/assertj/[AssertJ])
-- Assertions should be robust against refactorings (no strings for class or package names required)
-- Easy and seamless integration with other testing or assertion frameworks
-- Speed
-
-== Dokumentation
-
-For detailed documentation see https://hajo70.github.io/dessert-site/index.html.
+[cols="h,2"]
+|===
+|Documentation:
+|https://dessert.spricom.de/index.html[dessert.spricom.de] for released versions +
+https://hajo70.github.io/dessert-site/index.html[GitHub Pages] for the most current snapshot version +
+https://dessert.spricom.de/apidocs/[API Doc.]
+|Source-Code (GibHub):
+|https://github.com/hajo70/dessert-core[dessert-core] library source code +
+https://github.com/hajo70/dessert-site[dessert-site] documentation source code +
+https://github.com/hajo70/dessert-tests[dessert-tests] test and samples
+|===
