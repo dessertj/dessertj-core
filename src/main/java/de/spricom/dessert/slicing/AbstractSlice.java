@@ -30,6 +30,9 @@ import java.util.*;
  */
 public abstract class AbstractSlice implements Slice {
 
+    AbstractSlice() {
+    }
+
     public Slice plus(Iterable<? extends Slice> slices) {
         List<Slice> list = new LinkedList<Slice>();
         list.add(this);
@@ -109,7 +112,7 @@ public abstract class AbstractSlice implements Slice {
     }
 
     @Override
-    public Slice as(String name) {
+    public Slice named(String name) {
         return new NamedSlice(this, name);
     }
 

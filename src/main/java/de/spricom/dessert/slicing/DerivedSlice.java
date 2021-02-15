@@ -72,7 +72,7 @@ final class DerivedSlice extends AbstractSlice {
 
     @Override
     public Set<Clazz> getClazzes() {
-        throw new UnsupportedOperationException("Cannot materialize DerivedSlice");
+        throw new ResolveException("Cannot get classes for " + this);
     }
 
     public String toString() {

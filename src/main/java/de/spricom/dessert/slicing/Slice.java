@@ -70,5 +70,5 @@ public interface Slice {
      * @param name the name of this slice
      * @return a new slice with that name
      */
-    Slice as(String name);
+    Slice named(String name);
 }

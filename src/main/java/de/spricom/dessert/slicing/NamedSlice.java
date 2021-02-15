@@ -29,7 +29,7 @@ final class NamedSlice extends AbstractDelegateSlice {
         this.name = name;
     }
 
-    public Slice as(String name) {
+    public Slice named(String name) {
         return new NamedSlice(getDelegate(), name);
     }
 

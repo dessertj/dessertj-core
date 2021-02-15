@@ -151,7 +151,7 @@ public final class Classpath extends AbstractRootSlice {
     public Root rootOfClass(String classname) {
         ClassEntry cf = resolver.getClassEntry(classname);
         if (cf == null) {
-            throw new IllegalArgumentException(classname + " not found within this context.");
+            throw new IllegalArgumentException(classname + " not found within this classpath.");
         }
         return rootOf(cf.getPackage().getRoot());
     }
@@ -166,7 +166,7 @@ public final class Classpath extends AbstractRootSlice {
 
     /**
      * Checks whether the corresponding root file has been added to the path.
-     * It's not allowed to add root files to an existing slice context, because
+     * It's not allowed to add root files to an existing classpath, because
      * that might change slices after they have been created.
      *
      * @param rootFile the classes directory or jar file to check

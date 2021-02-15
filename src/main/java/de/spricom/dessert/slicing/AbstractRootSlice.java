@@ -30,7 +30,7 @@ public abstract class AbstractRootSlice extends AbstractSlice {
     private final TraversalRoot traversalRoot;
     private ConcreteSlice concreteSlice;
 
-    public AbstractRootSlice(TraversalRoot traversalRoot) {
+    AbstractRootSlice(TraversalRoot traversalRoot) {
         this.traversalRoot = traversalRoot;
     }
 
