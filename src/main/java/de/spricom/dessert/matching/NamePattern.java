@@ -130,26 +130,22 @@ public class NamePattern implements Comparable<NamePattern> {
         }
     }
 
-    public boolean isConstant() {
-        for (ShortNameMatcher matcher : shortNameMatchers) {
-            if (!(matcher instanceof ConstantShortNameMatcher)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean isPackageConstant() {
-        for (int i = 0; i < shortNameMatchers.length - 1; i++) {
-            if (!(shortNameMatchers[i] instanceof ConstantShortNameMatcher)) {
-                return false;
-            }
-        }
-        return true;
+    public boolean isAny() {
+        return this == ANY_NAME;
     }
 
     public boolean isAllClasses() {
         return shortNameMatchers[shortNameMatchers.length - 1] instanceof AnyShortNameMatcher;
+    }
+
+    public boolean isMoreConcreteThan(NamePattern other) {
+        if (isAny()) {
+            return false;
+        }
+        if (other.isAny()) {
+            return true;
+        }
+        return shortNameMatchers.length > other.shortNameMatchers.length;
     }
 
     /**

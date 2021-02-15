@@ -50,6 +50,9 @@ public class ConcreteSlice extends AbstractSlice implements Concrete {
                 filtered.add(entry);
             }
         }
+        if (filtered.isEmpty()) {
+            return EMPTY_SLICE;
+        }
         return new ConcreteSlice(filtered);
     }
 

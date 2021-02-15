@@ -25,11 +25,13 @@ import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.resolve.ClassVisitor;
 import de.spricom.dessert.resolve.TraversalRoot;
 
-final class NameResolver extends AbstractClazzResolver implements ClassVisitor {
+import java.util.Set;
+
+final class NamePatternClazzResolver extends AbstractClazzResolver implements ClassVisitor {
     private final NamePattern pattern;
     private final TraversalRoot root;
 
-    NameResolver(Classpath cp, NamePattern pattern, TraversalRoot root) {
+    NamePatternClazzResolver(Classpath cp, NamePattern pattern, TraversalRoot root) {
         super(cp);
         this.pattern = pattern;
         this.root = root;
@@ -43,5 +45,21 @@ final class NameResolver extends AbstractClazzResolver implements ClassVisitor {
     @Override
     public void visit(ClassEntry ce) {
         add(ce);
+    }
+
+    @Override
+    public Set<Clazz> getClazzes() {
+        Set<Clazz> clazzes = super.getClazzes();
+        if (clazzes.isEmpty() && pattern.isAny()) {
+            throw new ResolveException("No classes found in " + root);
+        }
+        return clazzes;
+    }
+
+    public NamePatternClazzResolver filtered(NamePattern additionalPattern) {
+        if (additionalPattern.isMoreConcreteThan(pattern)) {
+            return new NamePatternClazzResolver(getClasspath(), additionalPattern, root);
+        }
+        return this;
     }
 }
