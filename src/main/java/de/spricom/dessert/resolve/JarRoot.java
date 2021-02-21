@@ -43,14 +43,17 @@ final class JarRoot extends ClassRoot {
         Enumeration<JarEntry> entries = jarFile.entries();
         while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
-            if (!entry.isDirectory() && entry.getName().endsWith(".class")) {
+            if (!entry.isDirectory()
+                    && entry.getName().endsWith(".class")
+                    && !entry.getName().startsWith("META-INF/")) {
+                // TODO: Proper handling of multi-release jar files.
                 addClass(collector, packages, jarFile, entry);
             }
         }
         // JarFile must not be closed to be able to access the content of each JarEntry.
     }
 
-    private void addClass(ClassCollector collector, Map<String, ClassPackage> packages,  JarFile jarFile, JarEntry entry) throws IOException {
+    private void addClass(ClassCollector collector, Map<String, ClassPackage> packages, JarFile jarFile, JarEntry entry) throws IOException {
         ClassPackage pckg = ensurePackage(collector, packages, packageName(entry));
         ClassEntry ce = new JarClassEntry(pckg, jarFile, entry);
         pckg.addClass(ce);
@@ -58,7 +61,8 @@ final class JarRoot extends ClassRoot {
     }
 
     private String packageName(JarEntry entry) {
-        return packageName(entry.getName(), '/').replace('/', '.');
+        String path = VersionsHelper.removeVersionPrefix(entry.getName());
+        return packageName(path, '/').replace('/', '.');
     }
 
     private ClassPackage ensurePackage(ClassCollector collector, Map<String, ClassPackage> packages, String packageName) {

@@ -41,7 +41,7 @@ final class JarClassEntry extends ClassEntry {
     }
 
     private static String classname(JarEntry jarEntry) {
-        String cn = jarEntry.getName();
+        String cn = VersionsHelper.removeVersionPrefix(jarEntry.getName());
         return cn.substring(0, cn.length() - ".class".length()).replace('/', '.');
     }
 
