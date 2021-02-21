@@ -14,5 +14,5 @@ https://dessert.spricom.de/apidocs/[API Doc.]
 |Source-Code (GibHub):
 |https://github.com/hajo70/dessert-core[dessert-core] library source code +
 https://github.com/hajo70/dessert-site[dessert-site] documentation source code +
-https://github.com/hajo70/dessert-tests[dessert-tests] test and samples
+https://github.com/hajo70/dessert-tests[dessert-tests] tests and samples
 |===
