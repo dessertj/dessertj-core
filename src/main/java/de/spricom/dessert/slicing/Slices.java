@@ -25,9 +25,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Factory methods for {@link Slice}.
+ * Collection of utility methods for {@link Slice}.
  */
 public final class Slices {
+    /**
+     * An empty slice.
+     */
     public static final ConcreteSlice EMPTY_SLICE = ConcreteSlice.EMPTY_SLICE;
 
     private Slices() {
@@ -53,6 +56,13 @@ public final class Slices {
         return new UnionSlice(list);
     }
 
+    /**
+     * Returns a new {@link Slice} that resembels the union of the <i>slices</i>.
+     * Returns an empty slice if <i>slices</i> is empty.
+     *
+     * @param slices the slices to create the union from
+     * @return the union of the the slices
+     */
     public static Slice of(Slice... slices) {
         if (slices.length == 0) {
             return EMPTY_SLICE;

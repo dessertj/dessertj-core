@@ -33,25 +33,109 @@ import java.util.SortedMap;
  */
 public interface Slice {
 
+    /**
+     * Creates a new slices as union from this slice and the slices passed.
+     *
+     * @param slices the slices for the union
+     * @return the union
+     */
     Slice plus(Iterable<? extends Slice> slices);
 
+    /**
+     * Creates a new slices as union from this slice and the slices passed.
+     *
+     * @param slices the slices for the union
+     * @return the union
+     */
     Slice plus(Slice... slices);
 
+    /**
+     * Creates a new slice that resembles the difference of this slice and the
+     * slices passed. Hence, the new slice contains all classes of this slice
+     * that belongs to none of slices.
+     *
+     * @param slices the slices to create the difference from
+     * @return the difference
+     */
     Slice minus(Iterable<? extends Slice> slices);
 
+    /**
+     * Creates a new slice that resembles the difference of this slice and the
+     * slices passed.
+     *
+     * @param slices the slices to create the difference from
+     * @return the difference
+     */
     Slice minus(Slice... slices);
 
+    /**
+     * This is a convenience method for {@code this.minus(this.slice(pattern))}.
+     *
+     * @param pattern the pattern for the slice to subtract from this slice
+     * @return a new slice without classes matching pattern
+     */
+    Slice minus(String pattern);
+
+    /**
+     * This is a convenience method for {@code this.minus(this.slice(predicate))}.
+     *
+     * @param predicate the pattern for the slice to subtract from this slice
+     * @return a new slice without classes fulfilling predicate
+     */
+    Slice minus(Predicate<Clazz> predicate);
+
+    /**
+     * Creates a new slice that resembles the intersection of this slice and union of the
+     * slices passed. Hence, the new slice contains all classes of this slice
+     * that belongs to any of slices.
+     *
+     * @param slices the slices to create the intersection from
+     * @return the difference
+     */
+    Slice slice(Iterable<? extends Slice> slices);
+
+    /**
+     * Creates a new slice that resembles the intersection of this slice and the
+     * slices passed.
+     *
+     * @param slices the slices to create the intersection from
+     * @return the difference
+     */
+    Slice slice(Slice... slices);
+
+    /**
+     *
+     *
+     * @param pattern
+     * @return
+     */
     Slice slice(String pattern);
 
     Slice slice(Predicate<Clazz> predicate);
 
     boolean contains(Clazz entry);
 
+    /**
+     * Returns all classes belonging to this slice. This is only possible for slices
+     * based on the {@link Classpath}. A slice derived from some pattern or {@link Predicate}
+     * will throw a {@link ResolveException} instead.
+     *
+     * @return a set of all classes belonging to this slice
+     * @throws ResolveException if the classes cannot be determined
+     */
     Set<Clazz> getClazzes();
 
+    /**
+     * Returns a slice of all the dependencies of this slices. That is the union of all
+     * of the dependencies of each class that belongs to this slice.
+     *
+     * @return the dependencies
+     */
     ConcreteSlice getDependencies();
 
     /**
+     * Check whether there is a dependency to some other slice.
+     *
      * @param other the other slice
      * @return true if this != other and there is one class in this slice that has a dependency contained in other
      */

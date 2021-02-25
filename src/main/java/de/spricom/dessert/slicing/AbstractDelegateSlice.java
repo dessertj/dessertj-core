@@ -58,6 +58,26 @@ public abstract class AbstractDelegateSlice implements Slice {
     }
 
     @Override
+    public Slice minus(String pattern) {
+        return delegate.slice(pattern);
+    }
+
+    @Override
+    public Slice minus(Predicate<Clazz> predicate) {
+        return delegate.slice(predicate);
+    }
+
+    @Override
+    public Slice slice(Iterable<? extends Slice> slices) {
+        return delegate.minus(slices);
+    }
+
+    @Override
+    public Slice slice(Slice... slices) {
+        return delegate.minus(slices);
+    }
+
+    @Override
     public Slice slice(String pattern) {
         return delegate.slice(pattern);
     }

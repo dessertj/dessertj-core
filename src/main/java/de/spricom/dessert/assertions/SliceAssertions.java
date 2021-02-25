@@ -25,31 +25,49 @@ import de.spricom.dessert.slicing.Slice;
 import java.util.Arrays;
 import java.util.Map;
 
+/**
+ * This class is the starting point for any dessert assertion. An example of a typical
+ * dessert test is:
+ * <pre>
+ *      Classpath cp = new Classpath();
+ *      Clazz me = cp.asClazz(this.getClass());
+ *      Root root = cp.rootOf(Test.class);
+ *      SliceAssertions.dessert(me).usesNot(root);
+ * </pre>
+ */
 public final class SliceAssertions {
     private SliceAssertions() {
     }
 
-    public static SliceAssert assertThat(Iterable<? extends Slice> slices) {
+    /**
+     * Starts an assertion for slices passed. The result provides a fluent API to specfiy the
+     * actual assertions. The method name <i>dessert</i> is a short form for
+     * <i>dependency assert that</i>.
+     *
+     * @param slices the slices to verify the assertion for
+     * @return an {@link SliceAssert} object that provides a fluent api to specify the assertions
+     */
+    public static SliceAssert dessert(Iterable<? extends Slice> slices) {
         return new SliceAssert(slices);
     }
 
-    public static SliceAssert assertThat(Slice... slices) {
-        return assertThat(Arrays.asList(slices));
-    }
-
-    public static SliceAssert assertThat(Map<String, ? extends Slice> slices) {
-        return assertThat(slices.values());
-    }
-
-    public static SliceAssert dessert(Iterable<? extends Slice> slices) {
-        return assertThat(slices);
-    }
-
+    /**
+     * An convenience method to specify slices for assertions.
+     *
+     * @param slices the slices to verify the assertion for
+     * @return an {@link SliceAssert} object that provides a fluent api to specify the assertions
+     */
     public static SliceAssert dessert(Slice... slices) {
-        return assertThat(slices);
+        return dessert(Arrays.asList(slices));
     }
 
+    /**
+     * An other convenience method to specify slices for assertions.
+     *
+     * @param slices the slices to verify the assertion for
+     * @return an {@link SliceAssert} object that provides a fluent api to specify the assertions
+     */
     public static SliceAssert dessert(Map<String, ? extends Slice> slices) {
-        return assertThat(slices);
+        return dessert(slices.values());
     }
 }

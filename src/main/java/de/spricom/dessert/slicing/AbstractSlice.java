@@ -33,6 +33,7 @@ public abstract class AbstractSlice implements Slice {
     AbstractSlice() {
     }
 
+    @Override
     public Slice plus(Iterable<? extends Slice> slices) {
         List<Slice> list = new LinkedList<Slice>();
         list.add(this);
@@ -45,6 +46,7 @@ public abstract class AbstractSlice implements Slice {
         return new UnionSlice(list);
     }
 
+    @Override
     public Slice plus(Slice... slices) {
         if (slices.length == 0) {
             return this;
@@ -57,6 +59,7 @@ public abstract class AbstractSlice implements Slice {
         return new UnionSlice(list);
     }
 
+    @Override
     public Slice minus(Iterable<? extends Slice> slices) {
         final Slice union = Slices.of(slices);
         Predicate<Clazz> excluded = new Predicate<Clazz>() {
@@ -69,8 +72,43 @@ public abstract class AbstractSlice implements Slice {
         return slice(excluded);
     }
 
+    @Override
     public Slice minus(Slice... slices) {
         return minus(Arrays.asList(slices));
+    }
+
+    @Override
+    public Slice minus(String pattern) {
+        return this.minus(this.slice(pattern));
+    }
+
+    @Override
+    public Slice minus(Predicate<Clazz> predicate) {
+        return this.minus(this.slice(predicate));
+    }
+
+    @Override
+    public Slice slice(Iterable<? extends Slice> slices) {
+        List<Slice> list = new LinkedList<Slice>();
+        for (Slice slice : slices) {
+            list.add(slice);
+        }
+        if (list.isEmpty()) {
+            return this;
+        }
+        final Slice union = list.size() == 1 ? list.get(0) : new UnionSlice(list);
+        Predicate<Clazz> isInUnion = new Predicate<Clazz>() {
+            @Override
+            public boolean test(Clazz clazz) {
+                return union.contains(clazz);
+            }
+        };
+        return slice(isInUnion);
+    }
+
+    @Override
+    public Slice slice(Slice... slices) {
+        return slice(Arrays.asList(slices));
     }
 
     @Override
@@ -116,10 +154,12 @@ public abstract class AbstractSlice implements Slice {
         return new NamedSlice(this, name);
     }
 
+    @Override
     public SortedMap<String, PackageSlice> partitionByPackage() {
         return partitionBy(PackageSlice.partitioner(), PackageSlice.factory());
     }
 
+    @Override
     public SortedMap<String, PartitionSlice> partitionBy(SlicePartitioner partitioner) {
         return partitionBy(
                 partitioner,
@@ -131,6 +171,7 @@ public abstract class AbstractSlice implements Slice {
                 });
     }
 
+    @Override
     public <S extends PartitionSlice> SortedMap<String, S> partitionBy(SlicePartitioner partioner, PartitionSliceFactory<S> partitionSliceFactory) {
         Map<String, Set<Clazz>> split = new HashMap<String, Set<Clazz>>();
         for (Clazz entry : getClazzes()) {

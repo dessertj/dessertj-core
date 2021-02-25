@@ -128,7 +128,7 @@ public class DependenciesTest {
         Slice javaCore = sc.packageTreeOf("java.lang")
                 .plus(sc.packageTreeOf("java.util"));
         Slice javaIO = sc.packageTreeOf("java.io").plus(javaCore);
-        SliceAssertions.assertThat(classfile).usesOnly(javaIO);
+        SliceAssertions.dessert(classfile).usesOnly(javaIO);
 
         // Packages outside the 'classfile' package must not use anything but the ClassFile facade.
         dessert(main.minus(classfile)).usesNot(classfile.minus(sc.asClazz(ClassFile.class)));
