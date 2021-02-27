@@ -31,4 +31,50 @@ public final class Predicates {
             }
         };
     }
+
+    public static <T> Predicate<T> none() {
+        return new Predicate<T>() {
+            @Override
+            public boolean test(T t) {
+                return false;
+            }
+        };
+    }
+
+    public static <T> Predicate<T> and(final Predicate<T>... predicates) {
+        return new Predicate<T>() {
+            @Override
+            public boolean test(T t) {
+                for (Predicate<T> predicate : predicates) {
+                    if (!predicate.test(t)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        };
+    }
+
+    public static <T> Predicate<T> or(final Predicate<T>... predicates) {
+        return new Predicate<T>() {
+            @Override
+            public boolean test(T t) {
+                for (Predicate<T> predicate : predicates) {
+                    if (predicate.test(t)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+    }
+
+    public static <T> Predicate<T> not(final Predicate<T> predicate) {
+        return new Predicate<T>() {
+            @Override
+            public boolean test(T t) {
+                return !predicate.test(t);
+            }
+        };
+    }
 }

@@ -23,6 +23,7 @@ package de.spricom.dessert.partitioning;
 import de.spricom.dessert.slicing.SlicePartitioner;
 
 import static de.spricom.dessert.partitioning.ClazzPredicates.*;
+import static de.spricom.dessert.util.Predicates.or;
 
 public class SlicePartitioners {
 
@@ -30,6 +31,13 @@ public class SlicePartitioners {
             .split("interfaces, enums an annotations")
             .by(or(INTERFACE, ENUM, ANNOTATION))
             .split("anything else")
+            .by(or(EACH))
+            .build();
+
+    public static final SlicePartitioner PUBLIC = new SlicePartitionerBuilder()
+            .split("public classes")
+            .by(or(ClazzPredicates.PUBLIC))
+            .split("package internal classes")
             .by(or(EACH))
             .build();
 }

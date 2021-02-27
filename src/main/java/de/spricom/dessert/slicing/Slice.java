@@ -104,16 +104,31 @@ public interface Slice {
     Slice slice(Slice... slices);
 
     /**
+     * Creates a new slices of all classes of this slide that match the specified
+     * name pattern.
      *
-     *
-     * @param pattern
-     * @return
+     * @param pattern the pattern
+     * @return the slice
      */
     Slice slice(String pattern);
 
+    /**
+     * Creates a new slices of all classes of this slide that fulfill the specified
+     * name predicate.
+     *
+     * @param predicate the predicate
+     * @return the slice
+     * @see de.spricom.dessert.partitioning.ClazzPredicates for predefined predicates
+     */
     Slice slice(Predicate<Clazz> predicate);
 
-    boolean contains(Clazz entry);
+    /**
+     * Check whether a class belongs to a slice.
+     *
+     * @param clazz the Clazz
+     * @return true if the clazz belongs to this slice
+     */
+    boolean contains(Clazz clazz);
 
     /**
      * Returns all classes belonging to this slice. This is only possible for slices
@@ -141,11 +156,35 @@ public interface Slice {
      */
     boolean uses(Slice other);
 
+    /**
+     * Partitions the slice by package.
+     *
+     * @return a map of the packages by package name.
+     */
     SortedMap<String, PackageSlice> partitionByPackage();
 
+    /**
+     * Partitions the slice by some {@link SlicePartitioner} that maps classes to names.
+     * Clazzes the partitioner does not map to a name will be omitted form the result.
+     *
+     * @param partitioner the {@link SlicePartitioner} to partition by
+     * @return a map of slices by partition name
+     * @see de.spricom.dessert.partitioning.SlicePartitioners for predefined partitioners
+     */
     SortedMap<String, PartitionSlice> partitionBy(SlicePartitioner partitioner);
 
-    <S extends PartitionSlice> SortedMap<String, S> partitionBy(SlicePartitioner partitioner, PartitionSliceFactory<S> partitionSliceFactory);
+    /**
+     * Same as {@link #partitionBy(SlicePartitioner)}, but creates specialized subclasses
+     * of {@link PartitionSlice} using a {@link PartitionSliceFactory}.
+     *
+     *
+     * @param partitioner the {@link SlicePartitioner} to partition by
+     * @param partitionSliceFactory the factory to create the slices
+     * @param <S> the type of slices returned
+     * @return a map of specialized slices by partition name
+     */
+    <S extends PartitionSlice> SortedMap<String, S> partitionBy(SlicePartitioner partitioner,
+                                                                PartitionSliceFactory<S> partitionSliceFactory);
 
     /**
      * Creates a new {@link Slice} from this slice for which the

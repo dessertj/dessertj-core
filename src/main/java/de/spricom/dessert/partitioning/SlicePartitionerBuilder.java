@@ -38,12 +38,15 @@ public class SlicePartitionerBuilder {
     }
 
     public SlicePartitioner build() {
+        if (predicates.isEmpty()) {
+            throw new IllegalArgumentException("No predicates given!");
+        }
         return new SlicePartitioner() {
             @Override
-            public String partKey(Clazz entry) {
+            public String partKey(Clazz clazz) {
                 for (NamedPredicate predicate : predicates) {
-                    if (predicate != null) {
-                        throw new IllegalArgumentException("by() not called for " + predicate);
+                    if (predicate.predicate.test(clazz)) {
+                        return predicate.name;
                     }
                 }
                 return null;
@@ -74,6 +77,9 @@ public class SlicePartitionerBuilder {
         }
 
         public SlicePartitioner build() {
+            if (predicate == null) {
+                throw new IllegalArgumentException("by() not called for " + this);
+            }
             return SlicePartitionerBuilder.this.build();
         }
 

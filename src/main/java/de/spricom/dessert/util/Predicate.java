@@ -20,6 +20,19 @@ package de.spricom.dessert.util;
  * #L%
  */
 
+/**
+ * A functional interface for a test on any object.
+ *
+ * @param <T> the type of object to test
+ * @see Predicates for logic to combine predicates
+ */
 public interface Predicate<T> {
+
+    /**
+     * Test the predicate for some object
+     *
+     * @param t the object to test
+     * @return return true if the predicate is fulfilled
+     */
     boolean test(T t);
 }

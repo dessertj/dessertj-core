@@ -174,15 +174,15 @@ public abstract class AbstractSlice implements Slice {
     @Override
     public <S extends PartitionSlice> SortedMap<String, S> partitionBy(SlicePartitioner partioner, PartitionSliceFactory<S> partitionSliceFactory) {
         Map<String, Set<Clazz>> split = new HashMap<String, Set<Clazz>>();
-        for (Clazz entry : getClazzes()) {
-            String key = partioner.partKey(entry);
+        for (Clazz clazz : getClazzes()) {
+            String key = partioner.partKey(clazz);
             if (key != null) {
                 Set<Clazz> matches = split.get(key);
                 if (matches == null) {
                     matches = new HashSet<Clazz>();
                     split.put(key, matches);
                 }
-                matches.add(entry);
+                matches.add(clazz);
             }
         }
         SortedMap<String, S> slices = new TreeMap<String, S>();

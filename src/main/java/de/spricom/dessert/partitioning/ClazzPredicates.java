@@ -20,8 +20,10 @@ package de.spricom.dessert.partitioning;
  * #L%
  */
 
+import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.slicing.Clazz;
 import de.spricom.dessert.util.Predicate;
+import de.spricom.dessert.util.Predicates;
 
 public final class ClazzPredicates {
 
@@ -29,12 +31,7 @@ public final class ClazzPredicates {
      * This is a catch all predicate that can be used to collect
      * anything that does not match an other predicate.
      */
-    public static final Predicate<Clazz> EACH = new Predicate<Clazz>() {
-        @Override
-        public boolean test(Clazz clazz) {
-            return true;
-        }
-    };
+    public static final Predicate<Clazz> EACH = Predicates.any();
 
     public static final Predicate<Clazz> PUBLIC = new Predicate<Clazz>() {
         @Override
@@ -92,6 +89,13 @@ public final class ClazzPredicates {
         }
     };
 
+    public static final Predicate<Clazz> INNER_TYPE = new Predicate<Clazz>() {
+        @Override
+        public boolean test(Clazz clazz) {
+            return clazz.getName().lastIndexOf('$') != -1;
+        }
+    };
+
     public static Predicate<Clazz> matchesName(final String regex) {
         return new Predicate<Clazz>() {
             @Override
@@ -124,39 +128,20 @@ public final class ClazzPredicates {
         };
     }
 
+    public static Predicate<Clazz> matchesClassFile(final Predicate<ClassFile> classFilePredicate) {
+        return new Predicate<Clazz>() {
+            @Override
+            public boolean test(Clazz clazz) {
+                return classFilePredicate.test(clazz.getClassFile());
+            }
+        };
+    }
+
     public static Predicate<Clazz> matches(final Predicate<Class<?>> classPredicate) {
         return new Predicate<Clazz>() {
             @Override
             public boolean test(Clazz clazz) {
                 return classPredicate.test(clazz.getClassImpl());
-            }
-        };
-    }
-
-    public static Predicate<Clazz> or(final Predicate<Clazz>... predicates) {
-        return new Predicate<Clazz>() {
-            @Override
-            public boolean test(Clazz clazz) {
-                for (Predicate<Clazz> predicate : predicates) {
-                    if (predicate.test(clazz)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        };
-    }
-
-    public static Predicate<Clazz> and(final Predicate<Clazz>... predicates) {
-        return new Predicate<Clazz>() {
-            @Override
-            public boolean test(Clazz clazz) {
-                for (Predicate<Clazz> predicate : predicates) {
-                    if (!predicate.test(clazz)) {
-                        return false;
-                    }
-                }
-                return true;
             }
         };
     }

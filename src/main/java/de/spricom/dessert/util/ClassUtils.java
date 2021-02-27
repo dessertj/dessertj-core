@@ -85,11 +85,11 @@ public final class ClassUtils {
         }
     }
 
-    public boolean isPublic(Class<?> clazz) {
+    public static boolean isPublic(Class<?> clazz) {
         return Modifier.isPublic(clazz.getModifiers());
     }
 
-    public boolean isInnerClass(Class<?> clazz) {
+    public static boolean isInnerType(Class<?> clazz) {
         return clazz.getEnclosingClass() != null;
     }
 }
