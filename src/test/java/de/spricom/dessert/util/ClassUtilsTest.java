@@ -37,7 +37,7 @@ public class ClassUtilsTest {
 
         assertThat(uri.toASCIIString())
                 .startsWith("file:/")
-                .endsWith("/dessert-core/target/test-classes/de/spricom/dessert/util/ClassUtilsTest.class");
+                .endsWith("/target/test-classes/de/spricom/dessert/util/ClassUtilsTest.class");
         assertThat(rootFile.getName()).isEqualTo("test-classes");
     }
 
