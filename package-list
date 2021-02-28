@@ -1,0 +1,10 @@
+de.spricom.dessert.assertions
+de.spricom.dessert.classfile
+de.spricom.dessert.classfile.attribute
+de.spricom.dessert.classfile.constpool
+de.spricom.dessert.classfile.dependency
+de.spricom.dessert.matching
+de.spricom.dessert.partitioning
+de.spricom.dessert.resolve
+de.spricom.dessert.slicing
+de.spricom.dessert.util
