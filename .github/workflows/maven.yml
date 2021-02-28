@@ -25,6 +25,9 @@ jobs:
     - name: Build with Maven
       run: . mvnw -B verify
 
+    - name: Create .nojekyll
+      run: touch target/apidocs/.nojekyll
+
     - name: Publish Javadocs
       uses: JamesIves/github-pages-deploy-action@3.7.1
       with:
