@@ -1,9 +1,5 @@
-/**
- * This package contains the code to anaylze a class file.
- * The implementation retrieves all the dependencies without anaylizing the byte code.
- * Hence it's very fast.
- */
-package de.spricom.dessert.classfile;
+package de.spricom.dessert.samples;
+
 /*-
  * #%L
  * Dessert Dependency Assertion Library for Java
@@ -23,3 +19,19 @@ package de.spricom.dessert.classfile;
  * limitations under the License.
  * #L%
  */
+
+import de.spricom.dessert.slicing.Classpath;
+import de.spricom.dessert.slicing.Slice;
+import org.junit.Test;
+
+import static de.spricom.dessert.assertions.SliceAssertions.dessert;
+
+public class SampleTest {
+    private static final Classpath cp = new Classpath();
+
+    @Test
+    public void test() {
+        Slice myCompanyCode = cp.slice("de.spricom..*");
+        dessert(myCompanyCode).usesNot(cp.slice("..sun..*"));
+    }
+}

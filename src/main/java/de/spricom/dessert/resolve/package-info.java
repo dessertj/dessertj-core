@@ -6,7 +6,7 @@
 package de.spricom.dessert.resolve;
 /*-
  * #%L
- * Dessert Dependency Assertion Library
+ * Dessert Dependency Assertion Library for Java
  * %%
  * Copyright (C) 2017 - 2021 Hans Jörg Heßmann
  * %%

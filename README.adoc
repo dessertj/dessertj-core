@@ -1,18 +1,40 @@
-= The Dessert Library
+= Dessert Dependency Assertion Library for Java
 
-The name is a short form of **de**pendency a**ssert**.
-Hence, _dessert_ is a library to check assertions for
-dependencies. It is intended to be used within unit-tests.
-For details see the links below:
+A library for unit-tests to check the dependencies between classes.
 
-[cols="h,2"]
-|===
-|Documentation:
-|https://dessert.spricom.de/index.html[dessert.spricom.de] for released versions +
-https://hajo70.github.io/dessert-site/index.html[GitHub Pages] for the most current snapshot version +
-https://dessert.spricom.de/apidocs/[API Doc.]
-|Source-Code (GibHub):
-|https://github.com/hajo70/dessert-core[dessert-core] library source code +
-https://github.com/hajo70/dessert-site[dessert-site] documentation source code +
-https://github.com/hajo70/dessert-tests[dessert-tests] tests and samples
-|===
+== Getting started
+
+Add the _dessert-core_ dependency:
+
+----
+<dependency>
+    <groupId>de.spricom.dessert</groupId>
+    <artifactId>dessert-core</artifactId>
+    <version>0.4.0</version>
+    <scope>test</scope>
+</dependency>
+----
+
+Write your first test:
+[code, java]
+----
+package de.spricom.dessert.samples;
+
+import de.spricom.dessert.slicing.Classpath;
+import de.spricom.dessert.slicing.Slice;
+import org.junit.Test;
+
+import static de.spricom.dessert.assertions.SliceAssertions.dessert;
+
+public class SampleTest {
+    private static final Classpath cp = new Classpath();
+
+    @Test
+    public void test() {
+        Slice myCompanyCode = cp.slice("de.spricom..*");
+        dessert(myCompanyCode).usesNot(cp.slice("..sun..*"));
+    }
+}
+----
+
+For more information see https://dessert.spricom.de/.
