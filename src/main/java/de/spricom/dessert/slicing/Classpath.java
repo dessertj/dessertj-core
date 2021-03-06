@@ -23,9 +23,11 @@ package de.spricom.dessert.slicing;
 import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.resolve.ClassRoot;
+import de.spricom.dessert.util.ClassUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,39 +62,57 @@ public final class Classpath extends AbstractRootSlice {
     }
 
     Clazz asClazz(ClassEntry ce) {
-        Clazz se = classes.get(ce.getClassname());
-        if (se == null) {
-            se = new Clazz(this, ce);
-            classes.put(ce.getClassname(), se);
-            return se;
+        Clazz clazz = classes.get(ce.getClassname());
+        if (clazz == null) {
+            clazz = new Clazz(this, ce);
+            classes.put(ce.getClassname(), clazz);
+            return clazz;
         } else {
-            Clazz alt = se.getAlternative(ce);
+            Clazz alt = clazz.getAlternative(ce);
+            assert alt != null : "alternative for " + ce.getURI() + " is null";
             return alt;
         }
     }
 
     public Clazz asClazz(String classname) {
-        Clazz se = classes.get(classname);
-        if (se == null) {
-            se = resolveClazz(classname);
-            if (se == null) {
-                se = loadClass(classname);
+        Clazz clazz = classes.get(classname);
+        if (clazz == null) {
+            clazz = resolveClazz(classname);
+            if (clazz == null) {
+                clazz = loadClass(classname);
             }
-            if (se == null) {
-                se = undefined(classname);
+            if (clazz == null) {
+                clazz = undefined(classname);
             }
-            classes.put(classname, se);
+            classes.put(classname, clazz);
         }
-        return se;
+        return clazz;
     }
 
-    public Clazz asClazz(Class<?> clazz) {
-        Clazz se = classes.get(clazz.getName());
-        if (se == null) {
-            se = createClazz(clazz);
-            classes.put(clazz.getName(), se);
+    public Clazz asClazz(Class<?> classImpl) {
+        URI uri = ClassUtils.getURI(classImpl);
+        String classname = classImpl.getName();
+        Clazz clazz = classes.get(classname);
+        if (clazz == null) {
+            clazz = resolveClazz(classname);
+            if (clazz != null) {
+                classes.put(classname, clazz);
+            }
         }
-        return se;
+        if (clazz != null) {
+            for (Clazz alternative : clazz.getAlternatives()) {
+                if (uri.equals(alternative.getURI())) {
+                    return alternative;
+                }
+            }
+        }
+        Clazz newClazz = createClazz(classImpl);
+        if (clazz == null) {
+            classes.put(classname, newClazz);
+        } else {
+            clazz.getAlternatives().add(newClazz);
+        }
+        return newClazz;
     }
 
     private Clazz resolveClazz(String classname) {

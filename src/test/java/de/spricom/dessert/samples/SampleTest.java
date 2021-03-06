@@ -30,7 +30,7 @@ public class SampleTest {
     private static final Classpath cp = new Classpath();
 
     @Test
-    public void testDetectUsageOfJdkInternalApis() {
+    public void detectUsageOfJdkInternalApis() {
         Slice myCompanyCode = cp.slice("de.spricom..*");
         Slice jdkInternalApis = cp.slice("sun..*").plus(cp.slice("com.sun..*"));
         dessert(myCompanyCode).usesNot(jdkInternalApis);
