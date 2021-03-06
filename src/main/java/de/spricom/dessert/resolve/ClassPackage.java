@@ -23,9 +23,8 @@ package de.spricom.dessert.resolve;
 import de.spricom.dessert.matching.ShortNameMatcher;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * A ClassEntry represents a single package within one classes directory or .jar file.
@@ -37,10 +36,12 @@ import java.util.List;
  * such packages.
  */
 public class ClassPackage {
+    private static final Logger log = Logger.getLogger(ClassPackage.class.getName());
+
     private final String packageName;
     private final ClassPackage parent;
-    private final List<ClassPackage> subPackages = new ArrayList<ClassPackage>();
-    private final List<ClassEntry> classes = new ArrayList<ClassEntry>();
+    private final Map<String, ClassPackage> subPackages = new TreeMap<String, ClassPackage>();
+    private final Map<String, ClassEntry> classes = new TreeMap<String, ClassEntry>();
     private List<ClassPackage> alternatives;
 
     protected ClassPackage() {
@@ -51,8 +52,9 @@ public class ClassPackage {
     public ClassPackage(ClassPackage parent, String packageName) {
         this.parent = parent;
         this.packageName = packageName;
-        assert getSubPackage(packageName) == null : "Package " + packageName + " added twice.";
-        parent.subPackages.add(this);
+        if (parent.subPackages.put(packageName, this) != null) {
+            log.warning(packageName + " appears twice.");
+        }
     }
 
     public ClassPackage getParent() {
@@ -94,37 +96,28 @@ public class ClassPackage {
      * @return the probably empty list of all direct nested packages of this package
      */
     public List<ClassPackage> getSubPackages() {
-        return subPackages;
+        return new ArrayList<ClassPackage>(subPackages.values());
     }
 
     public ClassPackage getSubPackage(String packageName) {
-        for (ClassPackage subPackage : subPackages) {
-            if (packageName.equals(subPackage.getPackageName())) {
-                return subPackage;
-            }
-        }
-        return null;
+        return subPackages.get(packageName);
     }
 
     /**
      * @return the list of all classes directly contained in this package
      */
     public List<ClassEntry> getClasses() {
-        return classes;
+        return new ArrayList<ClassEntry>(classes.values());
     }
 
     public void addClass(ClassEntry ce) {
-        assert getClass(ce.getClassname()) == null : "Class " + ce.getClassname() + " added twice.";
-        classes.add(ce);
+        if (classes.put(ce.getClassname(), ce) != null) {
+            log.warning(ce.getURI() + " appears twice, using last one.");
+        }
     }
 
     public ClassEntry getClass(String classname) {
-        for (ClassEntry ce : classes) {
-            if (classname.equals(ce.getClassname())) {
-                return ce;
-            }
-        }
-        return null;
+        return classes.get(classname);
     }
 
     /**
@@ -164,7 +157,7 @@ public class ClassPackage {
     }
 
     private void traverseClasses(ShortNameMatcher matcher, ClassVisitor visitor) {
-        for (ClassEntry clazz : classes) {
+        for (ClassEntry clazz : classes.values()) {
             if (matcher.match(clazz.getShortName()).matches()) {
                 visitor.visit(clazz);
             }
@@ -172,7 +165,7 @@ public class ClassPackage {
     }
 
     private void traverseSubPackages(ShortNameMatcher matcher, ClassVisitor visitor) {
-        for (ClassPackage subPackage : subPackages) {
+        for (ClassPackage subPackage : subPackages.values()) {
             subPackage.traverse(matcher.match(subPackage.getShortName()), visitor);
         }
     }
