@@ -1,9 +1,7 @@
 /**
- * Logic to build up a hierarchical data structure of
- * packages. It provides fast access to all .class files within some package or
- * within one or all .jar files or classes directories.
+ * Pattern matching for classnames.
  */
-package de.spricom.dessert.resolve;
+package de.spricom.dessert.matching;
 /*-
  * #%L
  * Dessert Dependency Assertion Library for Java

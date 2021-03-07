@@ -35,7 +35,6 @@ import java.util.TreeSet;
  * Wraps the information contained in a .class file according
  * to the <a href="https://docs.oracle.com/javase/specs/jvms/se15/html/jvms-4.html">
  * Java Virtual Machine Specification</a>.
- *
  */
 public class ClassFile {
     public static final int MAGIC = 0xCAFEBABE;

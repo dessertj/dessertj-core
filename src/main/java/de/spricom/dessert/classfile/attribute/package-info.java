@@ -1,9 +1,8 @@
 /**
- * Logic to build up a hierarchical data structure of
- * packages. It provides fast access to all .class files within some package or
- * within one or all .jar files or classes directories.
+ * Represents <a href="https://docs.oracle.com/javase/specs/jvms/se15/html/jvms-4.html#jvms-4.7">attributes</a>
+ * within a .class file.
  */
-package de.spricom.dessert.resolve;
+package de.spricom.dessert.classfile.attribute;
 /*-
  * #%L
  * Dessert Dependency Assertion Library for Java
