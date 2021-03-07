@@ -23,6 +23,17 @@ package de.spricom.dessert.assertions;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.util.Dag;
 
+/**
+ * Functional interface to render a detected cycle.
+ */
 public interface CycleRenderer {
+
+    /**
+     * Creates a string representation of the detected cycle to
+     * be used as message for an {@link AssertionError}.
+     *
+     * @param dag the DAG that contains the cycle
+     * @return the message
+     */
     String renderCycle(Dag<Slice> dag);
 }

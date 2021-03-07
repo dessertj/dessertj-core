@@ -23,6 +23,9 @@ package de.spricom.dessert.assertions;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.util.Dag;
 
+/**
+ * The default implementation used by dessert-core.
+ */
 public class DefaultCycleRenderer implements CycleRenderer {
 
     @Override

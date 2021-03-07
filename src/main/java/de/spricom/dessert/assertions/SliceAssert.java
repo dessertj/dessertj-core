@@ -28,6 +28,9 @@ import de.spricom.dessert.util.Dag;
 
 import java.util.*;
 
+/**
+ * Implements a DSL for slice assertions using a fluent API.
+ */
 public class SliceAssert {
     private final Iterable<? extends Slice> slices;
     private final Slice union;
@@ -39,21 +42,36 @@ public class SliceAssert {
         this.union = Slices.of(slices);
     }
 
+    /**
+     * Use custom renderer to produces the {@link AssertionError} message
+     * for dependency violations.
+     *
+     * @param renderer the renderer
+     * @return this instance (fluent API)
+     */
     public SliceAssert renderWith(IllegalDependenciesRenderer renderer) {
         this.violationsRenderer = renderer;
         return this;
     }
 
+    /**
+     * Use custom renderer to produces the {@link AssertionError} message
+     * for a detected cycle.
+     *
+     * @param renderer the renderer
+     * @return this instance (fluent API)
+     */
     public SliceAssert renderCycleWith(CycleRenderer renderer) {
         this.cycleRenderer = renderer;
         return this;
     }
 
     /**
-     * Assert the given slices have no other dependencies than <i>others</i>.
+     * Assert the current slices have no other dependencies than those contained by the slices
+     * passed to this method.
      *
      * @param others the slices to check dependencies for
-     * @return this {@link SliceAssert}
+     * @return this instance (fluent API)
      */
     public SliceAssert usesOnly(Iterable<Slice> others) {
         IllegalDependencies illegalDependencies = new IllegalDependencies();
@@ -71,8 +89,10 @@ public class SliceAssert {
     }
 
     /**
+     * Alternative for {@link #usesOnly(Iterable)}.
+     *
      * @param others the slices to check dependencies for
-     * @return this {@link SliceAssert}
+     * @return this instance (fluent API)
      * @see #usesOnly(Iterable)
      */
     public SliceAssert usesOnly(Slice... others) {
@@ -80,10 +100,11 @@ public class SliceAssert {
     }
 
     /**
-     * Assert the given slices have dependencies to <i>others</i>.
+     * Assert the current slices have no dependency to any class contained by the slices
+     * passed to this method.
      *
      * @param others the slices to check dependencies for
-     * @return this {@link SliceAssert}
+     * @return this instance (fluent API)
      */
     public SliceAssert usesNot(Iterable<Slice> others) {
         IllegalDependencies illegalDependencies = new IllegalDependencies();
@@ -95,8 +116,10 @@ public class SliceAssert {
     }
 
     /**
+     * Alternative for {@link #usesNot(Iterable)}.
+     *
      * @param others the slices to check dependencies for
-     * @return this {@link SliceAssert}
+     * @return this instance (fluent API)
      * @see #usesNot(Iterable)
      */
     public SliceAssert usesNot(Slice... others) {
@@ -123,8 +146,9 @@ public class SliceAssert {
     }
 
     /**
-     * Assert there are no cyclic dependencies
-     * @return this {@link SliceAssert}
+     * Assert there are no cyclic dependencies.
+     *
+     * @return this instance (fluent API)
      */
     public SliceAssert isCycleFree() {
         Map<Slice, ConcreteSlice> dependencies = mapDependencies();
@@ -145,7 +169,8 @@ public class SliceAssert {
 
     /**
      * Assert there are no backward references and each slice uses only its direct successor.
-     * @return this {@link SliceAssert}
+     *
+     * @return this instance (fluent API)
      */
     public SliceAssert isLayeredStrict() {
         IllegalDependencies illegalDependencies = new IllegalDependencies();
@@ -171,7 +196,8 @@ public class SliceAssert {
 
     /**
      * Assert there are no backward references.
-     * @return this {@link SliceAssert}
+     *
+     * @return this instance (fluent API)
      */
     public SliceAssert isLayeredRelaxed() {
         IllegalDependencies illegalDependencies = new IllegalDependencies();

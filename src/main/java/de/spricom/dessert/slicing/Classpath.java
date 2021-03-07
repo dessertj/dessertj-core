@@ -32,6 +32,12 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The Classpath is the start-point for any dessert unit-test.
+ * All slices used within a test are created from the Classpath.
+ * <p><b>Important:</b>All slices used for assertions must stem from the same Classpath.
+ * Otherwise the behaviour is undefined.</p>
+ */
 public final class Classpath extends AbstractRootSlice {
     private static final Logger log = Logger.getLogger(Classpath.class.getName());
     private static ClassResolver defaultResolver;
@@ -40,10 +46,21 @@ public final class Classpath extends AbstractRootSlice {
 
     private final Map<String, Clazz> classes = new HashMap<String, Clazz>();
 
+    /**
+     * Creates a Classpath instance by using the default resolver. Thus, the resulting
+     * Classpath contains all directories and .jar files found on the path given
+     * by the <i>java.class.path</i> system property.
+     */
     public Classpath() {
         this(getDefaultResolver());
     }
 
+    /**
+     * Creates a Classpath with some custom resolver. With this method any custom
+     * ClassPath can be created.
+     *
+     * @param resolver the resolver to resolve the classes
+     */
     public Classpath(ClassResolver resolver) {
         super(resolver);
         this.resolver = resolver;
@@ -74,6 +91,15 @@ public final class Classpath extends AbstractRootSlice {
         }
     }
 
+    /**
+     * Creates a {@link Clazz} form a classname.
+     * Returns the first matching class on this classpath, if there is one. If no such class
+     * could be found it tries to use the current {@link ClassLoader} to lookup the class.
+     * Of both fail a place-holder object will be returned that contains nothing but the classname.
+     *
+     * @param classname the classname
+     * @return the Clazz
+     */
     public Clazz asClazz(String classname) {
         Clazz clazz = classes.get(classname);
         if (clazz == null) {
@@ -89,6 +115,18 @@ public final class Classpath extends AbstractRootSlice {
         return clazz;
     }
 
+    /**
+     * Creates a {@link Clazz} form a Java {@link Class}.
+     * Returns a Clazz matching exactly to the passed {@link Class}. If there are alternatives on this
+     * Classpath they will be linked to the Clazz returned.
+     *
+     * <p><b>Beware:</b>Creating a Clazz for a Class not found on the current Classpath for which an other
+     * class of the same name is on the Classpath my alter an existing Clazz by adding an alternative.
+     * This rare case may change the result of {@link #duplicates()} or specific slice assertions.</p>
+     *
+     * @param classImpl the Java class
+     * @return the Clazz
+     */
     public Clazz asClazz(Class<?> classImpl) {
         URI uri = ClassUtils.getURI(classImpl);
         String classname = classImpl.getName();
@@ -164,10 +202,22 @@ public final class Classpath extends AbstractRootSlice {
         return new ConcreteSlice(sliceEntries);
     }
 
+    /**
+     * Return the {@link Root} of some {@link Clazz}.
+     *
+     * @param clazz the clazz
+     * @return the Root
+     */
     public Root rootOf(Class<?> clazz) {
         return rootOfClass(clazz.getName());
     }
 
+    /**
+     * Return the {@link Root} of some class given by its classname.
+     *
+     * @param classname the fully qualifed name of the class
+     * @return the Root
+     */
     public Root rootOfClass(String classname) {
         ClassEntry cf = resolver.getClassEntry(classname);
         if (cf == null) {
@@ -176,11 +226,18 @@ public final class Classpath extends AbstractRootSlice {
         return rootOf(cf.getPackage().getRoot());
     }
 
-    public Root rootOf(final File rootFile) {
+    /**
+     * Returns the Root for classes directory or .jar file located on the classpath.
+     *
+     * @param rootFile the file to get the root for
+     * @return the Root
+     * @throws IllegalArgumentException if <i>rootFile</i> could not be found on the classpath
+     */
+    public Root rootOf(File rootFile) {
         return rootOf(getClassRoot(rootFile));
     }
 
-    private Root rootOf(final ClassRoot root) {
+    private Root rootOf(ClassRoot root) {
         return new Root(root, this);
     }
 
@@ -203,6 +260,14 @@ public final class Classpath extends AbstractRootSlice {
         return root;
     }
 
+    /**
+     * Returns a {@link Slice} for a concrete list of Java classes.
+     * The classes do not necessarily have to be on the this Classpath.
+     *
+     * @param classes the classes
+     * @return the slice
+     * @see #asClazz(Class)
+     */
     public Slice sliceOf(Class<?>... classes) {
         if (classes.length == 0) {
             return Slices.EMPTY_SLICE;
@@ -216,6 +281,15 @@ public final class Classpath extends AbstractRootSlice {
         return new ConcreteSlice(clazzes);
     }
 
+    /**
+     * Returns a {@link Slice} for a concrete list of Java classes given
+     * by classname.
+     * The classes do not necessarily have to be on the this Classpath.
+     *
+     * @param classnames the fully qualifed names of the classes
+     * @return the slice
+     * @see #asClazz(String)
+     */
     public Slice sliceOf(final String... classnames) {
         if (classnames.length == 0) {
             return Slices.EMPTY_SLICE;

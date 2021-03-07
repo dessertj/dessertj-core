@@ -27,31 +27,52 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * Container for dependency violations during dependency assertion checks.
+ */
 public class IllegalDependencies {
     private final Map<Clazz, Set<Clazz>> violations = new HashMap<Clazz, Set<Clazz>>();
 
-    public void add(Clazz entry, Clazz illegalDependency) {
-        Set<Clazz> deps = violations.get(entry);
+    /**
+     * Add an illegal dependency for a class.
+     *
+     * @param clazz the class
+     * @param illegalDependency the illegal dependency
+     */
+    public void add(Clazz clazz, Clazz illegalDependency) {
+        Set<Clazz> deps = violations.get(clazz);
         if (deps == null) {
             deps = new TreeSet<Clazz>();
-            violations.put(entry, deps);
+            violations.put(clazz, deps);
         }
         deps.add(illegalDependency);
     }
 
-    public void add(Clazz entry, Set<Clazz> illegalDependencies) {
-        Set<Clazz> deps = violations.get(entry);
+    /**
+     * Add a set of illegal dependencies for a class.
+     *
+     * @param clazz the class
+     * @param illegalDependencies the illegal dependencies
+     */
+    public void add(Clazz clazz, Set<Clazz> illegalDependencies) {
+        Set<Clazz> deps = violations.get(clazz);
         if (deps == null) {
             deps = new TreeSet<Clazz>();
-            violations.put(entry, deps);
+            violations.put(clazz, deps);
         }
         deps.addAll(illegalDependencies);
     }
 
+    /**
+     * @return all dependency violations
+     */
     public Map<Clazz, Set<Clazz>> getViolations() {
         return violations;
     }
 
+    /**
+     * @return true if there are no dependency violations
+     */
     public boolean isEmpty() {
         return violations.isEmpty();
     }

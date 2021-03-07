@@ -26,6 +26,9 @@ import de.spricom.dessert.util.Predicate;
 
 import java.util.Set;
 
+/**
+ * Defines some convenience methods for {@link Classpath} and {@link Root}.
+ */
 public abstract class AbstractRootSlice extends AbstractSlice {
     private final TraversalRoot traversalRoot;
     private ConcreteSlice concreteSlice;
@@ -34,26 +37,67 @@ public abstract class AbstractRootSlice extends AbstractSlice {
         this.traversalRoot = traversalRoot;
     }
 
+    /**
+     * Returns a {@link Slice} of all classes that belong to the same package as the {@link Class} passed.
+     *
+     * @param clazz the class
+     * @return the slice
+     */
     public Slice packageOf(Class<?> clazz) {
         return packageOf(clazz.getPackage());
     }
 
+    /**
+     * Returns a {@link Slice} of all classes that belong to the {@link Package} passed.
+     *
+     * @param pkg the Java package
+     * @return the slice
+     */
     public Slice packageOf(Package pkg) {
         return packageOf(pkg.getName());
     }
 
+    /**
+     * Returns a {@link Slice} of all classes that belong to the Java package
+     * given by the package name passed.
+     *
+     * @param packageName the name of the Java package
+     * @return the slice
+     */
     public Slice packageOf(String packageName) {
         return slice(packageName + ".*");
     }
 
+    /**
+     * Returns a {@link Slice} of all classes that belong to the same package
+     * or any (nested) sub-package of the {@link Class} passed.
+     *
+     * @param clazz the class
+     * @return the slice
+     */
     public Slice packageTreeOf(Class<?> clazz) {
         return packageTreeOf(clazz.getPackage());
     }
 
+    /**
+     * Returns a {@link Slice} of all classes that belong to the {@link Package} passed
+     * or any (nested) sub-package.
+     *
+     * @param pkg the Java package
+     * @return the slice
+     */
     public Slice packageTreeOf(Package pkg) {
         return packageTreeOf(pkg.getName());
     }
 
+    /**
+     * Returns a {@link Slice} of all classes that belong to the Java package
+     * given by the package name passed
+     * or any (nested) sub-package.
+     *
+     * @param packageName the name of the Java package
+     * @return the slice
+     */
     public Slice packageTreeOf(String packageName) {
         return slice(packageName + "..*");
     }

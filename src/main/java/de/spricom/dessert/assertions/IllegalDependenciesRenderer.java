@@ -20,6 +20,16 @@ package de.spricom.dessert.assertions;
  * #L%
  */
 
+/**
+ * Functional interface to render a dependency assertion failure.
+ */
 public interface IllegalDependenciesRenderer {
+    /**
+     * Creates a string representation of assertion failure to
+     * be used as message for an {@link AssertionError}.
+     *
+     * @param violations the dependency violations
+     * @return the message
+     */
     String render(IllegalDependencies violations);
 }

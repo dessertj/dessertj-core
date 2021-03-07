@@ -27,14 +27,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+/**
+ * The default implementation used by dessert-core.
+ */
 public class DefaultIllegalDependenciesRenderer implements IllegalDependenciesRenderer {
     @Override
     public String render(IllegalDependencies violations) {
-        Map<Clazz, Set<Clazz>> dependecyViolations = violations.getViolations();
+        Map<Clazz, Set<Clazz>> dependencyViolations = violations.getViolations();
         StringBuilder sb = new StringBuilder("Illegal Dependencies:\n");
-        for (Clazz entry : sort(dependecyViolations.keySet())) {
-            sb.append(entry.getName()).append("\n");
-            for (Clazz dep : dependecyViolations.get(entry)) {
+        for (Clazz clazz : sort(dependencyViolations.keySet())) {
+            sb.append(clazz.getName()).append("\n");
+            for (Clazz dep : dependencyViolations.get(clazz)) {
                 sb.append(" -> ").append(dep.getName()).append("\n");
             }
         }

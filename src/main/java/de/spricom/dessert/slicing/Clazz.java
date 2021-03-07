@@ -182,7 +182,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
 
     @Override
     public String toString() {
-        return "clazz " + className;
+        return getURI().toString();
     }
 
     public boolean isUnknown() {
