@@ -155,7 +155,7 @@ public class SliceAssert {
         Dag<Slice> dag = new Dag<Slice>();
         for (Slice n : slices) {
             for (Slice m : slices) {
-                if (n.uses(m)) {
+                if (n != m && n.uses(m)) {
                     dag.addEdge(n, m);
                 }
             }
