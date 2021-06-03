@@ -22,6 +22,8 @@ package de.spricom.dessert.resolve;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 final class DirectoryRoot extends ClassRoot {
     public DirectoryRoot(File dir) {
@@ -45,6 +47,19 @@ final class DirectoryRoot extends ClassRoot {
                 pckg.addClass(classEntry);
                 collector.addClass(classEntry);
             }
+        }
+    }
+
+    @Override
+    public URL getResource(String name) {
+        File file = new File(getRootFile(), name);
+        if (!file.exists()) {
+            return null;
+        }
+        try {
+            return file.toURI().toURL();
+        } catch (MalformedURLException ex) {
+            throw new IllegalArgumentException("Cannot get URL for " + file.getPath() + ": " + ex, ex);
         }
     }
 }

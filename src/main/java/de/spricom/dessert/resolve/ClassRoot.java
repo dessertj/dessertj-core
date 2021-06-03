@@ -24,6 +24,9 @@ import de.spricom.dessert.matching.NamePattern;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.jar.Manifest;
 
 public abstract class ClassRoot extends ClassPackage implements TraversalRoot {
     private final File rootFile;
@@ -45,6 +48,28 @@ public abstract class ClassRoot extends ClassPackage implements TraversalRoot {
 
     public final File getRootFile() {
         return rootFile;
+    }
+
+    public abstract URL getResource(String name);
+
+    public InputStream getResourceAsStream(String name) {
+        URL url = getResource(name);
+        if (url == null) {
+            return null;
+        }
+        try {
+            return url.openStream();
+        } catch (IOException ex) {
+            throw new IllegalArgumentException("Cannot read from " + url + ": " + ex, ex);
+        }
+    }
+
+    public Manifest getManifest() throws IOException {
+        InputStream inputStream = getResourceAsStream("META-INF/MANIFEST.MF");
+        if (inputStream == null) {
+            return null;
+        }
+        return new Manifest(inputStream);
     }
 
     @Override
