@@ -21,6 +21,7 @@ package de.spricom.dessert.resolve;
  */
 
 import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +39,11 @@ public class FakeRoot extends ClassRoot {
         packages = new HashMap<String, ClassPackage>();
         collector.addPackage(this);
         packages.put("", this);
+    }
+
+    @Override
+    public URL getResource(String name) {
+        return null;
     }
 
     public void add(String classname) {

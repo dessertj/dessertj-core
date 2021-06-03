@@ -20,15 +20,23 @@ package de.spricom.dessert.resolve;
  * #L%
  */
 
+import de.spricom.dessert.util.Assertions;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 final class JarRoot extends ClassRoot {
+    private JarFile jarFileArchive;
+
     public JarRoot(File jarFile) throws IOException {
         super(jarFile);
     }
@@ -39,7 +47,7 @@ final class JarRoot extends ClassRoot {
         packages.put("", this);
         collector.addPackage(this);
 
-        JarFile jarFile = new JarFile(getRootFile());
+        JarFile jarFile = getJarFileArchive();
         Enumeration<JarEntry> entries = jarFile.entries();
         while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
@@ -51,6 +59,13 @@ final class JarRoot extends ClassRoot {
             }
         }
         // JarFile must not be closed to be able to access the content of each JarEntry.
+    }
+
+    private JarFile getJarFileArchive() throws IOException {
+        if (jarFileArchive == null) {
+            jarFileArchive = new JarFile(getRootFile());
+        }
+        return jarFileArchive;
     }
 
     private void addClass(ClassCollector collector, Map<String, ClassPackage> packages, JarFile jarFile, JarEntry entry) throws IOException {
@@ -88,5 +103,51 @@ final class JarRoot extends ClassRoot {
         }
         String packageName = name.substring(0, index);
         return packageName;
+    }
+
+    @Override
+    public URL getResource(String name) {
+        JarEntry jarEntry = getJarEntry(name);
+        if (jarEntry == null) {
+            return null;
+        }
+        try {
+            return new URL("jar:" + getRootFile().toURI().toURL() + "!/" + jarEntry.getName());
+        } catch (MalformedURLException ex) {
+            throw new IllegalArgumentException("Unable to convert " + getRootFile().toURI() + " to an URL: " + ex, ex);
+        }
+    }
+
+    @Override
+    public InputStream getResourceAsStream(String name) {
+        JarEntry jarEntry = getJarEntry(name);
+        if (jarEntry == null) {
+            return null;
+        }
+        try {
+            return jarFileArchive.getInputStream(jarEntry);
+        } catch (IOException ex) {
+            throw new IllegalArgumentException("Unable to read " + jarEntry.getName()
+                    + " from jar-archive " + getRootFile().getPath() + ": " + ex, ex);
+        }
+    }
+
+    public JarEntry getJarEntry(String name) {
+        Assertions.notNull(name, "name");
+        try {
+            if (name.startsWith("/")) {
+                name = name.substring(1);
+            }
+            JarEntry jarEntry = getJarFileArchive().getJarEntry(name);
+            return jarEntry;
+        } catch (IOException ex) {
+            throw new IllegalStateException("Unable to read jar-archive " + getRootFile().getPath() + ": " + ex, ex);
+        }
+    }
+
+    public Manifest getManifest() throws IOException {
+        JarFile jarFile = getJarFileArchive();
+        Manifest manifest = jarFile.getManifest();
+        return manifest;
     }
 }
