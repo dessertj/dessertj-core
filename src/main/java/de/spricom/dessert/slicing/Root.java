@@ -22,7 +22,12 @@ package de.spricom.dessert.slicing;
 
 import de.spricom.dessert.resolve.ClassRoot;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
+import java.util.jar.Manifest;
 
 /**
  * A special {@link Slice} that represents a whole JAR file, classes directory, module or other
@@ -50,6 +55,22 @@ public class Root extends AbstractRootSlice {
     @Override
     boolean isConcrete() {
         return true;
+    }
+
+    public File getRootFile() {
+        return root.getRootFile();
+    }
+
+    public URL getResource(String name) {
+        return root.getResource(name);
+    }
+
+    public InputStream getResourceAsStream(String name) {
+        return root.getResourceAsStream(name);
+    }
+
+    public Manifest getManifest() throws IOException {
+        return root.getManifest();
     }
 
     public String toString() {

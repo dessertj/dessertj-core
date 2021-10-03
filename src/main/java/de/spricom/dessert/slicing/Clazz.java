@@ -116,11 +116,24 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
         alternatives = Collections.emptyList();
     }
 
+    /**
+     * @return the classes directory or jar-archive containing this class
+     * @deprecated use getRoot().getRootFile() instead
+     */
+    @Deprecated
     public File getRootFile() {
+        Root root = getRoot();
+        return root == null ? null : root.getRootFile();
+    }
+
+    /**
+     * @return the {@link Root} this Clazz belongs to
+     */
+    public Root getRoot() {
         if (classEntry != null) {
-            return classEntry.getPackage().getRootFile();
+            return classpath.rootOf(classEntry.getPackage().getRootFile());
         } else if (classImpl != null) {
-            return ClassUtils.getRootFile(classImpl);
+            return classpath.rootOf(classImpl);
         } else {
             return null;
         }

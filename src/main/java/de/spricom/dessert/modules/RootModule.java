@@ -1,4 +1,4 @@
-package de.spricom.dessert.slicing;
+package de.spricom.dessert.modules;
 
 /*-
  * #%L
@@ -20,30 +20,36 @@ package de.spricom.dessert.slicing;
  * #L%
  */
 
-final class NamedSlice extends AbstractDelegateSlice {
+import de.spricom.dessert.slicing.Root;
+import de.spricom.dessert.slicing.Slice;
 
-    private final Slice delegate;
+/**
+ * A root module is a combination of a {@link de.spricom.dessert.slicing.Root}
+ * and a {@link Module}. It contains all classes that belong to the root.
+ */
+public class RootModule extends AbstractModule {
     private final String name;
+    private final Root root;
+    private final Slice moduleInterface;
 
-    NamedSlice(Slice delegate, String name) {
-        this.delegate = delegate;
+    public RootModule(String name, Root root, Slice moduleInterface) {
+        this.root = root;
         this.name = name;
+        this.moduleInterface = moduleInterface;
     }
 
     @Override
-    protected Slice getDelegate() {
-        return delegate;
-    }
-
-    public Slice named(String name) {
-        return new NamedSlice(getDelegate(), name);
-    }
-
-    public String toString() {
-        return getName();
-    }
-
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Slice getInterface() {
+        return moduleInterface;
+    }
+
+    @Override
+    public Root getImplementation() {
+        return root;
     }
 }

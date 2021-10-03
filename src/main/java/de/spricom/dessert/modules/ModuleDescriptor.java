@@ -1,4 +1,4 @@
-package de.spricom.dessert.resolve;
+package de.spricom.dessert.modules;
 
 /*-
  * #%L
@@ -20,24 +20,21 @@ package de.spricom.dessert.resolve;
  * #L%
  */
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import de.spricom.dessert.slicing.Slice;
 
-public final class IOUtils {
+/**
+ *
+ */
+public interface ModuleDescriptor {
 
-    private IOUtils() {};
-
-    public static byte[] readAll(InputStream in) throws IOException {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        byte[] buf = new byte[1024];
-        int read;
-        while ((read = in.read(buf)) != -1) {
-            os.write(buf, 0, read);
-        }
-        os.flush();
-        in.close();
-        return os.toByteArray();
-    }
-
+    /**
+     * Resolves a {@link Module} from a {@link Slice}
+     * The <i>slice</i> is typically a {@link de.spricom.dessert.slicing.Classpath}
+     * or a {@link de.spricom.dessert.slicing.Root}.
+     *
+     * @param slice the slice to resolve the module from
+     * @return the module
+     * @throws ModuleNotFoundException if the module could not be found within the passed slice
+     */
+    Module resolve(Slice slice);
 }

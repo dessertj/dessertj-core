@@ -1,4 +1,4 @@
-package de.spricom.dessert.resolve;
+package de.spricom.dessert.modules;
 
 /*-
  * #%L
@@ -20,24 +20,26 @@ package de.spricom.dessert.resolve;
  * #L%
  */
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.Collection;
+import java.util.Map;
 
-public final class IOUtils {
+/**
+ * This class should be generated from the module-info classes of the latest JDK.
+ */
+public class JavaModuleResolver implements ModuleResolver {
 
-    private IOUtils() {};
-
-    public static byte[] readAll(InputStream in) throws IOException {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        byte[] buf = new byte[1024];
-        int read;
-        while ((read = in.read(buf)) != -1) {
-            os.write(buf, 0, read);
-        }
-        os.flush();
-        in.close();
-        return os.toByteArray();
+    @Override
+    public Module getModule(String name) {
+        return null;
     }
 
+    @Override
+    public Collection<String> getModuleNames() {
+        return null;
+    }
+
+    @Override
+    public Map<String, Module> getModules() {
+        return null;
+    }
 }

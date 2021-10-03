@@ -27,98 +27,90 @@ import java.util.SortedMap;
 
 public abstract class AbstractDelegateSlice implements Slice {
 
-    private final Slice delegate;
-
-    AbstractDelegateSlice(Slice delegate) {
-        this.delegate = delegate;
-    }
-
-    public Slice getDelegate() {
-        return delegate;
-    }
+    protected abstract Slice getDelegate();
 
     @Override
     public Slice plus(Iterable<? extends Slice> slices) {
-        return delegate.plus(slices);
+        return getDelegate().plus(slices);
     }
 
     @Override
     public Slice plus(Slice... slices) {
-        return delegate.plus(slices);
+        return getDelegate().plus(slices);
     }
 
     @Override
     public Slice minus(Iterable<? extends Slice> slices) {
-        return delegate.minus(slices);
+        return getDelegate().minus(slices);
     }
 
     @Override
     public Slice minus(Slice... slices) {
-        return delegate.minus(slices);
+        return getDelegate().minus(slices);
     }
 
     @Override
     public Slice minus(String pattern) {
-        return delegate.slice(pattern);
+        return getDelegate().slice(pattern);
     }
 
     @Override
     public Slice minus(Predicate<Clazz> predicate) {
-        return delegate.slice(predicate);
+        return getDelegate().slice(predicate);
     }
 
     @Override
     public Slice slice(Iterable<? extends Slice> slices) {
-        return delegate.slice(slices);
+        return getDelegate().slice(slices);
     }
 
     @Override
     public Slice slice(Slice... slices) {
-        return delegate.slice(slices);
+        return getDelegate().slice(slices);
     }
 
     @Override
     public Slice slice(String pattern) {
-        return delegate.slice(pattern);
+        return getDelegate().slice(pattern);
     }
 
     @Override
     public Slice slice(Predicate<Clazz> predicate) {
-        return delegate.slice(predicate);
+        return getDelegate().slice(predicate);
     }
 
     @Override
     public boolean contains(Clazz entry) {
-        return delegate.contains(entry);
+        return getDelegate().contains(entry);
     }
 
     @Override
     public Set<Clazz> getClazzes() {
-        return delegate.getClazzes();
+        return getDelegate().getClazzes();
     }
 
     @Override
     public ConcreteSlice getDependencies() {
-        return delegate.getDependencies();
+        return getDelegate().getDependencies();
     }
 
     @Override
     public boolean uses(Slice other) {
-        return delegate.uses(other);
+        return getDelegate().uses(other);
     }
 
     @Override
     public SortedMap<String, PackageSlice> partitionByPackage() {
-        return delegate.partitionByPackage();
+        return getDelegate().partitionByPackage();
     }
 
     @Override
     public SortedMap<String, PartitionSlice> partitionBy(SlicePartitioner partitioner) {
-        return delegate.partitionBy(partitioner);
+        return getDelegate().partitionBy(partitioner);
     }
 
     @Override
     public <S extends PartitionSlice> SortedMap<String, S> partitionBy(SlicePartitioner partitioner, PartitionSliceFactory<S> partitionSliceFactory) {
-        return delegate.partitionBy(partitioner, partitionSliceFactory);
+        return getDelegate().partitionBy(partitioner, partitionSliceFactory);
     }
 }

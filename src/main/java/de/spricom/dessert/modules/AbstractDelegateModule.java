@@ -1,4 +1,4 @@
-package de.spricom.dessert.resolve;
+package de.spricom.dessert.modules;
 
 /*-
  * #%L
@@ -20,24 +20,24 @@ package de.spricom.dessert.resolve;
  * #L%
  */
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import de.spricom.dessert.slicing.Slice;
 
-public final class IOUtils {
+public abstract class AbstractDelegateModule implements Module {
 
-    private IOUtils() {};
+    abstract Module getDelegate();
 
-    public static byte[] readAll(InputStream in) throws IOException {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        byte[] buf = new byte[1024];
-        int read;
-        while ((read = in.read(buf)) != -1) {
-            os.write(buf, 0, read);
-        }
-        os.flush();
-        in.close();
-        return os.toByteArray();
+    @Override
+    public String getName() {
+        return getDelegate().getName();
     }
 
+    @Override
+    public Slice getInterface() {
+        return getDelegate().getInterface();
+    }
+
+    @Override
+    public Slice getImplementation() {
+        return getDelegate().getImplementation();
+    }
 }
