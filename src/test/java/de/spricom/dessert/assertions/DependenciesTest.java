@@ -25,7 +25,6 @@ import de.spricom.dessert.classfile.attribute.AttributeInfo;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
 import de.spricom.dessert.matching.NamePattern;
-import de.spricom.dessert.modules.Module;
 import de.spricom.dessert.partitioning.ClazzPredicates;
 import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.slicing.Classpath;
@@ -98,7 +97,6 @@ public class DependenciesTest {
         Map<String, PackageSlice> packages = main.partitionByPackage();
         List<PackageSlice> layers = Arrays.asList(
                 packages.remove(packageOf(SliceAssertions.class)),
-                packages.remove(packageOf(Module.class)),
                 packages.remove(packageOf(ClazzPredicates.class)),
                 packages.remove(packageOf(Slice.class)),
                 packages.remove(packageOf(ClassResolver.class)),
