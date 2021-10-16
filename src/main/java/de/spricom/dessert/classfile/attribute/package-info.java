@@ -1,5 +1,5 @@
 /**
- * Represents <a href="https://docs.oracle.com/javase/specs/jvms/se15/html/jvms-4.html#jvms-4.7">attributes</a>
+ * Represents <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7">attributes</a>
  * within a .class file.
  */
 package de.spricom.dessert.classfile.attribute;
