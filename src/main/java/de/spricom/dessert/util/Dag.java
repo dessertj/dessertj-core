@@ -23,8 +23,8 @@ package de.spricom.dessert.util;
 import java.util.*;
 
 /**
- * This class implements the Depth-first search algorithm (see <a href=
- * "https://en.wikipedia.org/wiki/Topological_sorting">https://en.wikipedia.org/wiki/Topological_sorting</a>)
+ * This class implements the Depth-first search algorithm (see
+ * <a href="https://en.wikipedia.org/wiki/Topological_sorting" target="_blank">https://en.wikipedia.org/wiki/Topological_sorting</a>)
  * to detect illegal cycles on a directed acyclic graph.
  *
  * @param <T> The node type.

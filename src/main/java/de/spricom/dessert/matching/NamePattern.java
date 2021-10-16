@@ -25,7 +25,7 @@ import de.spricom.dessert.util.Assertions;
 /**
  * This pattern identifies a set of classes by their full qualified classname.
  * The syntax has been motivated by the
- * <a href="https://www.eclipse.org/aspectj/doc/released/progguide/quick-typePatterns.html">AspectJ TypeNamePattern</a>
+ * <a href="https://www.eclipse.org/aspectj/doc/released/progguide/quick-typePatterns.html" target="_blank">AspectJ TypeNamePattern</a>
  * with slight modifications:
  * <ul>
  *     <li>The pattern can either be a plain type name, the wildcard *, or an
