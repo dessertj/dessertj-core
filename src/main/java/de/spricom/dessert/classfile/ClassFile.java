@@ -47,6 +47,7 @@ public class ClassFile {
     public static final int ACC_SYNTHETIC = 0x1000; // Declared synthetic; not present in the source code.
     public static final int ACC_ANNOTATION = 0x2000; // Declared as an annotation type.
     public static final int ACC_ENUM = 0x4000; // Declared as an enum type.
+    public static final int ACC_MODULE = 0x8000; // Is a module, not a class or interface.
 
     private int minorVersion;
     private int majorVersion;
@@ -259,5 +260,9 @@ public class ClassFile {
 
     public boolean isEnum() {
         return (accessFlags & ACC_ENUM) != 0;
+    }
+
+    public boolean isModule() {
+        return (accessFlags & ACC_MODULE) != 0;
     }
 }

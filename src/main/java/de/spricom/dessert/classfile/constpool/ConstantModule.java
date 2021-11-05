@@ -22,7 +22,7 @@ package de.spricom.dessert.classfile.constpool;
 
 import java.util.BitSet;
 
-class ConstantModule extends ConstantPoolEntry implements ConstantValue<String>  {
+class ConstantModule extends ConstantPoolEntry {
 	public static final int TAG = 19;
 	private final int nameIndex;
 
@@ -37,16 +37,11 @@ class ConstantModule extends ConstantPoolEntry implements ConstantValue<String> 
 
 	@Override
 	public String dump() {
+		return dump(index(nameIndex), getName());
+	}
+
+	public String getName() {
 		ConstantUtf8 name = getConstantPoolEntry(nameIndex);
-		return dump(index(nameIndex), name.getValue());
-	}
-
-	public int getNameIndex() {
-		return nameIndex;
-	}
-
-	@Override
-	public String getValue() {
-		return getConstantPool().getUtf8String(nameIndex);
+		return name.getValue();
 	}
 }
