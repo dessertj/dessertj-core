@@ -9,9 +9,9 @@ package de.spricom.dessert.classfile.attribute;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +25,11 @@ import de.spricom.dessert.classfile.constpool.ConstantPool;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+/**
+ * Representes a
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.15" target="_blank">
+ * Java Virtual Machine Specification: 4.7.15. The Deprecated Attribute</a>.
+ */
 public class DeprecatedAttribute extends AttributeInfo {
 
     public DeprecatedAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {

@@ -26,6 +26,11 @@ import de.spricom.dessert.classfile.constpool.ConstantValue;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+/**
+ * Representes a
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.2" target="_blank">
+ * Java Virtual Machine Specification: 4.7.2. The ConstantValue Attribute</a>.
+ */
 public class ConstantValueAttribute extends AttributeInfo {
     private final ConstantValue<?> constantValue;
 

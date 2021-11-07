@@ -27,6 +27,11 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Set;
 
+/**
+ * Representes a
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.7" target="_blank">
+ * Java Virtual Machine Specification: 4.7.7. The EnclosingMethod Attribute</a>.
+ */
 public class EnclosingMethodAttribute extends AttributeInfo {
 	private final String enclosingClassname;
 	private final String enclosingMethodName;
