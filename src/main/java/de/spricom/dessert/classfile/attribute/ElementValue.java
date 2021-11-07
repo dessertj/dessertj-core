@@ -49,11 +49,11 @@ public class ElementValue implements DependencyHolder {
 		case 'S':
 		case 'Z':
 		case 's':
-			constantValue = constantPool.getConstantPoolEntry(is.readUnsignedShort());
+			constantValue = constantPool.getConstantValue(is.readUnsignedShort());
 			break;
 		case 'e':
 			type = constantPool.getFieldType(is.readUnsignedShort());
-			constantValue = constantPool.getConstantPoolEntry(is.readUnsignedShort());
+			constantValue = constantPool.getConstantValue(is.readUnsignedShort());
 			break;
 		case 'c':
 			type = constantPool.getFieldType(is.readUnsignedShort());

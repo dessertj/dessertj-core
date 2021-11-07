@@ -120,7 +120,7 @@ public final class ConstantPool implements DependencyHolder {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getConstantPoolEntry(int index) {
+    <T> T getConstantPoolEntry(int index) {
         referenced.set(index);
         ConstantPoolEntry entry = entries[index];
         return (T) entry;
@@ -152,6 +152,20 @@ public final class ConstantPool implements DependencyHolder {
     public MethodType getNameAndTypeMethodType(int index) {
         ConstantNameAndType nameAndType = getConstantPoolEntry(index);
         return new MethodType(nameAndType.getDescriptor());
+    }
+    
+    public <T> ConstantValue<T> getConstantValue(int index) {
+        return getConstantPoolEntry(index);
+    }
+    
+    public String getModuleName(int index) {
+        ConstantModule entry = getConstantPoolEntry(index);
+        return entry.getName();
+    }
+
+    public String getPackageName(int index) {
+        ConstantPackage entry = getConstantPoolEntry(index);
+        return entry.getName();
     }
 
     @Override

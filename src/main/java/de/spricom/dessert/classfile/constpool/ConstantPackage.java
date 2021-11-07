@@ -40,8 +40,12 @@ class ConstantPackage extends ConstantPoolEntry {
 		return dump(index(nameIndex), getName());
 	}
 
-	public String getName() {
+	public String getPhysicalName() {
 		ConstantUtf8 name = getConstantPoolEntry(nameIndex);
 		return name.getValue();
+	}
+
+	public String getName() {
+		return getPhysicalName().replace('/', '.');
 	}
 }

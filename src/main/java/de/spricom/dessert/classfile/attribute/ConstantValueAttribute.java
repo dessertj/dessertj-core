@@ -37,7 +37,7 @@ public class ConstantValueAttribute extends AttributeInfo {
     public ConstantValueAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
 		super(name);
 		checkAttributeLength(is, 2, name);
-		constantValue = constantPool.getConstantPoolEntry(is.readUnsignedShort());
+		constantValue = constantPool.getConstantValue(is.readUnsignedShort());
 	}
 
 	public Object getValue() {
