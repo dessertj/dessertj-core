@@ -51,6 +51,14 @@ public abstract class AttributeInfo implements DependencyHolder {
                 attributes[i] = new EnclosingMethodAttribute(name, is, constantPool);
             } else if ("InnerClasses".equals(name)) {
                 attributes[i] = new InnerClassesAttribute(name, is, constantPool);
+            } else if ("Exceptions".equals(name)) {
+                attributes[i] = new ExceptionsAttribute(name, is, constantPool);
+            } else if ("Synthetic".equals(name)) {
+                attributes[i] = new SyntheticAttribute(name, is, constantPool);
+            } else if ("SourceFile".equals(name)) {
+                attributes[i] = new SourceFileAttribute(name, is, constantPool);
+            } else if ("Deprecated".equals(name)) {
+                attributes[i] = new DeprecatedAttribute(name, is, constantPool);
             } else {
                 attributes[i] = new UnknownAttribute(name, is);
             }
