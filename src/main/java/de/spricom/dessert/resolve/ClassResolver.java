@@ -25,7 +25,9 @@ import de.spricom.dessert.util.Predicate;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
+import java.util.jar.Manifest;
 import java.util.logging.Logger;
 
 /**
@@ -55,6 +57,7 @@ public final class ClassResolver implements TraversalRoot {
 
     private final List<ClassRoot> path = new ArrayList<ClassRoot>(60);
     private final ClassResolverCache cache = new ClassResolverCache();
+    private boolean ignoreManifest;
     private boolean frozen;
 
     /**
@@ -70,12 +73,26 @@ public final class ClassResolver implements TraversalRoot {
         return r;
     }
 
+    /**
+     * Creates a ClassResolver based on the <i>java.class.path</i> system-property.
+     * For each JAR that contains a Manifest file with a <i>Class-Path</i> attribute,
+     * those entries will be added, too, recursively.
+     *
+     * @return a ClassResolver with the corresponding entries
+     * @throws IOException if a directory or jar file could not be read
+     */
     public static ClassResolver ofClassPath() throws IOException {
         ClassResolver r = new ClassResolver();
         r.addClassPath();
         return r;
     }
 
+    /**
+     * Creates a ClassResolver containing only the directories on the <i>java.class.path</i> system-property.
+     *
+     * @return a ClassResolver with the corresponding entries
+     * @throws IOException if a directory or jar file could not be read
+     */
     public static ClassResolver ofClassPathWithoutJars() throws IOException {
         ClassResolver r = new ClassResolver();
         for (String entry : System.getProperty("java.class.path").split(File.pathSeparator)) {
@@ -86,12 +103,29 @@ public final class ClassResolver implements TraversalRoot {
         return r;
     }
 
-    public static ClassResolver ofBootClassPath() throws IOException {
+    /**
+     * Creates a ClassResolver similar to {@link #ofClassPath()}, but without the entries
+     * from the <i>Class-Path</i> attribute of any Manifest file. The {@link #isIgnoreManifest()}
+     * flag of the resulting ClassResolver will be true.
+     *
+     * @return a ClassResolver with the corresponding entries
+     * @throws IOException if a directory or jar file could not be read
+     */
+    public static ClassResolver ofClassPathIgnoringManifests() throws IOException {
         ClassResolver r = new ClassResolver();
-        r.addBootClassPath();
+        r.setIgnoreManifest(true);
+        r.addClassPath();
         return r;
     }
 
+    /**
+     * Creates a ClassResolver with all entries for {@link #ofClassPath()} and all entries
+     * from the <i>sun.boot.class.path</i> system-properties. From Java 9 on there is
+     * no difference to {@link #ofClassPath()}.
+     *
+     * @return a ClassResolver with the corresponding entries
+     * @throws IOException if a directory or jar file could not be read
+     */
     public static ClassResolver ofClassPathAndBootClassPath() throws IOException {
         ClassResolver r = new ClassResolver();
         r.addClassPath();
@@ -129,7 +163,11 @@ public final class ClassResolver implements TraversalRoot {
         } else if (file.isDirectory()) {
             addRoot(new DirectoryRoot(file));
         } else if (file.isFile() && file.getName().endsWith(".jar")) {
-            addRoot(new JarRoot(file));
+            JarRoot root = new JarRoot(file);
+            addRoot(root);
+            if (!ignoreManifest) {
+                addManifestClassPath(root);
+            }
         } else {
             log.warning("Don't know how to process: " + file.getAbsolutePath());
         }
@@ -143,6 +181,48 @@ public final class ClassResolver implements TraversalRoot {
         root.scan(cache);
     }
 
+    /**
+     * Adds all entries from the  <i>Class-Path</i> attribute of the JAR's Manifest file.
+     * Does nothing if there is no Manifest file or no <i>Class-Path</i> attribute.
+     * Processes JAR files recursively unless {@link #isIgnoreManifest()} has been set.
+     * Use {@link #getRoot(File)} to get the {@link JarRoot} for a file.
+     *
+     * @param jarRoot the jar to process
+     * @throws IOException if the Manifest could not be read
+     */
+    public void addManifestClassPath(JarRoot jarRoot) throws IOException {
+        Manifest manifest = jarRoot.getManifest();
+        if (manifest == null) {
+            return;
+        }
+        String classpath = manifest.getMainAttributes().getValue("Class-Path");
+        if (classpath == null) {
+            return;
+        }
+        URL context = jarRoot.getRootFile().toURI().toURL();
+        for (String relativeUrl : classpath.split("\\s+")) {
+            File file = new File(new URL(context, relativeUrl).getPath());
+            add(file);
+        }
+    }
+
+    public boolean isIgnoreManifest() {
+        return ignoreManifest;
+    }
+
+    /**
+     * If set the <i>Class-Path</i> attribute of JAR's Manifest files will be ignored.
+     *
+     * @param ignoreManifest the flag
+     */
+    public void setIgnoreManifest(boolean ignoreManifest) {
+        this.ignoreManifest = ignoreManifest;
+    }
+
+    /**
+     * After freezing any modification to the path represented by this resolver will
+     * result in an {@link IllegalStateException}.
+     */
     public void freeze() {
         frozen = true;
     }
