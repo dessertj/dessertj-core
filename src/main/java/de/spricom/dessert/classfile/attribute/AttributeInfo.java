@@ -61,6 +61,10 @@ public abstract class AttributeInfo implements DependencyHolder {
                 attributes[i] = new DeprecatedAttribute(name, is, constantPool);
             } else if ("Module".equals(name)) {
                 attributes[i] = new ModuleAttribute(name, is, constantPool);
+            } else if ("ModulePackages".equals(name)) {
+                attributes[i] = new ModulePackagesAttribute(name, is, constantPool);
+            } else if ("ModuleMainClass".equals(name)) {
+                attributes[i] = new ModuleMainClassAttribute(name, is, constantPool);
             } else {
                 attributes[i] = new UnknownAttribute(name, is);
             }

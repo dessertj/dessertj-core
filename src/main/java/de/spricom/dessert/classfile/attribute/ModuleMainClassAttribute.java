@@ -19,7 +19,6 @@ package de.spricom.dessert.classfile.attribute;
  * limitations under the License.
  * #L%
  */
-
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 
 import java.io.DataInputStream;
@@ -27,28 +26,25 @@ import java.io.IOException;
 
 /**
  * Representes a
- * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.10" target="_blank">
- * Java Virtual Machine Specification: 4.7.10. The SourceFile Attribute</a>.
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.27" target="_blank">
+ * Java Virtual Machine Specification: 4.7.27. The ModuleMainClass Attribute</a>.
  */
-public class SourceFileAttribute extends AttributeInfo {
+public class ModuleMainClassAttribute extends AttributeInfo {
 
-    private final String sourceFilename;
+    private final String mainClassName;
 
-    public SourceFileAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
+    public ModuleMainClassAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
         super(name);
-        if (is.readInt() != 2) {
-            // length must be two
-            throw new IllegalArgumentException("Unexpected length of SourceFile attribute.");
-        }
-        sourceFilename = constantPool.getUtf8String(is.readUnsignedShort());
+        is.readInt(); // skip length
+        mainClassName = constantPool.getConstantClassName(is.readUnsignedShort());
     }
 
-    public String getSourceFilename() {
-        return sourceFilename;
+    public String getMainClassName() {
+        return mainClassName;
     }
 
     @Override
     public String toString() {
-        return getName() + ": " + sourceFilename;
+        return getName() + ": " + mainClassName;
     }
 }

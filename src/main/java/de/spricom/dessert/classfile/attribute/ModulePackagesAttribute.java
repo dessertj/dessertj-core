@@ -19,7 +19,6 @@ package de.spricom.dessert.classfile.attribute;
  * limitations under the License.
  * #L%
  */
-
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 
 import java.io.DataInputStream;
@@ -27,28 +26,32 @@ import java.io.IOException;
 
 /**
  * Representes a
- * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.10" target="_blank">
- * Java Virtual Machine Specification: 4.7.10. The SourceFile Attribute</a>.
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.26" target="_blank">
+ * Java Virtual Machine Specification: 4.7.26. The ModulePackages Attribute</a>.
  */
-public class SourceFileAttribute extends AttributeInfo {
+public class ModulePackagesAttribute extends AttributeInfo {
 
-    private final String sourceFilename;
+    private final String[] packageNames;
 
-    public SourceFileAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
+    public ModulePackagesAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
         super(name);
-        if (is.readInt() != 2) {
-            // length must be two
-            throw new IllegalArgumentException("Unexpected length of SourceFile attribute.");
+        is.readInt(); // skip length
+        packageNames = new String[is.readUnsignedShort()];
+        for (int i = 0; i < packageNames.length; i++) {
+            packageNames[i] = constantPool.getPackageName(is.readUnsignedShort());
         }
-        sourceFilename = constantPool.getUtf8String(is.readUnsignedShort());
     }
 
-    public String getSourceFilename() {
-        return sourceFilename;
+    public String[] getPackageNames() {
+        return packageNames;
     }
 
     @Override
     public String toString() {
-        return getName() + ": " + sourceFilename;
+        StringBuilder sb = new StringBuilder(getName()).append(":\n");
+        for (String packageName : packageNames) {
+            sb.append(packageName).append("\n");
+        }
+        return sb.toString();
     }
 }
