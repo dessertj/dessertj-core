@@ -23,6 +23,7 @@ import de.spricom.dessert.classfile.constpool.ConstantPool;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * Representes a
@@ -35,12 +36,16 @@ public class ModuleMainClassAttribute extends AttributeInfo {
 
     public ModuleMainClassAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
         super(name);
-        is.readInt(); // skip length
+        skipLength(is);
         mainClassName = constantPool.getConstantClassName(is.readUnsignedShort());
     }
 
     public String getMainClassName() {
         return mainClassName;
+    }
+
+    public void addDependentClassNames(Set<String> classNames) {
+        classNames.add(mainClassName);
     }
 
     @Override

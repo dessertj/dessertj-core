@@ -65,6 +65,10 @@ public abstract class AttributeInfo implements DependencyHolder {
                 attributes[i] = new ModulePackagesAttribute(name, is, constantPool);
             } else if ("ModuleMainClass".equals(name)) {
                 attributes[i] = new ModuleMainClassAttribute(name, is, constantPool);
+            } else if ("NestHost".equals(name)) {
+                attributes[i] = new NestHostAttribute(name, is, constantPool);
+            } else if ("NestMembers".equals(name)) {
+                attributes[i] = new NestMembersAttribute(name, is, constantPool);
             } else {
                 attributes[i] = new UnknownAttribute(name, is);
             }
@@ -81,11 +85,20 @@ public abstract class AttributeInfo implements DependencyHolder {
         return name;
     }
 
-    protected final void checkAttributeLength(DataInputStream is, int expectedLength, String name) throws IOException {
-        int len;
-        if ((len = is.readInt()) != expectedLength) {
-            throw new IOException("Unexpected length of " + len + " for attribute " + name);
+    protected final void skipLength(DataInputStream is) throws IOException {
+        is.readInt(); // skip length
+    }
+
+    protected final String[] readClassNames(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
+        String[] classNames = new String[is.readUnsignedShort()];
+        for (int i = 0; i < classNames.length; i++) {
+            String className = constantPool.getConstantClassName(is.readUnsignedShort());
+            if (className == null) {
+                throw new IllegalArgumentException("No classname at index " + i + " of " + name + " attribute");
+            }
+            classNames[i] = className;
         }
+        return classNames;
     }
 
     public void addDependentClassNames(Set<String> classNames) {

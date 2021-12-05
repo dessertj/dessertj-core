@@ -39,10 +39,7 @@ public class EnclosingMethodAttribute extends AttributeInfo {
 
 	public EnclosingMethodAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
 		super(name);
-		if (is.readInt() != 4) {
-			// length must be two
-			throw new IllegalArgumentException("Unexpected length of EnclosingMethod attribute.");
-		}
+		skipLength(is);
 		enclosingClassname = constantPool.getConstantClassName(is.readUnsignedShort());
 		int enclosingMethodIndex = is.readUnsignedShort();
 		if (enclosingMethodIndex == 0) {

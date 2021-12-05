@@ -37,10 +37,7 @@ public class SignatureAttribute extends AttributeInfo {
 
 	public SignatureAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
 		super(name);
-		if (is.readInt() != 2) {
-			// length must be two
-			throw new IllegalArgumentException("Unexpected length of Signature attribute.");
-		}
+		skipLength(is);
 		signature = constantPool.getUtf8String(is.readUnsignedShort());
 	}
 

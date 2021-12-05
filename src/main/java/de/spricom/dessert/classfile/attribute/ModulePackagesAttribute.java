@@ -35,7 +35,7 @@ public class ModulePackagesAttribute extends AttributeInfo {
 
     public ModulePackagesAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
         super(name);
-        is.readInt(); // skip length
+        skipLength(is);
         packageNames = new String[is.readUnsignedShort()];
         for (int i = 0; i < packageNames.length; i++) {
             packageNames[i] = constantPool.getPackageName(is.readUnsignedShort());

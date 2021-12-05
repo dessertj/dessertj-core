@@ -34,9 +34,6 @@ public class DeprecatedAttribute extends AttributeInfo {
 
     public DeprecatedAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
         super(name);
-        if (is.readInt() != 0) {
-            // length must be zero
-            throw new IllegalArgumentException("Unexpected length of Deprecated attribute.");
-        }
+        skipLength(is);
     }
 }

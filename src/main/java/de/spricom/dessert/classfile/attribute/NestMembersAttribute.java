@@ -24,16 +24,31 @@ import de.spricom.dessert.classfile.constpool.ConstantPool;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Representes a
- * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.8" target="_blank">
- * Java Virtual Machine Specification: 4.7.8. The Synthetic Attribute</a>.
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.29" target="_blank">
+ * Java Virtual Machine Specification: 4.7.29. The NestMembers Attribute</a>.
  */
-public class SyntheticAttribute extends AttributeInfo {
+public class NestMembersAttribute extends AttributeInfo {
 
-    public SyntheticAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
+    private final String[] members;
+
+    public NestMembersAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
         super(name);
         skipLength(is);
+        members = readClassNames(name, is, constantPool);
+    }
+
+    public void addDependentClassNames(Set<String> classNames) {
+        Collections.addAll(classNames, members);
+    }
+
+    @Override
+    public String toString() {
+        return getName() + ": " + Arrays.toString(members);
     }
 }

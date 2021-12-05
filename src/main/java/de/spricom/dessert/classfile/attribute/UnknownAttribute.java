@@ -29,15 +29,10 @@ import java.io.IOException;
  * Java Virtual Machine Specification: 4.7. Attributes</a>.
  */
 public class UnknownAttribute extends AttributeInfo {
-	private final byte[] bytes;
 
 	public UnknownAttribute(String name, DataInputStream is) throws IOException {
 		super(name);
-		bytes = new byte[is.readInt()];
+		byte[] bytes = new byte[is.readInt()];
 		is.readFully(bytes);
-	}
-
-	public byte[] getBytes() {
-		return bytes;
 	}
 }

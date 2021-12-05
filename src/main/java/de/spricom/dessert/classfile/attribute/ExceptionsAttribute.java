@@ -38,15 +38,8 @@ public class ExceptionsAttribute extends AttributeInfo {
 
     public ExceptionsAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
         super(name);
-        is.readInt(); // skip length
-        exceptions = new String[is.readUnsignedShort()];
-        for (int i = 0; i < exceptions.length; i++) {
-            String exceptionClassName = constantPool.getConstantClassName(is.readUnsignedShort());
-            if (exceptionClassName == null) {
-                throw new IllegalArgumentException("No classname at index " + i + " of exception attribute");
-            }
-            exceptions[i] = exceptionClassName;
-        }
+        skipLength(is);
+        exceptions = readClassNames(name, is, constantPool);
     }
 
     public String[] getExceptions() {

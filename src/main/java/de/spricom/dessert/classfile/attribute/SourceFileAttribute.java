@@ -36,10 +36,7 @@ public class SourceFileAttribute extends AttributeInfo {
 
     public SourceFileAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
         super(name);
-        if (is.readInt() != 2) {
-            // length must be two
-            throw new IllegalArgumentException("Unexpected length of SourceFile attribute.");
-        }
+        skipLength(is);
         sourceFilename = constantPool.getUtf8String(is.readUnsignedShort());
     }
 

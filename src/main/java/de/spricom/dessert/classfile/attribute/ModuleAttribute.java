@@ -293,7 +293,7 @@ public class ModuleAttribute extends AttributeInfo {
 
     public ModuleAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
 		super(name);
-		is.readInt(); // skip length
+		skipLength(is);
 		moduleName = constantPool.getModuleName(is.readUnsignedShort());
 		moduleFlags = is.readUnsignedShort();
 		int versionIndex = is.readUnsignedShort();
