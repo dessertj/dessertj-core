@@ -30,29 +30,29 @@ import java.util.Set;
 
 /**
  * Representes a
- * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.29" target="_blank">
- * Java Virtual Machine Specification: 4.7.29. The NestMembers Attribute</a>.
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.31" target="_blank">
+ * Java Virtual Machine Specification: 4.7.31. The PermittedSubclasses Attribute</a>.
  */
-public class NestMembersAttribute extends AttributeInfo {
+public class PermittedSubclassesAttribute extends AttributeInfo {
 
-    private final String[] members;
+    private final String[] classes;
 
-    public NestMembersAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
+    public PermittedSubclassesAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
         super(name);
         skipLength(is);
-        members = readClassNames(name, is, constantPool);
+        classes = readClassNames(name, is, constantPool);
     }
 
-    public String[] getMembers() {
-        return members;
+    public String[] getClasses() {
+        return classes;
     }
 
     public void addDependentClassNames(Set<String> classNames) {
-        Collections.addAll(classNames, members);
+        Collections.addAll(classNames, classes);
     }
 
     @Override
     public String toString() {
-        return getName() + ": " + Arrays.toString(members);
+        return getName() + ": " + Arrays.toString(classes);
     }
 }

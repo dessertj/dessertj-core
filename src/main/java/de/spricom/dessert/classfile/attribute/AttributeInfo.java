@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.Set;
 
 public abstract class AttributeInfo implements DependencyHolder {
-    public enum AttributeContext {CLASS, FIELD, METHOD, CODE}
+    public enum AttributeContext {CLASS, FIELD, METHOD, CODE, RECORD}
 
     private final String name;
     private AttributeContext context;
@@ -69,6 +69,10 @@ public abstract class AttributeInfo implements DependencyHolder {
                 attributes[i] = new NestHostAttribute(name, is, constantPool);
             } else if ("NestMembers".equals(name)) {
                 attributes[i] = new NestMembersAttribute(name, is, constantPool);
+            } else if ("Record".equals(name)) {
+                attributes[i] = new RecordAttribute(name, is, constantPool);
+            } else if ("PermittedSubclasses".equals(name)) {
+                attributes[i] = new PermittedSubclassesAttribute(name, is, constantPool);
             } else {
                 attributes[i] = new UnknownAttribute(name, is);
             }
