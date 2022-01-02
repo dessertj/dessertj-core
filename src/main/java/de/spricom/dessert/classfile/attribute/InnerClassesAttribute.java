@@ -4,7 +4,7 @@ package de.spricom.dessert.classfile.attribute;
  * #%L
  * Dessert Dependency Assertion Library for Java
  * %%
- * Copyright (C) 2017 - 2021 Hans Jörg Heßmann
+ * Copyright (C) 2017 - 2022 Hans Jörg Heßmann
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,17 @@ public class InnerClassesAttribute extends AttributeInfo {
         for (InnerClass innerClass : innerClasses) {
             innerClass.addDependentClassNames(classNames);
         }
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append(":\n");
+        for (InnerClass innerClass : innerClasses) {
+            sb.append("  ");
+            sb.append(innerClass);
+            sb.append(";\n");
+        }
+        return sb.toString();
     }
 
 }

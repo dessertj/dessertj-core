@@ -4,7 +4,7 @@ package de.spricom.dessert.classfile.attribute;
  * #%L
  * Dessert Dependency Assertion Library for Java
  * %%
- * Copyright (C) 2017 - 2021 Hans Jörg Heßmann
+ * Copyright (C) 2017 - 2022 Hans Jörg Heßmann
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,5 +78,46 @@ public class InnerClass implements DependencyHolder {
 
     public int getAccessFlags() {
         return accessFlags;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (is(ACC_PUBLIC)) {
+            sb.append("public ");
+        }
+        if (is(ACC_PROTECTED)) {
+            sb.append("protected ");
+        }
+        if (is(ACC_PRIVATE)) {
+            sb.append("private ");
+        }
+        if (is(ACC_STATIC)) {
+            sb.append("static ");
+        }
+        if (is(ACC_FINAL)) {
+            sb.append("final ");
+        }
+        if (is(ACC_INTERFACE)) {
+            sb.append("interface ");
+        }
+        if (is(ACC_ABSTRACT)) {
+            sb.append("abstract ");
+        }
+        if (is(ACC_SYNTHETIC)) {
+            sb.append("synthetic ");
+        }
+        if (is(ACC_ANNOTATION)) {
+            sb.append("@interface ");
+        }
+        if (is(ACC_ENUM)) {
+            sb.append("enum ");
+        }
+        sb.append(" within ").append(outerClassName);
+        sb.append(" called ").append(simpleName);
+        return sb.toString();
+    }
+
+    private boolean is(int accessFlag) {
+        return (accessFlags & accessFlag) == accessFlag;
     }
 }
