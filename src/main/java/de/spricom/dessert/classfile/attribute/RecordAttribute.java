@@ -93,6 +93,10 @@ public class RecordAttribute extends AttributeInfo {
         }
     }
 
+    public RecordComponentInfo[] getComponents() {
+        return components;
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
         sb.append(":\n");
