@@ -27,12 +27,12 @@ import java.io.IOException;
 
 /**
  * Representes a
- * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.16" target="_blank">
- * Java Virtual Machine Specification: 4.7.16. The RuntimeVisibleAnnotations Attribute</a>.
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.17" target="_blank">
+ * Java Virtual Machine Specification: 4.7.17. The RuntimeInvisibleAnnotations Attribute</a>.
  */
-public class RuntimeVisibleAnnotationsAttribute extends AbstractRuntimeAnnotationsAttribute {
+public class RuntimeInvisibleAnnotationsAttribute extends AbstractRuntimeAnnotationsAttribute {
 
-	public RuntimeVisibleAnnotationsAttribute(String name, DataInputStream is, ConstantPool constantPool)
+	public RuntimeInvisibleAnnotationsAttribute(String name, DataInputStream is, ConstantPool constantPool)
 			throws IOException {
 		super(name, is, constantPool);
 	}

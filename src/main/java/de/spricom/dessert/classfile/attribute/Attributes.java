@@ -42,7 +42,7 @@ public final class Attributes {
         return matches;
     }
 
-    public static <A extends AttributeInfo> String attributeName(Class<A> attributeClass) {
+    public static String attributeName(Class<? extends AttributeInfo> attributeClass) {
         String className = attributeClass.getSimpleName();
         String attributeName = className.substring(0, className.length() - "Attribute".length());
         return attributeName;

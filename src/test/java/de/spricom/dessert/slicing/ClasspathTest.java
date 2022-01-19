@@ -63,7 +63,7 @@ public class ClasspathTest {
      */
     @Test
     public void testPackageTreeForSubpackages() {
-        int expectedNumberOfClasses = 66;
+        int expectedNumberOfClasses = 70;
         int expectedNumberOfTestClasses = 14;
         Slice slice = cp.packageTreeOf(ClassFile.class);
         assertThat(slice.getClazzes()).hasSize(expectedNumberOfClasses + expectedNumberOfTestClasses);

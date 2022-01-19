@@ -24,33 +24,16 @@ import de.spricom.dessert.classfile.constpool.ConstantPool;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.Set;
 
 /**
  * Representes a
  * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.18" target="_blank">
  * Java Virtual Machine Specification: 4.7.18. The RuntimeVisibleParameterAnnotations Attribute</a>.
  */
-public class RuntimeVisibleParameterAnnotationsAttribute extends AttributeInfo {
-    private final ParameterAnnotation[] parameterAnnotations;
+public class RuntimeVisibleParameterAnnotationsAttribute extends AbstractRuntimeParameterAnnotationsAttribute {
 
     public RuntimeVisibleParameterAnnotationsAttribute(String name, DataInputStream is, ConstantPool constantPool)
             throws IOException {
-        super(name);
-        is.readInt(); // skip length
-        parameterAnnotations = new ParameterAnnotation[is.readUnsignedByte()];
-        for (int i = 0; i < parameterAnnotations.length; i++) {
-            parameterAnnotations[i] = new ParameterAnnotation(is, constantPool);
-        }
-    }
-
-    public ParameterAnnotation[] getParameterAnnotations() {
-        return parameterAnnotations;
-    }
-
-    public void addDependentClassNames(Set<String> classNames) {
-        for (ParameterAnnotation parameterAnnotation : parameterAnnotations) {
-            parameterAnnotation.addDependentClassNames(classNames);
-        }
+        super(name, is, constantPool);
     }
 }

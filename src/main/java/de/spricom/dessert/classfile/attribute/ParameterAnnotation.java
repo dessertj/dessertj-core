@@ -47,4 +47,15 @@ public class ParameterAnnotation implements DependencyHolder {
             annotation.addDependentClassNames(classNames);
         }
     }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Annotation annotation : annotations) {
+            if (sb.length() > 0) {
+                sb.append(" ");
+            }
+            sb.append(annotation);
+        }
+        return sb.toString();
+    }
 }

@@ -1,4 +1,4 @@
-package de.spricom.dessert.classfile.attribute;
+package de.spricom.dessert.samples.annotations;
 
 /*-
  * #%L
@@ -20,20 +20,12 @@ package de.spricom.dessert.classfile.attribute;
  * #L%
  */
 
-import de.spricom.dessert.classfile.constpool.ConstantPool;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-
-/**
- * Representes a
- * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.16" target="_blank">
- * Java Virtual Machine Specification: 4.7.16. The RuntimeVisibleAnnotations Attribute</a>.
- */
-public class RuntimeVisibleAnnotationsAttribute extends AbstractRuntimeAnnotationsAttribute {
-
-	public RuntimeVisibleAnnotationsAttribute(String name, DataInputStream is, ConstantPool constantPool)
-			throws IOException {
-		super(name, is, constantPool);
-	}
+@Retention(RetentionPolicy.CLASS)
+@Target(ElementType.PARAMETER)
+public @interface InvisibleArg {
 }
