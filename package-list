@@ -4,6 +4,12 @@ de.spricom.dessert.classfile.attribute
 de.spricom.dessert.classfile.constpool
 de.spricom.dessert.classfile.dependency
 de.spricom.dessert.matching
+de.spricom.dessert.modules
+de.spricom.dessert.modules.core
+de.spricom.dessert.modules.fixed
+de.spricom.dessert.modules.java
+de.spricom.dessert.modules.jdk
+de.spricom.dessert.modules.jpms
 de.spricom.dessert.partitioning
 de.spricom.dessert.resolve
 de.spricom.dessert.slicing
