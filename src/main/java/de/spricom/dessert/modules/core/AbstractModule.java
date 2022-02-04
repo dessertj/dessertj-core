@@ -1,4 +1,4 @@
-package de.spricom.dessert.slicing;
+package de.spricom.dessert.modules.core;
 
 /*-
  * #%L
@@ -19,27 +19,19 @@ package de.spricom.dessert.slicing;
  * limitations under the License.
  * #L%
  */
+import de.spricom.dessert.modules.core.Module;
+import de.spricom.dessert.slicing.AbstractDelegateSlice;
+import de.spricom.dessert.slicing.Slice;
 
-final class NamedSlice extends AbstractDelegateSlice {
-
-    private final Slice delegate;
-    private final String name;
-
-    NamedSlice(Slice delegate, String name) {
-        this.delegate = delegate;
-        this.name = name;
-    }
+public abstract class AbstractModule extends AbstractDelegateSlice implements Module {
 
     @Override
     protected Slice getDelegate() {
-        return delegate;
+        return getUnqualifiedExports();
     }
 
-    public String toString() {
-        return getName();
-    }
-
-    public String getName() {
-        return name;
+    @Override
+    public Slice getInternals() {
+        return getImplementation().minus(this);
     }
 }

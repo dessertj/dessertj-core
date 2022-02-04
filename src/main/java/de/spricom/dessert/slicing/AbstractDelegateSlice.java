@@ -113,4 +113,9 @@ public abstract class AbstractDelegateSlice implements Slice {
     public <S extends PartitionSlice> SortedMap<String, S> partitionBy(SlicePartitioner partitioner, PartitionSliceFactory<S> partitionSliceFactory) {
         return getDelegate().partitionBy(partitioner, partitionSliceFactory);
     }
+
+    @Override
+    public Slice named(String name) {
+        return new NamedSlice(getDelegate(), name);
+    }
 }

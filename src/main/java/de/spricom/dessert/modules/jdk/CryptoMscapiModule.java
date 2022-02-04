@@ -1,4 +1,4 @@
-package de.spricom.dessert.slicing;
+package de.spricom.dessert.modules.jdk;
 
 /*-
  * #%L
@@ -19,27 +19,19 @@ package de.spricom.dessert.slicing;
  * limitations under the License.
  * #L%
  */
+import de.spricom.dessert.modules.core.FixedModule;
+import de.spricom.dessert.slicing.Classpath;
+import de.spricom.dessert.slicing.Slices;
 
-final class NamedSlice extends AbstractDelegateSlice {
+class CryptoMscapiModule extends FixedModule {
 
-    private final Slice delegate;
-    private final String name;
-
-    NamedSlice(Slice delegate, String name) {
-        this.delegate = delegate;
-        this.name = name;
-    }
-
-    @Override
-    protected Slice getDelegate() {
-        return delegate;
-    }
-
-    public String toString() {
-        return getName();
-    }
-
-    public String getName() {
-        return name;
+    CryptoMscapiModule(Classpath cp) {
+        super("jdk.crypto.mscapi", "17",
+                Slices.of(
+                        
+                ),
+                Slices.of(
+                        cp.slice("sun.security.mscapi.*")
+                ));
     }
 }

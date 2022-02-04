@@ -1,4 +1,4 @@
-package de.spricom.dessert.slicing;
+package de.spricom.dessert.modules.jpms;
 
 /*-
  * #%L
@@ -19,27 +19,21 @@ package de.spricom.dessert.slicing;
  * limitations under the License.
  * #L%
  */
+import de.spricom.dessert.classfile.attribute.ModuleAttribute;
 
-final class NamedSlice extends AbstractDelegateSlice {
+public class JpmsModuleRequirement {
 
-    private final Slice delegate;
-    private final String name;
+    private ModuleAttribute.Require requirement;
 
-    NamedSlice(Slice delegate, String name) {
-        this.delegate = delegate;
-        this.name = name;
-    }
-
-    @Override
-    protected Slice getDelegate() {
-        return delegate;
-    }
-
-    public String toString() {
-        return getName();
+    JpmsModuleRequirement(ModuleAttribute.Require requirement) {
+        this.requirement = requirement;
     }
 
     public String getName() {
-        return name;
+        return requirement.getModuleName();
+    }
+
+    public String getVersion() {
+        return requirement.getVersion();
     }
 }

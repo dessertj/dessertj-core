@@ -25,6 +25,12 @@ import de.spricom.dessert.classfile.attribute.AttributeInfo;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
 import de.spricom.dessert.matching.NamePattern;
+import de.spricom.dessert.modules.ModuleRegistry;
+import de.spricom.dessert.modules.core.Module;
+import de.spricom.dessert.modules.fixed.JavaModules;
+import de.spricom.dessert.modules.java.JavaModulesResolver;
+import de.spricom.dessert.modules.jdk.JdkModulesResolver;
+import de.spricom.dessert.modules.jpms.JavaPlatformModuleResolver;
 import de.spricom.dessert.partitioning.ClazzPredicates;
 import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.slicing.Classpath;
@@ -98,6 +104,12 @@ public class DependenciesTest {
         List<PackageSlice> layers = Arrays.asList(
                 packages.remove(packageOf(SliceAssertions.class)),
                 packages.remove(packageOf(ClazzPredicates.class)),
+                packages.remove(packageOf(ModuleRegistry.class)),
+                packages.remove(packageOf(JavaModules.class)),
+                packages.remove(packageOf(JdkModulesResolver.class)),
+                packages.remove(packageOf(JavaModulesResolver.class)),
+                packages.remove(packageOf(JavaPlatformModuleResolver.class)),
+                packages.remove(packageOf(Module.class)),
                 packages.remove(packageOf(Slice.class)),
                 packages.remove(packageOf(ClassResolver.class)),
                 packages.remove(packageOf(ClassFile.class)),
@@ -131,6 +143,11 @@ public class DependenciesTest {
         SliceAssertions.dessert(classfile).usesOnly(javaIO);
 
         // Packages outside the 'classfile' package must not use anything but the ClassFile facade.
-        dessert(main.minus(classfile)).usesNot(classfile.minus(sc.asClazz(ClassFile.class)));
+        // The only exception are modules which may use attributes.
+        Slice attributes = classfile.slice("..classfile.attribute.*");
+        dessert(main.minus(classfile))
+                .usesNot(classfile.minus(sc.asClazz(ClassFile.class), attributes));
+        dessert(main.minus(classfile).minus("..dessert.modules..*"))
+                .usesNot(classfile.minus(sc.asClazz(ClassFile.class)));
     }
 }

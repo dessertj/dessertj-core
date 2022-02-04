@@ -1,4 +1,4 @@
-package de.spricom.dessert.slicing;
+package de.spricom.dessert.modules.jdk;
 
 /*-
  * #%L
@@ -19,27 +19,20 @@ package de.spricom.dessert.slicing;
  * limitations under the License.
  * #L%
  */
+import de.spricom.dessert.modules.core.FixedModule;
+import de.spricom.dessert.slicing.Classpath;
+import de.spricom.dessert.slicing.Slices;
 
-final class NamedSlice extends AbstractDelegateSlice {
+class ManagementJfrModule extends FixedModule {
 
-    private final Slice delegate;
-    private final String name;
-
-    NamedSlice(Slice delegate, String name) {
-        this.delegate = delegate;
-        this.name = name;
-    }
-
-    @Override
-    protected Slice getDelegate() {
-        return delegate;
-    }
-
-    public String toString() {
-        return getName();
-    }
-
-    public String getName() {
-        return name;
+    ManagementJfrModule(Classpath cp) {
+        super("jdk.management.jfr", "17",
+                Slices.of(
+                        cp.slice("jdk.management.jfr.*")
+                ),
+                Slices.of(
+                        cp.slice("jdk.management.jfr.*"),
+                        cp.slice("jdk.management.jfr.internal.*")
+                ));
     }
 }
