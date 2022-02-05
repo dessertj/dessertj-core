@@ -19,11 +19,10 @@ package de.spricom.dessert.modules.core;
  * limitations under the License.
  * #L%
  */
-import de.spricom.dessert.modules.core.Module;
 import de.spricom.dessert.slicing.AbstractDelegateSlice;
 import de.spricom.dessert.slicing.Slice;
 
-public abstract class AbstractModule extends AbstractDelegateSlice implements Module {
+public abstract class AbstractModule extends AbstractDelegateSlice implements ModuleSlice {
 
     @Override
     protected Slice getDelegate() {

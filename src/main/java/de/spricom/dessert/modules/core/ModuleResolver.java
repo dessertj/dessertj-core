@@ -19,10 +19,9 @@ package de.spricom.dessert.modules.core;
  * limitations under the License.
  * #L%
  */
-import de.spricom.dessert.modules.core.Module;
 
 import java.util.Collection;
 
 public interface ModuleResolver {
-    Collection<? extends Module> getModules();
+    Collection<? extends ModuleSlice> getModules();
 }

@@ -21,7 +21,7 @@ package de.spricom.dessert.modules.core;
  */
 import de.spricom.dessert.slicing.Slice;
 
-public interface Module extends Slice {
+public interface ModuleSlice extends Slice {
 
     String getName();
 

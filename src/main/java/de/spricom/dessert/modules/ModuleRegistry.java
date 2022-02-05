@@ -20,9 +20,9 @@ package de.spricom.dessert.modules;
  * #L%
  */
 
-import de.spricom.dessert.modules.core.Module;
 import de.spricom.dessert.modules.core.ModuleLookup;
 import de.spricom.dessert.modules.core.ModuleResolver;
+import de.spricom.dessert.modules.core.ModuleSlice;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 public class ModuleRegistry implements ModuleResolver, ModuleLookup {
     private Logger log = Logger.getLogger(ModuleRegistry.class.getName());
 
-    private Map<String, Module> modules = new HashMap<String, Module>();
+    private Map<String, ModuleSlice> modules = new HashMap<String, ModuleSlice>();
 
     public ModuleRegistry(ModuleResolver... resolvers) {
         for (ModuleResolver resolver : resolvers) {
@@ -42,7 +42,7 @@ public class ModuleRegistry implements ModuleResolver, ModuleLookup {
         }
     }
 
-    public Collection<Module> getModules() {
+    public Collection<ModuleSlice> getModules() {
         return getModuleMap().values();
     }
 
@@ -50,17 +50,17 @@ public class ModuleRegistry implements ModuleResolver, ModuleLookup {
         return getModuleMap().keySet();
     }
 
-    private Map<String, Module> getModuleMap() {
+    private Map<String, ModuleSlice> getModuleMap() {
         return Collections.unmodifiableMap(modules);
     }
 
-    public Module getModule(String name) {
+    public ModuleSlice getModule(String name) {
         return modules.get(name);
     }
 
-    private boolean add(Module module) {
+    private boolean add(ModuleSlice module) {
         String name = module.getName();
-        Module previous = modules.get(name);
+        ModuleSlice previous = modules.get(name);
         if (previous == null) {
             modules.put(name, module);
             return true;
@@ -74,7 +74,7 @@ public class ModuleRegistry implements ModuleResolver, ModuleLookup {
 
     private boolean addAll(ModuleResolver resolver) {
         boolean modified = false;
-        for (Module module : resolver.getModules()) {
+        for (ModuleSlice module : resolver.getModules()) {
             modified |= add(module);
         }
         return modified;

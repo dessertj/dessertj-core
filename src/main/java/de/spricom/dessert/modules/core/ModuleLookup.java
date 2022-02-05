@@ -21,5 +21,5 @@ package de.spricom.dessert.modules.core;
  */
 
 public interface ModuleLookup {
-    Module getModule(String name);
+    ModuleSlice getModule(String name);
 }

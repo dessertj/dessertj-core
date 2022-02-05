@@ -26,7 +26,7 @@ import de.spricom.dessert.classfile.constpool.ConstantPool;
 import de.spricom.dessert.classfile.dependency.DependencyHolder;
 import de.spricom.dessert.matching.NamePattern;
 import de.spricom.dessert.modules.ModuleRegistry;
-import de.spricom.dessert.modules.core.Module;
+import de.spricom.dessert.modules.core.ModuleSlice;
 import de.spricom.dessert.modules.fixed.JavaModules;
 import de.spricom.dessert.modules.java.JavaModulesResolver;
 import de.spricom.dessert.modules.jdk.JdkModulesResolver;
@@ -109,7 +109,7 @@ public class DependenciesTest {
                 packages.remove(packageOf(JdkModulesResolver.class)),
                 packages.remove(packageOf(JavaModulesResolver.class)),
                 packages.remove(packageOf(JavaPlatformModuleResolver.class)),
-                packages.remove(packageOf(Module.class)),
+                packages.remove(packageOf(ModuleSlice.class)),
                 packages.remove(packageOf(Slice.class)),
                 packages.remove(packageOf(ClassResolver.class)),
                 packages.remove(packageOf(ClassFile.class)),

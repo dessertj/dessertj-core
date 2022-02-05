@@ -23,14 +23,14 @@ import de.spricom.dessert.slicing.Slice;
 
 public class DelegateModule extends AbstractModule {
 
-    private final Module delegate;
+    private final ModuleSlice delegate;
 
-    public DelegateModule(Module delegate) {
+    public DelegateModule(ModuleSlice delegate) {
         this.delegate = delegate;
     }
 
     @Override
-    public final Module getDelegate() {
+    public final ModuleSlice getDelegate() {
         return delegate;
     }
 

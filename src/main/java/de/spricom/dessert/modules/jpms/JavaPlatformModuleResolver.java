@@ -19,8 +19,9 @@ package de.spricom.dessert.modules.jpms;
  * limitations under the License.
  * #L%
  */
-import de.spricom.dessert.modules.core.Module;
+
 import de.spricom.dessert.modules.core.ModuleResolver;
+import de.spricom.dessert.modules.core.ModuleSlice;
 import de.spricom.dessert.slicing.Classpath;
 
 import java.util.Collection;
@@ -32,7 +33,7 @@ public class JavaPlatformModuleResolver implements ModuleResolver {
     }
 
     @Override
-    public Collection<Module> getModules() {
+    public Collection<ModuleSlice> getModules() {
         return null;
     }
 }
