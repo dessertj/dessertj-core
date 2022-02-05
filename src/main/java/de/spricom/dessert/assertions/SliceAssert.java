@@ -238,7 +238,7 @@ public class SliceAssert {
     }
 
     private List<Slice> asList() {
-        List list = new ArrayList();
+        List<Slice> list = new ArrayList<Slice>();
         for (Slice slice : slices) {
             list.add(slice);
         }

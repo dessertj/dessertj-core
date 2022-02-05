@@ -34,7 +34,7 @@ public class JpmsRootModule extends JpmsModule {
         this.root = root;
     }
 
-    private static final ClassFile getModuleInfo(Root root) throws IOException {
+    private static ClassFile getModuleInfo(Root root) throws IOException {
         InputStream is = root.getResourceAsStream("/module-info.class");
         if (is == null) {
             throw new IllegalArgumentException(root.getRootFile() + " does not contain a module-info.class.");
