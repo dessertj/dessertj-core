@@ -25,6 +25,7 @@ import de.spricom.dessert.matching.NamePattern;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.jar.Manifest;
 
@@ -70,6 +71,10 @@ public abstract class ClassRoot extends ClassPackage implements TraversalRoot {
             return null;
         }
         return new Manifest(inputStream);
+    }
+
+    public URI getURI() {
+        return getRootFile().toURI();
     }
 
     @Override

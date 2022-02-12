@@ -70,7 +70,7 @@ public final class Classpath extends AbstractRootSlice {
     private static ClassResolver getDefaultResolver() {
         if (defaultResolver == null) {
             try {
-                defaultResolver = ClassResolver.ofClassPathAndBootClassPath();
+                defaultResolver = ClassResolver.ofClassPathAndJavaRuntime();
             } catch (IOException ex) {
                 throw new ResolveException("Unable to access classes on classpath.", ex);
             }

@@ -19,25 +19,23 @@ package de.spricom.dessert.modules.jpms;
  * limitations under the License.
  * #L%
  */
+
 import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.classfile.attribute.Attributes;
 import de.spricom.dessert.classfile.attribute.ModuleAttribute;
 import de.spricom.dessert.modules.core.AbstractModule;
 import de.spricom.dessert.slicing.AbstractRootSlice;
-import de.spricom.dessert.slicing.Clazz;
 import de.spricom.dessert.slicing.Slice;
-import de.spricom.dessert.util.Predicate;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
-public class JpmsModule extends AbstractModule {
+public abstract class AbstractJpmsModule extends AbstractModule {
 
     private final ModuleAttribute moduleAttribute;
     private final AbstractRootSlice classPath;
 
-    public JpmsModule(AbstractRootSlice classPath, ClassFile moduleClassFile) {
+    AbstractJpmsModule(AbstractRootSlice classPath, ClassFile moduleClassFile) {
         this.classPath = classPath;
         this.moduleAttribute = getModuleAttribute(moduleClassFile);
     }
@@ -74,27 +72,7 @@ public class JpmsModule extends AbstractModule {
         return null;
     }
 
-    @Override
-    public Slice getImplementation() {
-        return null;
-    }
-
     public List<JpmsModuleRequirement> requirements() {
         return Collections.emptyList();
-    }
-
-    @Override
-    public Slice slice(Predicate<Clazz> predicate) {
-        return null;
-    }
-
-    @Override
-    public boolean contains(Clazz clazz) {
-        return false;
-    }
-
-    @Override
-    public Set<Clazz> getClazzes() {
-        return null;
     }
 }

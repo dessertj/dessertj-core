@@ -25,6 +25,7 @@ import de.spricom.dessert.util.Predicate;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
 import java.util.jar.Manifest;
@@ -33,7 +34,7 @@ import java.util.logging.Logger;
 /**
  * The class resolver provides fast access to the classes and packages to analyze.
  * Therefore it maintains of a list of all {@link ClassRoot} objects for which
- * each represents a classes directory or a JAR file. And it has to HashMaps
+ * each represents a classes directory or a JAR file. And it has two HashMaps
  * for all the packages and classes contained in any of these roots. The key
  * used for theses HashMaps is the full qualified class or package name.
  *
@@ -88,6 +89,22 @@ public final class ClassResolver implements TraversalRoot {
     }
 
     /**
+     * Creates a ClassResolver with all entries for {@link #ofClassPath()} and all entries
+     * from the <i>sun.boot.class.path</i> system-properties for java 8 and before or
+     * all java runtime modules from Java 9 on.
+     *
+     * @return a ClassResolver with the corresponding entries
+     * @throws IOException if a directory or jar file could not be read
+     */
+    public static ClassResolver ofClassPathAndJavaRuntime() throws IOException {
+        ClassResolver r = new ClassResolver();
+        r.addClassPath();
+        r.addBootClassPath();
+        r.addJavaRuntimeModules();
+        return r;
+    }
+
+    /**
      * Creates a ClassResolver containing only the directories on the <i>java.class.path</i> system-property.
      *
      * @return a ClassResolver with the corresponding entries
@@ -120,12 +137,14 @@ public final class ClassResolver implements TraversalRoot {
 
     /**
      * Creates a ClassResolver with all entries for {@link #ofClassPath()} and all entries
-     * from the <i>sun.boot.class.path</i> system-properties. From Java 9 on there is
+     * from the <i>sun.boot.class.path</i> system-property. From Java 9 on there is
      * no difference to {@link #ofClassPath()}.
      *
      * @return a ClassResolver with the corresponding entries
      * @throws IOException if a directory or jar file could not be read
+     * @deprecated use ofClassPathAndJavaRuntime instead
      */
+    @Deprecated
     public static ClassResolver ofClassPathAndBootClassPath() throws IOException {
         ClassResolver r = new ClassResolver();
         r.addClassPath();
@@ -143,6 +162,39 @@ public final class ClassResolver implements TraversalRoot {
         if (path != null) {
             add(path);
         }
+    }
+
+    /**
+     * Adds all modules form the Java Runtime System. For Java 8 and older this
+     * method has no effect
+     *
+     * @throws IOException modules could not be read
+     */
+    public void addJavaRuntimeModules() throws IOException {
+        if (!isJrtFileSystemAvailalbe()) {
+            return;
+        }
+        try {
+            ReflectiveJrtFileSystem fs = new ReflectiveJrtFileSystem();
+            for (String module : fs.listModules()) {
+                addRoot(new JrtModuleRoot(module, fs));
+            }
+        } catch (InvocationTargetException ex) {
+            if (ex.getTargetException() instanceof IOException) {
+                throw (IOException) ex.getTargetException();
+            }
+            throw new IOException("Unable to read java runtime modules.", ex);
+        } catch (ClassNotFoundException ex) {
+            throw new IOException("Cannot access NIO classes.", ex);
+        } catch (NoSuchMethodException ex) {
+            throw new IOException("Cannot access NIO classes.", ex);
+        } catch (IllegalAccessException ex) {
+            throw new IOException("Cannot access NIO classes.", ex);
+        }
+    }
+
+    private boolean isJrtFileSystemAvailalbe() {
+        return String.class.getResource("/module-info.class") != null;
     }
 
     public void add(String path) throws IOException {

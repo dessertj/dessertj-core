@@ -22,39 +22,35 @@ package de.spricom.dessert.resolve;
 
 import de.spricom.dessert.classfile.ClassFile;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 
-final class DirectoryClassEntry extends ClassEntry {
-    private final File classFile;
+final class JrtModuleClassEntry extends ClassEntry {
+    private final URI uri;
 
-    DirectoryClassEntry(ClassPackage pckg, File classFile) {
-        super(pckg.getClassName(simpleName(classFile)), pckg);
-        this.classFile = classFile;
-    }
-
-    private static String simpleName(File classFile) {
-        return classFile.getName().substring(0, classFile.getName().length() - ".class".length());
+    JrtModuleClassEntry(ClassPackage pckg, String simpleName, URI uri) {
+        super(pckg.getClassName(simpleName), pckg);
+        this.uri = uri;
     }
 
     @Override
     public ClassFile resolveClassFile() {
         InputStream is = null;
         try {
-            is = new FileInputStream(classFile);
+            URL url = uri.toURL();
+            is = url.openStream();
             ClassFile cf = new ClassFile(is);
             return cf;
         } catch (IOException ex) {
-            throw new IllegalStateException("Unable to read " + classFile.getAbsolutePath(), ex);
+            throw new IllegalStateException("Unable to read " + uri, ex);
         } finally {
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException ex) {
-                    throw new IllegalStateException("Cannot close stream after reading " + classFile.getAbsolutePath(), ex);
+                    throw new IllegalStateException("Cannot close stream after reading " + uri, ex);
                 }
             }
         }
@@ -62,6 +58,6 @@ final class DirectoryClassEntry extends ClassEntry {
 
     @Override
     public URI getURI() {
-        return classFile.toURI();
+        return uri;
     }
 }

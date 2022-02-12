@@ -35,14 +35,15 @@ final class DirectoryRoot extends ClassRoot {
         scan(collector, this, getRootFile(), "");
     }
 
-    private void scan(ClassCollector collector, ClassPackage pckg, File dir, String prefix) throws IOException {
+    private void scan(ClassCollector collector, ClassPackage pckg, File dir, String prefix) {
         collector.addPackage(pckg);
         for (File file : dir.listFiles()) {
+            String filename = file.getName();
             if (file.isDirectory()) {
-                String packageName = prefix + file.getName();
+                String packageName = prefix + filename;
                 ClassPackage subPackage = new ClassPackage(pckg, packageName);
                 scan(collector, subPackage, file, packageName + ".");
-            } else if (file.getName().endsWith(".class")) {
+            } else if (filename.endsWith(".class")) {
                 ClassEntry classEntry = new DirectoryClassEntry(pckg, file);
                 pckg.addClass(classEntry);
                 collector.addClass(classEntry);

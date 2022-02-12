@@ -20,30 +20,17 @@ package de.spricom.dessert.modules.jpms;
  * #L%
  */
 import de.spricom.dessert.classfile.ClassFile;
-import de.spricom.dessert.slicing.Root;
+import de.spricom.dessert.slicing.AbstractRootSlice;
+import de.spricom.dessert.slicing.Slice;
 
-import java.io.IOException;
-import java.io.InputStream;
+public class JpmsJrtModule extends AbstractJpmsModule {
 
-public class JpmsRootModule extends AbstractJpmsModule {
-
-    private final Root root;
-
-    public JpmsRootModule(Root root) throws IOException {
-        super(root, getModuleInfo(root));
-        this.root = root;
-    }
-
-    private static ClassFile getModuleInfo(Root root) throws IOException {
-        InputStream is = root.getResourceAsStream("/module-info.class");
-        if (is == null) {
-            throw new IllegalArgumentException(root.getRootFile() + " does not contain a module-info.class.");
-        }
-        return new ClassFile(is);
+    public JpmsJrtModule(AbstractRootSlice classPath, ClassFile moduleClassFile) {
+        super(classPath, moduleClassFile);
     }
 
     @Override
-    public Root getImplementation() {
+    public Slice getImplementation() {
         return null;
     }
 }

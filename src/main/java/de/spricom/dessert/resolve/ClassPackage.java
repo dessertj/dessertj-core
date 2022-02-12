@@ -65,6 +65,10 @@ public class ClassPackage {
         return packageName;
     }
 
+    public final String getClassName(String simpleName) {
+        return packageName.isEmpty() ? simpleName : packageName + "." + simpleName;
+    }
+
     /**
      * @return the package name without parent package prefix
      */
@@ -83,6 +87,7 @@ public class ClassPackage {
         return parent.getRoot();
     }
 
+    @Deprecated
     public File getRootFile() {
         return getRoot().getRootFile();
     }
