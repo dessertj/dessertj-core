@@ -29,6 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -97,10 +98,15 @@ public final class ClassResolver implements TraversalRoot {
      * @throws IOException if a directory or jar file could not be read
      */
     public static ClassResolver ofClassPathAndJavaRuntime() throws IOException {
+        long ts = System.nanoTime();
         ClassResolver r = new ClassResolver();
         r.addClassPath();
         r.addBootClassPath();
         r.addJavaRuntimeModules();
+        if (log.isLoggable(Level.FINE)) {
+            log.fine(String.format("Needed %.1f ms to scan classes form java.class.path and runtime.",
+                    (System.nanoTime() - ts) / 1e6));
+        }
         return r;
     }
 
@@ -230,7 +236,13 @@ public final class ClassResolver implements TraversalRoot {
             throw new IllegalStateException("Cannot add root to a frozen ClassResolver.");
         }
         path.add(root);
+        long ts = System.nanoTime();
         root.scan(cache);
+        if (log.isLoggable(Level.FINER)) {
+            log.fine(String.format("Needed %.1f ms to scan classes form %s.",
+                    (System.nanoTime() - ts) / 1e6,
+                    root.getURI()));
+        }
     }
 
     /**
