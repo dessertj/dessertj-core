@@ -21,19 +21,31 @@ package de.spricom.dessert.modules.jpms;
  */
 
 import de.spricom.dessert.modules.core.ModuleResolver;
-import de.spricom.dessert.modules.core.ModuleSlice;
 import de.spricom.dessert.slicing.Classpath;
+import de.spricom.dessert.slicing.Clazz;
+import de.spricom.dessert.slicing.Root;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class JavaPlatformModuleResolver implements ModuleResolver {
 
-    public JavaPlatformModuleResolver(Classpath cp) {
+    private final Classpath cp;
 
+    public JavaPlatformModuleResolver(Classpath cp) {
+        this.cp = cp;
     }
 
     @Override
-    public Collection<ModuleSlice> getModules() {
-        return null;
+    public List<JpmsModule> getModules() {
+        Set<Clazz> moduleClazzes = cp.slice("module-info").getClazzes();
+        List<JpmsModule> modules = new ArrayList<JpmsModule>(moduleClazzes.size());
+        for (Clazz clazz : moduleClazzes) {
+            Root root = clazz.getRoot();
+            JpmsModule module = new JpmsModule(root);
+            modules.add(module);
+        }
+        return modules;
     }
 }

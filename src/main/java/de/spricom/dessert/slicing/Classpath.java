@@ -237,7 +237,7 @@ public final class Classpath extends AbstractRootSlice {
         return rootOf(getClassRoot(rootFile));
     }
 
-    private Root rootOf(ClassRoot root) {
+    Root rootOf(ClassRoot root) {
         return new Root(root, this);
     }
 

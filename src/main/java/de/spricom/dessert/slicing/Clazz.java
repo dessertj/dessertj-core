@@ -131,7 +131,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
      */
     public Root getRoot() {
         if (classEntry != null) {
-            return classpath.rootOf(classEntry.getPackage().getRootFile());
+            return classpath.rootOf(classEntry.getPackage().getRoot());
         } else if (classImpl != null) {
             return classpath.rootOf(classImpl);
         } else {

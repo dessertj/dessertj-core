@@ -44,7 +44,7 @@ public class Root extends AbstractRootSlice {
     }
 
     public URI getURI() {
-        return root.getRootFile().toURI();
+        return root.getURI();
     }
 
     @Override

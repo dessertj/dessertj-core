@@ -350,12 +350,16 @@ public final class ClassResolver implements TraversalRoot {
         }
     }
 
+    public List<ClassRoot> getPath() {
+        return path;
+    }
+
     public Set<File> getRootFiles() {
         return getRootFiles(new Predicate<File>() {
 
             @Override
             public boolean test(File t) {
-                return true;
+                return t != null;
             }
         });
     }
@@ -365,7 +369,7 @@ public final class ClassResolver implements TraversalRoot {
 
             @Override
             public boolean test(File t) {
-                return !t.isDirectory();
+                return t != null && !t.isDirectory();
             }
         });
     }
@@ -375,13 +379,13 @@ public final class ClassResolver implements TraversalRoot {
 
             @Override
             public boolean test(File t) {
-                return t.isDirectory();
+                return t != null && t.isDirectory();
             }
         });
     }
 
     public Set<File> getRootFiles(Predicate<File> predicate) {
-        Set<File> files = new HashSet<File>();
+        Set<File> files = new HashSet<File>(path.size());
         for (ClassRoot cr : path) {
             if (predicate.test(cr.getRootFile())) {
                 files.add(cr.getRootFile());

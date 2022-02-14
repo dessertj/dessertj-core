@@ -37,7 +37,7 @@ public class NamePatternTest {
 
     @Test
     public void testSingle() {
-        check("*", "sample.Foo", false);
+        check("module-info", "module-info", true);
     }
 
     @Test

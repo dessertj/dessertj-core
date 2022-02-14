@@ -79,6 +79,6 @@ public abstract class ClassRoot extends ClassPackage implements TraversalRoot {
 
     @Override
     public String toString() {
-        return "root " + rootFile.getAbsolutePath();
+        return "root " + getURI();
     }
 }

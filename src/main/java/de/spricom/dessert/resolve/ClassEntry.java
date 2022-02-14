@@ -55,6 +55,9 @@ public abstract class ClassEntry {
      * @return the classname without package prefix
      */
     public String getShortName() {
+        if (pckg.getPackageName().isEmpty()) {
+            return classname;
+        }
         return classname.substring(getPackage().getPackageName().length() + 1);
     }
 
