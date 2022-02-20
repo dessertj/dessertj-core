@@ -46,7 +46,7 @@ public final class JpmsModule extends AbstractModule {
     }
 
     private ClassFile getModuleInfo(Root root) {
-        InputStream is = root.getResourceAsStream("/module-info.class");
+        InputStream is = root.getResourceAsStream("module-info.class");
         if (is == null) {
             throw new ResolveException(root.getURI() + " does not contain a module-info.class.");
         }

@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class JavaPlatformModuleResolver implements ModuleResolver {
+public final class JavaPlatformModuleResolver implements ModuleResolver {
 
     private final Classpath cp;
 

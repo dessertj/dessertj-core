@@ -21,7 +21,7 @@ package de.spricom.dessert.modules.jpms;
  */
 import de.spricom.dessert.classfile.attribute.ModuleAttribute;
 
-public class JpmsModuleRequirement {
+public final class JpmsModuleRequirement {
 
     private ModuleAttribute.Require requirement;
 

@@ -23,6 +23,10 @@ package de.spricom.dessert.modules;
 import de.spricom.dessert.modules.core.ModuleLookup;
 import de.spricom.dessert.modules.core.ModuleResolver;
 import de.spricom.dessert.modules.core.ModuleSlice;
+import de.spricom.dessert.modules.java.JavaModulesResolver;
+import de.spricom.dessert.modules.jdk.JdkModulesResolver;
+import de.spricom.dessert.modules.jpms.JavaPlatformModuleResolver;
+import de.spricom.dessert.slicing.Classpath;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -31,8 +35,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ModuleRegistry implements ModuleResolver, ModuleLookup {
-    private Logger log = Logger.getLogger(ModuleRegistry.class.getName());
+public final class ModuleRegistry implements ModuleResolver, ModuleLookup {
+    private static final Logger log = Logger.getLogger(ModuleRegistry.class.getName());
 
     private Map<String, ModuleSlice> modules = new HashMap<String, ModuleSlice>();
 
@@ -40,6 +44,28 @@ public class ModuleRegistry implements ModuleResolver, ModuleLookup {
         for (ModuleResolver resolver : resolvers) {
             addAll(resolver);
         }
+    }
+
+    public ModuleRegistry(Classpath cp) {
+        this(defaultResolvers(cp));
+    }
+
+    private static ModuleResolver[] defaultResolvers(Classpath cp) {
+        if (isJavaPlattformModuleSystemAvailable())  {
+            return new ModuleResolver[] {
+                new JavaPlatformModuleResolver(cp)
+            };
+        } else {
+            return new ModuleResolver[] {
+                    new JavaPlatformModuleResolver(cp),
+                    new JavaModulesResolver(cp),
+                    new JdkModulesResolver(cp)
+            };
+        }
+    }
+
+    public static boolean isJavaPlattformModuleSystemAvailable() {
+        return String.class.getResource("/module-info.class") != null;
     }
 
     public Collection<ModuleSlice> getModules() {
@@ -66,7 +92,7 @@ public class ModuleRegistry implements ModuleResolver, ModuleLookup {
             return true;
         } else {
             if (!previous.equals(module)) {
-                log.log(Level.FINE, "There are two modules named '{}'", name);
+                log.log(Level.WARNING, "There are two modules named '{}'", name);
             }
             return false;
         }

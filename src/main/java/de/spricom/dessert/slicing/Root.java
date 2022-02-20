@@ -74,6 +74,6 @@ public class Root extends AbstractRootSlice {
     }
 
     public String toString() {
-        return "root of " + root.getRootFile().getName();
+        return root.toString();
     }
 }
