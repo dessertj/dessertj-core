@@ -55,11 +55,11 @@ import static de.spricom.dessert.assertions.SliceAssertions.dessert;
 public class DependenciesTest {
 
     /**
-     * The same SliceContext is used for all tests.
+     * The same Classpath is used for all tests.
      */
-    private static final Classpath sc = new Classpath();
-    private final Slice main = sc.rootOf(Slice.class);
-    private final Slice test = sc.rootOf(this.getClass());
+    private static final Classpath cp = new Classpath();
+    private final Slice main = cp.rootOf(Slice.class);
+    private final Slice test = cp.rootOf(this.getClass());
 
     /**
      * Make sure there are no cyclic dependencies between dessert packages.
@@ -91,10 +91,10 @@ public class DependenciesTest {
     @Test
     public void testExternalDependencies() {
         Slice java = Slices.of(
-                sc.packageTreeOf("java.lang"),
-                sc.packageTreeOf("java.util"),
-                sc.packageTreeOf("java.io"),
-                sc.packageTreeOf("java.net"));
+                cp.packageTreeOf("java.lang"),
+                cp.packageTreeOf("java.util"),
+                cp.packageTreeOf("java.io"),
+                cp.packageTreeOf("java.net"));
         dessert(main).usesOnly(java);
     }
 
@@ -136,18 +136,18 @@ public class DependenciesTest {
      */
     @Test
     public void testClassfileDependencies() {
-        Slice classfile = sc.packageTreeOf(ClassFile.class.getPackage()).minus(test);
-        Slice javaCore = sc.packageTreeOf("java.lang")
-                .plus(sc.packageTreeOf("java.util"));
-        Slice javaIO = sc.packageTreeOf("java.io").plus(javaCore);
+        Slice classfile = cp.packageTreeOf(ClassFile.class.getPackage()).minus(test);
+        Slice javaCore = cp.packageTreeOf("java.lang")
+                .plus(cp.packageTreeOf("java.util"));
+        Slice javaIO = cp.packageTreeOf("java.io").plus(javaCore);
         SliceAssertions.dessert(classfile).usesOnly(javaIO);
 
         // Packages outside the 'classfile' package must not use anything but the ClassFile facade.
         // The only exception are modules which may use attributes.
         Slice attributes = classfile.slice("..classfile.attribute.*");
         dessert(main.minus(classfile))
-                .usesNot(classfile.minus(sc.asClazz(ClassFile.class), attributes));
+                .usesNot(classfile.minus(cp.asClazz(ClassFile.class), attributes));
         dessert(main.minus(classfile).minus("..dessert.modules..*"))
-                .usesNot(classfile.minus(sc.asClazz(ClassFile.class)));
+                .usesNot(classfile.minus(cp.asClazz(ClassFile.class)));
     }
 }
