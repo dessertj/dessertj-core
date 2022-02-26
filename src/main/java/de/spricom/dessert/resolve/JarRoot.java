@@ -9,9 +9,9 @@ package de.spricom.dessert.resolve;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,7 +37,7 @@ import java.util.jar.Manifest;
 final class JarRoot extends ClassRoot {
     private JarFile jarFileArchive;
 
-    public JarRoot(File jarFile) throws IOException {
+    public JarRoot(File jarFile) {
         super(jarFile);
     }
 
@@ -52,9 +52,7 @@ final class JarRoot extends ClassRoot {
         while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
             if (!entry.isDirectory()
-                    && entry.getName().endsWith(".class")
-                    && !entry.getName().startsWith("META-INF/")) {
-                // TODO: Proper handling of multi-release jar files.
+                    && entry.getName().endsWith(".class")) {
                 addClass(collector, packages, jarFile, entry);
             }
         }
@@ -68,7 +66,7 @@ final class JarRoot extends ClassRoot {
         return jarFileArchive;
     }
 
-    private void addClass(ClassCollector collector, Map<String, ClassPackage> packages, JarFile jarFile, JarEntry entry) throws IOException {
+    private void addClass(ClassCollector collector, Map<String, ClassPackage> packages, JarFile jarFile, JarEntry entry) {
         ClassPackage pckg = ensurePackage(collector, packages, packageName(entry));
         ClassEntry ce = new JarClassEntry(pckg, jarFile, entry);
         pckg.addClass(ce);

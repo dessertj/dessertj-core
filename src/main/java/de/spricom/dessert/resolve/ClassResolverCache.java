@@ -48,7 +48,20 @@ class ClassResolverCache implements ClassCollector {
             classes.put(cn, ce);
         } else {
             prev.addAlternative(ce);
-            duplicates.put(cn, prev.getAlternatives());
+            addDuplicates(cn, prev.getAlternatives());
+        }
+    }
+
+    private void addDuplicates(String cn, List<ClassEntry> alternatives) {
+        if (duplicates.containsKey(cn)) {
+            return;
+        }
+        ClassPackage pckg = alternatives.get(0).getPackage();
+        for (ClassEntry alternative : alternatives) {
+            if (pckg != alternative.getPackage()) {
+                duplicates.put(cn, alternatives);
+                return;
+            }
         }
     }
 

@@ -165,6 +165,9 @@ public class ClassPackage {
         for (ClassEntry clazz : classes.values()) {
             if (matcher.match(clazz.getShortName()).matches()) {
                 visitor.visit(clazz);
+                for (ClassEntry versionedAlternative : clazz.getAlternativesWithinSamePackage()) {
+                    visitor.visit(versionedAlternative);
+                }
             }
         }
     }

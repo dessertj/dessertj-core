@@ -139,6 +139,14 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
         }
     }
 
+    public ClassFile getClassFile() {
+        return classFile;
+    }
+
+    public String getName() {
+        return className;
+    }
+
     public String getPackageName() {
         if (classEntry != null) {
             return classEntry.getPackage().getPackageName();
@@ -151,6 +159,56 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
             }
             return className.substring(0, index);
         }
+    }
+
+    public String getSimpleName() {
+        int dollarIndex = className.lastIndexOf('$');
+        if (dollarIndex > 0) {
+            String name = className.substring(dollarIndex + 1);
+            if (name.matches("\\d+")) {
+                return "";
+            }
+            return name;
+        }
+        int dotIndex = className.lastIndexOf('.');
+        return className.substring(dotIndex + 1);
+    }
+
+    /**
+     * @return the classname without package prefix
+     */
+    public String getShortName() {
+        if (classEntry != null) {
+            return classEntry.getShortName();
+        }
+        String packageName = getPackageName();
+        if (packageName.isEmpty()) {
+            return className;
+        }
+        return className.substring(packageName.length() + 1);
+    }
+
+    public URI getURI() {
+        if (uri != null) {
+            return uri;
+        }
+        if (classEntry != null) {
+            uri = classEntry.getURI();
+            return uri;
+        }
+        // either there is a classEntry or a classImpl or it's unknown
+        if (classImpl != null) {
+            uri = ClassUtils.getURI(classImpl);
+        } else {
+            String unknown = "dessert:unknown:" + className;
+            try {
+                uri = new URI(unknown);
+            } catch (URISyntaxException ex) {
+                throw new IllegalStateException("Cannot convert '" + unknown + "' to URI", ex);
+            }
+        }
+        assert uri != null : "URI has not been determined";
+        return uri;
     }
 
     @Override
@@ -273,48 +331,19 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
         return getURI().equals(ce.getURI());
     }
 
-    public String getName() {
-        return className;
-    }
-
-    public String getSimpleName() {
-        int dollarIndex = className.lastIndexOf('$');
-        if (dollarIndex > 0) {
-            String name = className.substring(dollarIndex + 1);
-            if (name.matches("\\d+")) {
-                return "";
-            }
-            return name;
+   /**
+     * The min-version is available for .class files located in the META-INF directory of
+     * a multi-release JAR.
+     *
+     * @return the minimum java version required for this class or null if not specified
+     */
+    public String getMinVersion() {
+        String uri = getURI().toString();
+        int i = uri.toUpperCase().indexOf("/META-INF/VERSIONS/");
+        int l = className.length() + "/.class".length();
+        if (i > 0 && i + l < uri.length()) {
+            return uri.substring(i + "/META-INF/VERSIONS/".length(), uri.length() - l);
         }
-        int dotIndex = className.lastIndexOf('.');
-        return className.substring(dotIndex + 1);
+        return null;
     }
-
-    public ClassFile getClassFile() {
-        return classFile;
-    }
-
-    public URI getURI() {
-        if (uri != null) {
-            return uri;
-        }
-        if (classEntry != null) {
-            uri = classEntry.getURI();
-            return uri;
-        }
-        // either there is a classEntry or a classImpl or it's unknown
-        if (classImpl != null) {
-            uri = ClassUtils.getURI(classImpl);
-        } else {
-            String unknown = "dessert:unknown:" + className;
-            try {
-                uri = new URI(unknown);
-            } catch (URISyntaxException ex) {
-                throw new IllegalStateException("Cannot convert '" + unknown + "' to URI", ex);
-            }
-        }
-        assert uri != null : "URI has not been determined";
-        return uri;
-    }
-
 }

@@ -23,7 +23,6 @@ package de.spricom.dessert.modules.jpms;
 import de.spricom.dessert.modules.core.ModuleResolver;
 import de.spricom.dessert.slicing.Classpath;
 import de.spricom.dessert.slicing.Clazz;
-import de.spricom.dessert.slicing.Root;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +41,7 @@ public final class JavaPlatformModuleResolver implements ModuleResolver {
         Set<Clazz> moduleClazzes = cp.slice("module-info").getClazzes();
         List<JpmsModule> modules = new ArrayList<JpmsModule>(moduleClazzes.size());
         for (Clazz clazz : moduleClazzes) {
-            Root root = clazz.getRoot();
-            JpmsModule module = new JpmsModule(root);
+            JpmsModule module = new JpmsModule(clazz.getRoot(), clazz.getClassFile());
             modules.add(module);
         }
         return modules;

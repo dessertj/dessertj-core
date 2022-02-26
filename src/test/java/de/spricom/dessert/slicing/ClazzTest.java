@@ -40,7 +40,7 @@ public class ClazzTest {
 
     @Test
     public void testThisClass() throws MalformedURLException {
-        Slice slice = sc.sliceOf(ClazzTest.class.getName());
+        Slice slice = sc.slice(ClazzTest.class.getName());
         Set<Clazz> entries = slice.getClazzes();
         assertThat(entries).hasSize(1);
         Clazz entry = entries.iterator().next();
@@ -55,7 +55,8 @@ public class ClazzTest {
         assertThat(entry.getSuperclass().getClassImpl()).isSameAs(Object.class);
         assertThat(entry.getImplementedInterfaces()).isEmpty();
         assertThat(entry.getURI().toURL()).isEqualTo(getClass().getResource(getClass().getSimpleName() + ".class"));
-        assertThat(new File(entry.getURI().toURL().getPath()).getAbsolutePath()).startsWith(entry.getRootFile().getAbsolutePath());
+        assertThat(new File(entry.getURI().toURL().getPath()).getAbsolutePath())
+                .startsWith(entry.getRoot().getRootFile().getAbsolutePath());
     }
 
     @Test

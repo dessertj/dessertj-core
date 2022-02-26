@@ -25,13 +25,10 @@ import de.spricom.dessert.classfile.attribute.Attributes;
 import de.spricom.dessert.classfile.attribute.ModuleAttribute;
 import de.spricom.dessert.modules.core.AbstractModule;
 import de.spricom.dessert.slicing.Clazz;
-import de.spricom.dessert.slicing.ResolveException;
 import de.spricom.dessert.slicing.Root;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.util.Predicate;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 public final class JpmsModule extends AbstractModule {
@@ -39,22 +36,9 @@ public final class JpmsModule extends AbstractModule {
     private final ModuleAttribute moduleAttribute;
     private final Root root;
 
-    public JpmsModule(Root root) {
+    public JpmsModule(Root root, ClassFile moduleInfo) {
         this.root = root;
-        ClassFile moduleInfo = getModuleInfo(root);
         this.moduleAttribute = getModuleAttribute(moduleInfo);
-    }
-
-    private ClassFile getModuleInfo(Root root) {
-        InputStream is = root.getResourceAsStream("module-info.class");
-        if (is == null) {
-            throw new ResolveException(root.getURI() + " does not contain a module-info.class.");
-        }
-        try {
-            return new ClassFile(is);
-        } catch (IOException ex) {
-            throw new ResolveException("Unable to scan " + root.getURI() + "/module-info.class");
-        }
     }
 
     private ModuleAttribute getModuleAttribute(ClassFile moduleClassFile) {

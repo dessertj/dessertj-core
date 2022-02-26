@@ -281,28 +281,6 @@ public final class Classpath extends AbstractRootSlice {
         return new ConcreteSlice(clazzes);
     }
 
-    /**
-     * Returns a {@link Slice} for a concrete list of Java classes given
-     * by classname.
-     * The classes do not necessarily have to be on the this Classpath.
-     *
-     * @param classnames the fully qualifed names of the classes
-     * @return the slice
-     * @see #asClazz(String)
-     */
-    public Slice sliceOf(final String... classnames) {
-        if (classnames.length == 0) {
-            return Slices.EMPTY_SLICE;
-        } else if (classnames.length == 1) {
-            return asClazz(classnames[0]);
-        }
-        Set<Clazz> clazzes = new HashSet<Clazz>();
-        for (String classname : classnames) {
-            clazzes.add(asClazz(classname));
-        }
-        return new ConcreteSlice(clazzes);
-    }
-
     @Override
     Classpath getClasspath() {
         return this;
