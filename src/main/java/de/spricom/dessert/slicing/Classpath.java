@@ -289,7 +289,9 @@ public final class Classpath extends AbstractRootSlice {
      * @param classnames the fully qualifed names of the classes
      * @return the slice
      * @see #asClazz(String)
+     * @deprecated will be removed in 0.5.0
      */
+    @Deprecated
     public Slice sliceOf(final String... classnames) {
         if (classnames.length == 0) {
             return Slices.EMPTY_SLICE;

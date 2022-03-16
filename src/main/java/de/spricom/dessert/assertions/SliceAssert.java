@@ -126,6 +126,26 @@ public class SliceAssert {
         return usesNot(Arrays.asList(others));
     }
 
+    /**
+     * Alias for {@link #usesNot(Iterable)}
+     *
+     * @param others the slices to check dependencies for
+     * @return this instance (fluent API)
+     */
+    public SliceAssert doesNotUse(Iterable<Slice> others) {
+        return usesNot(others);
+    }
+
+    /**
+     * Alias for {@link #usesNot(Slice...)}
+     *
+     * @param others the slices to check dependencies for
+     * @return this instance (fluent API)
+     */
+    public SliceAssert doesNotUse(Slice... others) {
+        return usesNot(others);
+    }
+
     private void addIllegalDependencies(IllegalDependencies illegalDependencies, Slice slice, Iterable<Slice> illegals) {
         for (Clazz clazz : slice.getClazzes()) {
             for (Clazz dependency : clazz.getDependencies().getClazzes()) {
@@ -218,7 +238,7 @@ public class SliceAssert {
     }
 
     private List<Slice> asList() {
-        List list = new ArrayList();
+        List<Slice> list = new ArrayList<Slice>();
         for (Slice slice : slices) {
             list.add(slice);
         }

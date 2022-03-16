@@ -20,8 +20,12 @@ package de.spricom.dessert.assertions;
  * #L%
  */
 
+import de.spricom.dessert.slicing.Clazz;
+import de.spricom.dessert.slicing.PackageSlice;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.util.Dag;
+
+import java.util.*;
 
 /**
  * The default implementation used by dessert-core.
@@ -30,13 +34,72 @@ public class DefaultCycleRenderer implements CycleRenderer {
 
     @Override
     public String renderCycle(Dag<Slice> dag) {
-        StringBuilder sb = new StringBuilder("Cycle:\n");
-        int count = 0;
-        for (Slice n : dag.cycle()) {
-            sb.append(count == 0 ? "" : ",\n");
-            sb.append(n.toString());
-            count++;
+        StringBuilder sb = new StringBuilder("Cycle detected:\n");
+        List<Slice> cycle = dag.cycle();
+        Slice repeated = cycle.get(cycle.size() - 1);
+        Slice m = null;
+        boolean withinCycle = false;
+        for (Slice n : cycle) {
+            if (m == repeated) {
+                withinCycle = true;
+            }
+            if (m != null && withinCycle) {
+                renderDependencies(sb, m, n);
+            }
+            m = n;
         }
         return sb.toString();
+    }
+
+    private void renderDependencies(StringBuilder sb, Slice m, Slice n) {
+        if (m instanceof Clazz && n instanceof Clazz) {
+            sb.append(((Clazz)m).getName()).append(" -> ")
+                    .append(((Clazz)n).getName()).append("\n");
+            return;
+        }
+        if (m instanceof PackageSlice && n instanceof PackageSlice) {
+            sb.append(((PackageSlice)m).getPackageName()).append(" -> ")
+                    .append(((PackageSlice)n).getPackageName()).append(":\n");
+        } else {
+            sb.append(m).append(" -> ").append(n).append(":\n");
+        }
+
+        for (Map.Entry<Clazz, Collection<Clazz>> entry : determineDependencies(m, n).entrySet()) {
+            sb.append("\t").append(shortName(entry.getKey())).append(" -> ");
+            boolean first = true;
+            for (Clazz dep : entry.getValue()) {
+                if (first) {
+                    first = false;
+                } else {
+                    sb.append(", ");
+                }
+                sb.append(shortName(dep));
+            }
+            sb.append("\n");
+        }
+    }
+
+    private String shortName(Clazz clazz) {
+        if (clazz.getPackageName().isEmpty()) {
+            return clazz.getName();
+        }
+        return clazz.getName().substring(clazz.getPackageName().length() + 1);
+    }
+
+    private Map<Clazz, Collection<Clazz>> determineDependencies(Slice m, Slice n) {
+        TreeMap<Clazz, Collection<Clazz>> dependencies = new TreeMap<Clazz, Collection<Clazz>>();
+        for (Clazz clazz : m.getClazzes()) {
+            for (Clazz dep : clazz.getDependencies().getClazzes()) {
+                if (n.contains(dep)) {
+                    Collection<Clazz> deps = dependencies.get(clazz);
+                    if (deps == null) {
+                        deps = new TreeSet<Clazz>();
+                        dependencies.put(clazz, deps);
+                    }
+                    deps.add(dep);
+                }
+            }
+        }
+        return dependencies;
     }
 }
