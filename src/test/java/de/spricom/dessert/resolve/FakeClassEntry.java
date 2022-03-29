@@ -45,7 +45,7 @@ public class FakeClassEntry extends ClassEntry {
     @Override
     public URI getURI() {
         try {
-            return new URI("fake:" + getPackage().getRootFile().getPath().replace(File.separatorChar, '/') + "/" + getClassname());
+            return new URI("fake:" + getPackage().getRoot().getURI().getPath().replace(File.separatorChar, '/') + "/" + getClassname());
         } catch (URISyntaxException ex) {
             throw new IllegalStateException("Invalid URI for " + getClassname(), ex);
         }

@@ -43,9 +43,9 @@ public class DirectoryRootTest {
 
     @Test
     public void testGetResource() {
-        URL expectedUrl1 = this.getClass().getResource(this.getClass().getSimpleName() + ".class");
-        assertThat(expectedUrl1.getProtocol()).isEqualTo("file");
-        URL expectedUrl = expectedUrl1;
+        URL expectedUrl = this.getClass().getResource(this.getClass().getSimpleName() + ".class");
+        assertThat(expectedUrl).isNotNull();
+        assertThat(expectedUrl.getProtocol()).isEqualTo("file");
         String path = getPath();
 
         URL actualUrl = directoryRoot.getResource(path);

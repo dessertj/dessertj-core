@@ -49,16 +49,16 @@ public class ClassFile {
     public static final int ACC_ENUM = 0x4000; // Declared as an enum type.
     public static final int ACC_MODULE = 0x8000; // Is a module, not a class or interface.
 
-    private int minorVersion;
-    private int majorVersion;
-    private ConstantPool constantPool;
-    private int accessFlags;
-    private String thisClass;
-    private String superClass;
+    private final int minorVersion;
+    private final int majorVersion;
+    private final ConstantPool constantPool;
+    private final int accessFlags;
+    private final String thisClass;
+    private final String superClass;
     private String[] interfaces;
     private FieldInfo[] fields;
     private MethodInfo[] methods;
-    private AttributeInfo[] attributes;
+    private final AttributeInfo[] attributes;
 
     public ClassFile(Class<?> clazz) throws IOException {
         this(open(clazz));

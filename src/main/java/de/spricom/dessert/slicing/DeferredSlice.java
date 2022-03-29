@@ -66,7 +66,7 @@ class DeferredSlice extends AbstractSlice {
         if (getClazzes().contains(clazz)) {
             return true;
         }
-        return isConcrete() ? false : true;
+        return !isConcrete();
     }
 
     private boolean isConcrete() {

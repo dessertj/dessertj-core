@@ -27,8 +27,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 final class DirectoryClassEntry extends ClassEntry {
+    private static final Logger log = Logger.getLogger(DirectoryClassEntry.class.getName());
+
     private final File classFile;
 
     DirectoryClassEntry(ClassPackage pckg, File classFile) {
@@ -54,7 +58,7 @@ final class DirectoryClassEntry extends ClassEntry {
                 try {
                     is.close();
                 } catch (IOException ex) {
-                    throw new IllegalStateException("Cannot close stream after reading " + classFile.getAbsolutePath(), ex);
+                    log.log(Level.SEVERE, "Cannot close stream after reading " + classFile.getAbsolutePath(), ex);
                 }
             }
         }

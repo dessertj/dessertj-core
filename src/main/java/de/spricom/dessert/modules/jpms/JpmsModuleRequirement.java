@@ -23,7 +23,7 @@ import de.spricom.dessert.classfile.attribute.ModuleAttribute;
 
 public final class JpmsModuleRequirement {
 
-    private ModuleAttribute.Require requirement;
+    private final ModuleAttribute.Require requirement;
 
     JpmsModuleRequirement(ModuleAttribute.Require requirement) {
         this.requirement = requirement;

@@ -35,7 +35,7 @@ public class TraversalTest implements ClassVisitor {
     private final ClassResolver resolver = new ClassResolver();
     private final FakeRoot root = new FakeRoot(new File("/fakeroot"));
 
-    private List<String> visited = new ArrayList<String>();
+    private final List<String> visited = new ArrayList<String>();
 
     @Before
     public void init() throws IOException {

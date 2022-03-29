@@ -26,7 +26,7 @@ import org.junit.Test;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class DerivedSlicingTest {
-    private Classpath cp = new Classpath();
+    private final Classpath cp = new Classpath();
 
     @Test
     public void test() {

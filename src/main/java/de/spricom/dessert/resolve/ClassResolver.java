@@ -26,6 +26,7 @@ import de.spricom.dessert.util.Predicate;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.net.URL;
 import java.util.*;
 import java.util.jar.Manifest;
@@ -55,7 +56,7 @@ import java.util.logging.Logger;
  * a ClassResolver.</p>
  */
 public final class ClassResolver implements TraversalRoot {
-    private static Logger log = Logger.getLogger(ClassResolver.class.getName());
+    private static final Logger log = Logger.getLogger(ClassResolver.class.getName());
 
     private final List<ClassRoot> path = new ArrayList<ClassRoot>(60);
     private final ClassResolverCache cache = new ClassResolverCache();
@@ -309,12 +310,13 @@ public final class ClassResolver implements TraversalRoot {
         if (pckg == null) {
             return null;
         }
-        if (root.equals(pckg.getRootFile())) {
+        URI rootUri = root.toURI();
+        if (rootUri.equals(pckg.getRoot().getURI())) {
             return pckg;
         }
         if (pckg.getAlternatives() != null) {
             for (ClassPackage alt : pckg.getAlternatives()) {
-                if (root.equals(alt.getRootFile())) {
+                if (rootUri.equals(alt.getRoot().getURI())) {
                     return alt;
                 }
             }
@@ -331,12 +333,13 @@ public final class ClassResolver implements TraversalRoot {
         if (ce == null) {
             return null;
         }
-        if (root.equals(ce.getPackage().getRootFile())) {
+        URI rootUri = root.toURI();
+        if (rootUri.equals(ce.getPackage().getRoot().getURI())) {
             return ce;
         }
         if (ce.getAlternatives() != null) {
             for (ClassEntry alt : ce.getAlternatives()) {
-                if (root.equals(alt.getPackage().getRootFile())) {
+                if (rootUri.equals(alt.getPackage().getRoot().getURI())) {
                     return alt;
                 }
             }

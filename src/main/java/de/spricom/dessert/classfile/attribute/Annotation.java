@@ -29,8 +29,8 @@ import java.io.IOException;
 import java.util.Set;
 
 public class Annotation implements DependencyHolder {
-	private FieldType type;
-	private ElementValuePair[] elementValuePairs;
+	private final FieldType type;
+	private final ElementValuePair[] elementValuePairs;
 
 	public Annotation(DataInputStream is, ConstantPool constantPool) throws IOException {
 		type = constantPool.getFieldType(is.readUnsignedShort());

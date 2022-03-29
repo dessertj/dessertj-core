@@ -31,11 +31,11 @@ import java.util.TreeSet;
 @Ignore
 public class TestGeneratorTool {
 
-    private File testSrcDir = new File("src/test/java");
-    private File targetDir = new File(testSrcDir,
+    private final File testSrcDir = new File("src/test/java");
+    private final File targetDir = new File(testSrcDir,
             TestGeneratorTool.class.getPackage().getName().replace('.', '/'));
-    private File testClassesDir = new File("target/test-classes");
-    private File sampleClassesDir = new File(testClassesDir, "de/spricom/dessert/samples");
+    private final File testClassesDir = new File("target/test-classes");
+    private final File sampleClassesDir = new File(testClassesDir, "de/spricom/dessert/samples");
 
     @Test
     public void generate() throws IOException {

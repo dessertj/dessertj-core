@@ -28,8 +28,8 @@ import java.io.IOException;
 import java.util.Set;
 
 public class ElementValuePair  implements DependencyHolder {
-	private String name;
-	private ElementValue value;
+	private final String name;
+	private final ElementValue value;
 	
 	public ElementValuePair(DataInputStream is, ConstantPool constantPool) throws IOException {
 		name = constantPool.getUtf8String(is.readUnsignedShort());

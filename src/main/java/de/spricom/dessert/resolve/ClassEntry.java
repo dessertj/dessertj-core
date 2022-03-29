@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * A ClassEntry represents a single class file within one classes directory or .jar file.
  * It's linked to the {@link ClassPackage} it belongs to.
- * If there is an other .class file with the same name in some other classes directory or
+ * If there is another .class file with the same name in some other classes directory or
  * .jar file within the {@link ClassResolver} scope it has a reference to a list of all
  * such .class files.
  */

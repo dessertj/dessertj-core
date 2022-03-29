@@ -26,7 +26,7 @@ import java.io.InputStream;
 
 public final class IOUtils {
 
-    private IOUtils() {};
+    private IOUtils() {}
 
     public static byte[] readAll(InputStream in) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();

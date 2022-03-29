@@ -29,8 +29,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 final class JarClassEntry extends ClassEntry {
+    private static final Logger log = Logger.getLogger(JarClassEntry.class.getName());
+
     private final JarFile jarFile;
     private final JarEntry jarEntry;
 
@@ -59,7 +63,7 @@ final class JarClassEntry extends ClassEntry {
                 try {
                     is.close();
                 } catch (IOException ex) {
-                    throw new IllegalStateException("Cannot close stream after reading " + jarEntry.getName() + " from " + jarFile.getName(), ex);
+                    log.log(Level.SEVERE, "Cannot close stream after reading " + jarEntry.getName() + " from " + jarFile.getName(), ex);
                 }
             }
         }

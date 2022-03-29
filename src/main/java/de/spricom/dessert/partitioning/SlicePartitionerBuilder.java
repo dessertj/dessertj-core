@@ -29,7 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class SlicePartitionerBuilder {
-    private List<NamedPredicate> predicates = new LinkedList<NamedPredicate>();
+    private final List<NamedPredicate> predicates = new LinkedList<NamedPredicate>();
 
     public NamedPredicate split(String name) {
         NamedPredicate predicate = new NamedPredicate(name);

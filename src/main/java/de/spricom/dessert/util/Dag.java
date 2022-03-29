@@ -63,7 +63,7 @@ public final class Dag<T> {
         }
     }
 
-    private Map<T, Node<T>> nodes = new HashMap<T, Node<T>>();
+    private final Map<T, Node<T>> nodes = new HashMap<T, Node<T>>();
     private LinkedList<Node<T>> sorted;
     private LinkedList<Node<T>> cycle;
 

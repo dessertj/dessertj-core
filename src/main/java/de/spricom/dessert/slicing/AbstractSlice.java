@@ -53,9 +53,7 @@ public abstract class AbstractSlice implements Slice {
         }
         List<Slice> list = new ArrayList<Slice>(slices.length + 1);
         list.add(this);
-        for (Slice slice : slices) {
-            list.add(slice);
-        }
+        list.addAll(Arrays.asList(slices));
         return new UnionSlice(list);
     }
 

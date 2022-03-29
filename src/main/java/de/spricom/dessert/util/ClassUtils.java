@@ -65,7 +65,7 @@ public final class ClassUtils {
         return name.substring(index + 1);
     }
 
-    public static final File getRootFile(Class<?> clazz) {
+    public static File getRootFile(Class<?> clazz) {
         String filename = "/" + clazz.getName().replace('.', '/') + ".class";
         URL url = clazz.getResource(filename);
         assert url != null : "Resource " + filename + " not found!";

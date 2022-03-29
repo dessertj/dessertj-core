@@ -32,5 +32,5 @@ public @interface SampleAnnotation {
     /**
      * Some samples value.
      */
-    public SomeEnum value();
+    SomeEnum value();
 }

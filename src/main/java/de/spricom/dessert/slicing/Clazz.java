@@ -207,7 +207,6 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
                 throw new IllegalStateException("Cannot convert '" + unknown + "' to URI", ex);
             }
         }
-        assert uri != null : "URI has not been determined";
         return uri;
     }
 

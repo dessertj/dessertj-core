@@ -36,7 +36,7 @@ public class Outer {
         }
     }
 
-    private InnerIfc usage = new Inner();
+    private final InnerIfc usage = new Inner();
 
     public InnerIfc useAnonymous() {
         final String value = "value";

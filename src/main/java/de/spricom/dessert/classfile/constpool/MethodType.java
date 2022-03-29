@@ -46,7 +46,7 @@ public class MethodType  implements DependencyHolder {
 			params.add(param);
 			index += param.getDescriptorLength();
 		}
-		parameterTypes = params.toArray(new FieldType[params.size()]);
+		parameterTypes = params.toArray(new FieldType[0]);
 		index++;
 		returnType = new FieldType(descriptor.substring(index));
 	}

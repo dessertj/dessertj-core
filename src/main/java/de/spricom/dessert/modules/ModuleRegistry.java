@@ -38,7 +38,7 @@ import java.util.logging.Logger;
 public final class ModuleRegistry implements ModuleResolver, ModuleLookup {
     private static final Logger log = Logger.getLogger(ModuleRegistry.class.getName());
 
-    private Map<String, ModuleSlice> modules = new HashMap<String, ModuleSlice>();
+    private final Map<String, ModuleSlice> modules = new HashMap<String, ModuleSlice>();
 
     public ModuleRegistry(ModuleResolver... resolvers) {
         for (ModuleResolver resolver : resolvers) {

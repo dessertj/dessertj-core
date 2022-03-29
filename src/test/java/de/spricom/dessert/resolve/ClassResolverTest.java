@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class ClassResolverTest {
-    private static Logger log = Logger.getLogger(ClassResolverTest.class.getName());
+    private static final Logger log = Logger.getLogger(ClassResolverTest.class.getName());
     private static ClassResolver defaultResolver;
 
     @Test

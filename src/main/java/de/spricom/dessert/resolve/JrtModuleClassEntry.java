@@ -26,8 +26,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 final class JrtModuleClassEntry extends ClassEntry {
+    private static final Logger log = Logger.getLogger(JrtModuleClassEntry.class.getName());
+
     private final URI uri;
 
     JrtModuleClassEntry(ClassPackage pckg, String simpleName, URI uri) {
@@ -50,7 +54,7 @@ final class JrtModuleClassEntry extends ClassEntry {
                 try {
                     is.close();
                 } catch (IOException ex) {
-                    throw new IllegalStateException("Cannot close stream after reading " + uri, ex);
+                    log.log(Level.SEVERE, "Cannot close stream after reading " + uri, ex);
                 }
             }
         }

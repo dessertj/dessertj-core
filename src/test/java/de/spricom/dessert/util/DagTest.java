@@ -28,7 +28,7 @@ public class DagTest {
 
     @Test
     public void cycleWith2Nodes() {
-        Dag dag = new Dag();
+        Dag<Integer> dag = new Dag<Integer>();
         dag.addEdge(1, 2);
         dag.addEdge(2, 1);
         assertThat(dag.isCycleFree()).isFalse();
@@ -37,7 +37,7 @@ public class DagTest {
 
     @Test
     public void twoCycles() {
-        Dag dag = new Dag();
+        Dag<Integer> dag = new Dag<Integer>();
         dag.addEdge(1, 2);
         dag.addEdge(2, 3);
         dag.addEdge(3, 4);
@@ -50,7 +50,7 @@ public class DagTest {
 
     @Test
     public void bigCycle() {
-        Dag dag = new Dag();
+        Dag<Integer> dag = new Dag<Integer>();
         dag.addEdge(1, 2);
         dag.addEdge(2, 3);
         dag.addEdge(3, 4);
@@ -62,7 +62,7 @@ public class DagTest {
 
     @Test
     public void disconnected() {
-        Dag dag = new Dag();
+        Dag<Integer> dag = new Dag<Integer>();
         dag.addEdge(1, 2);
         dag.addEdge(2, 3);
         dag.addEdge(3, 1);
@@ -74,7 +74,7 @@ public class DagTest {
 
     @Test
     public void duplicates() {
-        Dag dag = new Dag();
+        Dag<Integer> dag = new Dag<Integer>();
         for (int i = 0; i < 3; i++) {
             dag.addEdge(1, 2);
             dag.addEdge(2, 3);
@@ -86,7 +86,7 @@ public class DagTest {
 
     @Test
     public void self() {
-        Dag dag = new Dag();
+        Dag<Integer> dag = new Dag<Integer>();
         for (int i = 1; i <= 3; i++) {
             dag.addEdge(i, i);
         }

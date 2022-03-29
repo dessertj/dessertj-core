@@ -21,7 +21,6 @@ package de.spricom.dessert.resolve;
  */
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -31,7 +30,7 @@ final class DirectoryRoot extends ClassRoot {
     }
 
     @Override
-    protected void scan(ClassCollector collector) throws IOException {
+    protected void scan(ClassCollector collector) {
         scan(collector, this, getRootFile(), "");
     }
 

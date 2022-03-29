@@ -133,10 +133,10 @@ public class ElementValue implements DependencyHolder {
 				sb.append(constantValue.getValue());
 				break;
 			case 's':
-				sb.append("\"" + constantValue.getValue() + "\"");
+				sb.append('"').append(constantValue.getValue()).append('"');
 				break;
 			case 'e':
-				sb.append("enum " + type + ": " + constantValue.getValue());
+				sb.append("enum ").append(type).append(": ").append(constantValue.getValue());
 				break;
 			case 'c':
 				sb.append("class ").append(type);

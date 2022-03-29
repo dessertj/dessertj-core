@@ -38,7 +38,7 @@ public enum ReferenceKind {
 
     public final String interpretation;
 
-    private ReferenceKind(String interpretation) {
+    ReferenceKind(String interpretation) {
         this.interpretation = interpretation;
     }
 }
