@@ -36,7 +36,7 @@ public final class ClassUtils {
     private ClassUtils(){}
 
     /**
-     * Each .class file has a unique URI combined from the URI to its root, the path within
+     * Each .class file has a unique URI combined from the URI of its root, the path within
      * the package structure and the filename.
      *
      * @param clazz the {@link Class} to determine the {@link URI} for
