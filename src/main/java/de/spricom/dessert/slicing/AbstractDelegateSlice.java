@@ -80,6 +80,11 @@ public abstract class AbstractDelegateSlice implements Slice {
     }
 
     @Override
+    public Slice dependencyClosure(Slice within) {
+        return getDelegate().dependencyClosure(within);
+    }
+
+    @Override
     public boolean contains(Clazz entry) {
         return getDelegate().contains(entry);
     }

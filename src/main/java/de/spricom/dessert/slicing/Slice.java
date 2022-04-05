@@ -123,6 +123,15 @@ public interface Slice {
     Slice slice(Predicate<Clazz> predicate);
 
     /**
+     * Calculates the transitive closure of this slice's classes and their dependencies
+     * intersected with the <i>within</i> slice.
+     *
+     * @param within the slice within which the transitive closure is calculated
+     * @return the transitive closure of this slice and it's dependencies
+     */
+    Slice dependencyClosure(Slice within);
+
+    /**
      * Check whether a class belongs to a slice.
      *
      * @param clazz the Clazz

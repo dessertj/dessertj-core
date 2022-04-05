@@ -122,6 +122,17 @@ public abstract class AbstractSlice implements Slice {
     }
 
     @Override
+    public Slice dependencyClosure(Slice within) {
+        Slice result = this.slice(within);
+        int count;
+        do {
+            count = result.getClazzes().size();
+            result = result.plus(result.getDependencies()).slice(within);
+        } while (result.getClazzes().size() != count);
+        return result;
+    }
+
+    @Override
     public ConcreteSlice getDependencies() {
         Set<Clazz> dependencies = new HashSet<Clazz>();
         for (Clazz clazz : getClazzes()) {
