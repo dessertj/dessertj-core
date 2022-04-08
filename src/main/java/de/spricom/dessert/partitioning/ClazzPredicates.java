@@ -22,6 +22,8 @@ package de.spricom.dessert.partitioning;
 
 import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.slicing.Clazz;
+import de.spricom.dessert.slicing.Slice;
+import de.spricom.dessert.util.AnnotationPattern;
 import de.spricom.dessert.util.Predicate;
 import de.spricom.dessert.util.Predicates;
 
@@ -126,6 +128,21 @@ public final class ClazzPredicates {
                 return false;
             }
         };
+    }
+
+    public static Predicate<Clazz> hostedBy(final Clazz host) {
+        return new Predicate<Clazz>() {
+            private Slice nest = host.getNest();
+
+            @Override
+            public boolean test(Clazz clazz) {
+                return nest.contains(clazz);
+            }
+        };
+    }
+
+    public static Predicate<Clazz> matchesAnnotation(final AnnotationPattern annotationPattern) {
+        return matchesClassFile(new AnnotationMatcher(annotationPattern));
     }
 
     public static Predicate<Clazz> matchesClassFile(final Predicate<ClassFile> classFilePredicate) {

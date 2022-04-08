@@ -291,6 +291,14 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
         return implementedInterfaces;
     }
 
+    public Clazz getHost() {
+        return this; // TODO
+    }
+
+    public Slice getNest() {
+        return this; // TODO
+    }
+
     public ConcreteSlice getDependencies() {
         if (dependencies == null && classFile != null) {
             Set<Clazz> deps = new HashSet<Clazz>(classFile.getDependentClasses().size());
