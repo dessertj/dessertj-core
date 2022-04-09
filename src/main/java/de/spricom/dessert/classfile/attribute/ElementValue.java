@@ -120,7 +120,6 @@ public class ElementValue implements DependencyHolder {
 
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(tag).append(":");
 		switch (tag) {
 			case 'B':
 			case 'C':
@@ -136,10 +135,10 @@ public class ElementValue implements DependencyHolder {
 				sb.append('"').append(constantValue.getValue()).append('"');
 				break;
 			case 'e':
-				sb.append("enum ").append(type).append(": ").append(constantValue.getValue());
+				sb.append(type).append(".").append(constantValue.getValue());
 				break;
 			case 'c':
-				sb.append("class ").append(type);
+				sb.append(type).append(".class");
 				break;
 			case '@':
 				sb.append(annotation);

@@ -56,9 +56,19 @@ public class Annotation implements DependencyHolder {
 	}
 
 	public String toString() {
-		StringBuilder sb = new StringBuilder(type.toString());
-		for (ElementValuePair pair : elementValuePairs) {
-			sb.append(" ").append(pair);
+		StringBuilder sb = new StringBuilder("@" + type.toString());
+		if (elementValuePairs.length > 0) {
+			boolean first = true;
+			sb.append("(");
+			for (ElementValuePair pair : elementValuePairs) {
+				if (first) {
+					first = false;
+				} else {
+					sb.append(", ");
+				}
+				sb.append(pair);
+			}
+			sb.append(")");
 		}
 		return sb.toString();
 	}

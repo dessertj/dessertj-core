@@ -52,14 +52,9 @@ abstract class AbstractRuntimeAnnotationsAttribute extends AttributeInfo {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder(super.toString());
-		boolean first = true;
+        sb.append(":");
 		for (Annotation annotation : annotations) {
-			if (first) {
-				sb.append(": ");
-				first = false;
-			} else {
-				sb.append(", ");
-			}
+            sb.append("\n\t\t\t\t");
 			sb.append(annotation);
 		}
 		return sb.toString();
