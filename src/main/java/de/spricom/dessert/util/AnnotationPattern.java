@@ -65,46 +65,10 @@ public final class AnnotationPattern {
         return new Member(name, Boolean.valueOf(value));
     }
 
-    public static Member member(String name, boolean[] value) {
+    public static Member member(String name, boolean... value) {
         Boolean[] boxed = new Boolean[value.length];
         for (int i = 0; i < value.length; i++) {
             boxed[i] = Boolean.valueOf(value[i]);
-        }
-        return new Member(name, boxed);
-    }
-
-    public static Member member(String name, byte value) {
-        return new Member(name, Byte.valueOf(value));
-    }
-
-    public static Member member(String name, byte[] value) {
-        Byte[] boxed = new Byte[value.length];
-        for (int i = 0; i < value.length; i++) {
-            boxed[i] = Byte.valueOf(value[i]);
-        }
-        return new Member(name, boxed);
-    }
-
-    public static Member member(String name, char value) {
-        return new Member(name, Character.valueOf(value));
-    }
-
-    public static Member member(String name, char[] value) {
-        Character[] boxed = new Character[value.length];
-        for (int i = 0; i < value.length; i++) {
-            boxed[i] = Character.valueOf(value[i]);
-        }
-        return new Member(name, boxed);
-    }
-
-    public static Member member(String name, short value) {
-        return new Member(name, Short.valueOf(value));
-    }
-
-    public static Member member(String name, short[] value) {
-        Short[] boxed = new Short[value.length];
-        for (int i = 0; i < value.length; i++) {
-            boxed[i] = Short.valueOf(value[i]);
         }
         return new Member(name, boxed);
     }
@@ -113,7 +77,7 @@ public final class AnnotationPattern {
         return new Member(name, Integer.valueOf(value));
     }
 
-    public static Member member(String name, int[] value) {
+    public static Member member(String name, int... value) {
         Integer[] boxed = new Integer[value.length];
         for (int i = 0; i < value.length; i++) {
             boxed[i] = Integer.valueOf(value[i]);
@@ -161,7 +125,7 @@ public final class AnnotationPattern {
         return new Member(name, value);
     }
 
-    public static Member member(String name, String[] value) {
+    public static Member member(String name, String... value) {
         return new Member(name, value);
     }
 
@@ -169,7 +133,7 @@ public final class AnnotationPattern {
         return new Member(name, value);
     }
 
-    public static Member member(String name, Enum<?>[] value) {
+    public static Member member(String name, Enum<?>... value) {
         return new Member(name, value);
     }
 
@@ -177,7 +141,7 @@ public final class AnnotationPattern {
         return new Member(name, value);
     }
 
-    public static Member member(String name, Class<?>[] value) {
+    public static Member member(String name, Class<?>... value) {
         return new Member(name, value);
     }
 
@@ -185,7 +149,7 @@ public final class AnnotationPattern {
         return new Member(name, value);
     }
 
-    public static Member member(String name, AnnotationPattern[] value) {
+    public static Member member(String name, AnnotationPattern... value) {
         return new Member(name, value);
     }
 
@@ -205,5 +169,22 @@ public final class AnnotationPattern {
             this.name = name;
             this.value = value;
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(256);
+        sb.append("@").append(annotationClassName).append("(");
+        boolean first = true;
+        for (Map.Entry<String, Object> member : annotationMembers.entrySet()) {
+            if (first) {
+                first = false;
+            } else {
+                sb.append(", ");
+            }
+            sb.append(member.getKey()).append("=").append(member.getValue());
+        }
+        sb.append(")");
+        return sb.toString();
     }
 }

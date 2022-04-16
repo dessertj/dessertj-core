@@ -1,4 +1,4 @@
-package de.spricom.dessert.util;
+package de.spricom.dessert.partitioning;
 
 /*-
  * #%L
@@ -19,27 +19,6 @@ package de.spricom.dessert.util;
  * limitations under the License.
  * #L%
  */
-import java.util.LinkedList;
-import java.util.List;
-
-public final class ArrayUtils {
-    private ArrayUtils() {}
-
-    public static <T> List<T> filter(T[] array, Predicate<T> predicate) {
-        List<T> matches = new LinkedList<T>();
-        if (array == null) {
-            return matches;
-        }
-        for (T element : array) {
-            if (predicate.test(element)) {
-                matches.add(element);
-            }
-        }
-        return matches;
-    }
-
-    public static <T> T findFirst(T[] array, Predicate<T> predicate) {
-        List<T> matches = filter(array, predicate);
-        return matches.isEmpty() ? null : matches.get(0);
-    }
+public @interface CheckElement {
+    Class<?>[] value();
 }

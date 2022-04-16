@@ -122,28 +122,31 @@ public class ElementValue implements DependencyHolder {
 		StringBuilder sb = new StringBuilder();
 		switch (tag) {
 			case 'B':
-			case 'C':
 			case 'D':
 			case 'F':
 			case 'I':
 			case 'J':
 			case 'S':
-			case 'Z':
 			case 'e':
+			case 's':
 				sb.append(constantValue.getValue());
 				break;
-			case 's':
-				sb.append('"').append(constantValue.getValue()).append('"');
+			case 'Z':
+				sb.append(Integer.valueOf(1).equals(constantValue.getValue()));
+				break;
+			case 'C':
+				sb.append((char)Integer.parseInt(constantValue.getValue().toString()));
 				break;
 			case 'c':
-				sb.append(type).append(".class");
+				sb.append("class ").append(type);
 				break;
 			case '@':
 				sb.append(annotation);
 				break;
 			case '[':
+				sb.append("[");
 				for (ElementValue value : values) {
-					if (sb.length() > 2) {
+					if (sb.length() >= 2) {
 						sb.append(", ");
 					}
 					sb.append(value);

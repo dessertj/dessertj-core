@@ -130,11 +130,15 @@ class AnnotationMatcher implements Predicate<ClassFile> {
             case 'I':
             case 'J':
             case 'S':
-            case 'Z':
-            case 'e':
             case 's':
+                return patternValue.equals(value.getConstantValue().getValue());
+            case 'Z':
+                return patternValue.equals(Integer.valueOf(1).equals(value.getConstantValue().getValue()));
+            case 'e':
+                return patternValue.getClass().getName().equals(value.getType().getDeclaration())
+                        && patternValue.toString().equals(value.getConstantValue().getValue());
             case 'c':
-                return patternValue.equals(value.getConstantValue());
+                return ((Class<?>)patternValue).getName().equals(value.getType().getDeclaration());
             case '@':
                 return new AnnotationMatcher((AnnotationPattern) patternValue).matches(value.getAnnotation());
             case '[':
@@ -145,13 +149,16 @@ class AnnotationMatcher implements Predicate<ClassFile> {
     }
 
     private boolean matches(ElementValue[] values, Object patternValue) {
-        Object[] patternValues = (Object[]) patternValue;
+        Object[] patternValues = patternValue instanceof Object[]
+                ? (Object[]) patternValue
+                : new Object[] {patternValue};
         if (values.length != patternValues.length) {
             return false;
         }
         BitSet matches = new BitSet((patternValues).length);
         for (ElementValue value : values) {
-            for (int i = matches.nextClearBit(0); i < patternValues.length; i = matches.nextClearBit(i)) {
+            for (int i = matches.nextClearBit(0);
+                 i < patternValues.length; i = matches.nextClearBit(i + 1)) {
                 if (matches(value, patternValues[i])) {
                     matches.set(i);
                     break;
