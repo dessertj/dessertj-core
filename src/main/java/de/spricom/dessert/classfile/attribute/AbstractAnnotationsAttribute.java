@@ -26,10 +26,10 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Set;
 
-abstract class AbstractRuntimeAnnotationsAttribute extends AttributeInfo {
+public abstract class AbstractAnnotationsAttribute extends AttributeInfo {
 	private final Annotation[] annotations;
 
-	protected AbstractRuntimeAnnotationsAttribute(String name, DataInputStream is, ConstantPool constantPool)
+	AbstractAnnotationsAttribute(String name, DataInputStream is, ConstantPool constantPool)
 			throws IOException {
 		super(name);
 		is.readInt(); // skip length

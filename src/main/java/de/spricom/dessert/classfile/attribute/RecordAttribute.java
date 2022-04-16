@@ -73,6 +73,9 @@ public class RecordAttribute extends AttributeInfo {
         void appendString(StringBuilder sb) {
             sb.append(type.toString());
             sb.append(" ").append(name);
+            for (AttributeInfo attribute : attributes) {
+                sb.append("\n\t\t\t\t").append(attribute);
+            }
         }
     }
 

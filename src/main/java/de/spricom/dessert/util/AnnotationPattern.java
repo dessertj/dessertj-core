@@ -37,12 +37,12 @@ public final class AnnotationPattern {
         this.annotationMembers = annotationMembers;
     }
 
-    public static AnnotationPattern of(String pattern) {
-        Assertions.notNull(pattern, "pattern");
-        if (!pattern.startsWith("@")) {
-            throw new IllegalArgumentException("pattern does not start with @");
-        }
-        return new AnnotationPattern(pattern.substring(1), Collections.<String, Object>emptyMap());
+    public String getAnnotationClassName() {
+        return annotationClassName;
+    }
+
+    public Map<String, Object> getAnnotationMembers() {
+        return annotationMembers;
     }
 
     public static AnnotationPattern of(Class<? extends Annotation> annotation) {

@@ -116,10 +116,6 @@ public abstract class AttributeInfo implements DependencyHolder {
         return context;
     }
 
-    public AttributeInfo[] getAttributes() {
-        return new AttributeInfo[0];
-    }
-
     public String toString() {
         return getName();
     }

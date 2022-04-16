@@ -20,28 +20,50 @@ package de.spricom.dessert.util;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-public class PermutationUtils {
+public class CombinationUtils {
 
-    public static <T> List<Pair<T>> permuteAsList(final List<T> list) {
-        List<Pair<T>> results = new ArrayList<Pair<T>>(pairs(list.size()));
-        for (Pair<T> tPair : permute(list)) {
+    public static <T> List<Pair<T>> combinationsAsList(final List<T> list) {
+        return asList(combinations(list), combinations(list.size()));
+    }
+
+    public static <T> List<Pair<T>> combinationsSortedAsList(final List<T> list) {
+        return asList(combinationsSorted(list), combinationsSorted(list.size()));
+    }
+
+    private static <T> List<Pair<T>> asList(Iterable<Pair<T>> iter, int capacity) {
+        List<Pair<T>> results = new ArrayList<Pair<T>>(capacity);
+        for (Pair<T> tPair : iter) {
             results.add(tPair);
         }
         return results;
     }
 
-    public static <T> Iterable<Pair<T>> permute(final List<T> list) {
+    public static <T> Iterable<Pair<T>> combinations(final List<T> list) {
         return new Iterable<Pair<T>>() {
             @Override
             public Iterator<Pair<T>> iterator() {
                 return both(pairs(list));
             }
         };
+    }
+
+    public static <T> Iterable<Pair<T>> combinationsSorted(final List<T> list) {
+        return new Iterable<Pair<T>>() {
+            @Override
+            public Iterator<Pair<T>> iterator() {
+                return pairs(list);
+            }
+        };
+    }
+
+    public static List<Integer> indexes(int size) {
+        Integer[] indexes = new Integer[size];
+        for (int i = 0; i < size; i++) {
+            indexes[i] = i;
+        }
+        return Arrays.asList(indexes);
     }
 
     private static <T> Iterator<Pair<T>> both(final Iterator<Pair<T>> pairs) {
@@ -104,12 +126,30 @@ public class PermutationUtils {
         };
     }
 
-    public static int pairs(int n) {
-        return factorial(n) / factorial(n - 2);
+    public static int combinations(int n) {
+        return combinationsSorted(n) * 2;
     }
 
+    public static int combinationsSorted(int n) {
+        return binominal(n, 2);
+    }
+
+    /**
+     * Caclulates @{code factorial(n) / (factorial(k) * factorial(n - k))}.
+     *
+     * @param n number of different values
+     * @param k number of slots
+     * @return number of possible combinations
+     */
     public static int binominal(int n, int k) {
-        return factorial(n) / (factorial(n - k) * factorial(k));
+        if (k * 2 > n) {
+            k = n - k;
+        }
+        int result = 1;
+        for (int i = 1; i <= k; i++) {
+            result = result * (n + 1 - i) / i;
+        }
+        return result;
     }
 
     public static int factorial(final int n) {

@@ -88,12 +88,20 @@ public class CodeAttribute extends AttributeInfo {
         this.exceptionTable = exceptionTable;
     }
 
-    @Override
     public AttributeInfo[] getAttributes() {
         return attributes;
     }
 
     public void setAttributes(AttributeInfo[] attributes) {
         this.attributes = attributes;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder(256);
+        sb.append(super.toString());
+        for (AttributeInfo attribute : attributes) {
+            sb.append("\n\t\t\t\t").append(attribute);
+        }
+        return sb.toString();
     }
 }

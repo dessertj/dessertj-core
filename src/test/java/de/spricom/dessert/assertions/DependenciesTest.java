@@ -145,9 +145,9 @@ public class DependenciesTest {
         // Packages outside the 'classfile' package must not use anything but the ClassFile facade.
         // The only exception are modules which may use attributes.
         Slice attributes = classfile.slice("..classfile.attribute.*");
-        dessert(main.minus(classfile))
+        dessert(main.minus(classfile, cp.asClazz("de.spricom.dessert.partitioning.AnnotationMatcher")))
                 .usesNot(classfile.minus(cp.asClazz(ClassFile.class), attributes));
-        dessert(main.minus(classfile).minus("..dessert.modules..*"))
+        dessert(main.minus(classfile).minus("..dessert.modules..*").minus("..dessert.partitioning.AnnotationMatcher"))
                 .usesNot(classfile.minus(cp.asClazz(ClassFile.class)));
     }
 }

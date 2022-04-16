@@ -30,7 +30,7 @@ import java.io.IOException;
  * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.18" target="_blank">
  * Java Virtual Machine Specification: 4.7.18. The RuntimeVisibleParameterAnnotations Attribute</a>.
  */
-public class RuntimeVisibleParameterAnnotationsAttribute extends AbstractRuntimeParameterAnnotationsAttribute {
+public class RuntimeVisibleParameterAnnotationsAttribute extends AbstractParameterAnnotationsAttribute {
 
     public RuntimeVisibleParameterAnnotationsAttribute(String name, DataInputStream is, ConstantPool constantPool)
             throws IOException {

@@ -190,7 +190,6 @@ public class ClassFile {
     private void dump(AttributeInfo[] attributes, StringBuilder sb, String indent) {
         for (AttributeInfo attribute : attributes) {
             sb.append(indent).append("attribute: ").append(attribute).append("\n");
-            dump(attribute.getAttributes(), sb, indent + "\t");
         }
     }
 

@@ -30,7 +30,7 @@ import java.io.IOException;
  * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.17" target="_blank">
  * Java Virtual Machine Specification: 4.7.17. The RuntimeInvisibleAnnotations Attribute</a>.
  */
-public class RuntimeInvisibleAnnotationsAttribute extends AbstractRuntimeAnnotationsAttribute {
+public class RuntimeInvisibleAnnotationsAttribute extends AbstractAnnotationsAttribute {
 
 	public RuntimeInvisibleAnnotationsAttribute(String name, DataInputStream is, ConstantPool constantPool)
 			throws IOException {
