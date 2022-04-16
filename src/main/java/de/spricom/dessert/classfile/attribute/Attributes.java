@@ -19,6 +19,7 @@ package de.spricom.dessert.classfile.attribute;
  * limitations under the License.
  * #L%
  */
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,7 +29,6 @@ import java.util.List;
 public final class Attributes {
 
     private Attributes() {
-
     }
 
     public static <A extends AttributeInfo> List<A> filter(AttributeInfo[] attributes, Class<A> attributeClass) {

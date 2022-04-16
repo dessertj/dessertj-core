@@ -37,19 +37,61 @@ public class AnnotationsTest {
     @Test
     public void testAnnotatedObject() throws IOException {
         ClassFile cf = new ClassFile(AnnotatedObject.class);
-        System.out.println(cf.dump());
-
         Set<String> dependentClasses = cf.getDependentClasses();
         assertThat(dependentClasses).containsOnly(
-                "de.spricom.dessert.samples.annotations.SampleAnnotation",
-                "de.spricom.dessert.samples.enums.SomeEnum",
                 "de.spricom.dessert.samples.annotations.InvisibleAnnotation",
                 "de.spricom.dessert.samples.annotations.InvisibleArg",
+                "de.spricom.dessert.samples.annotations.SampleAnnotation",
+                "de.spricom.dessert.samples.enums.SomeEnum",
                 "java.io.PrintStream",
                 "java.lang.Object",
                 "java.lang.String",
                 "java.lang.StringBuilder",
                 "java.lang.System");
+    }
+
+    @Test
+    public void testInvisibleAnnotation() throws IOException {
+        ClassFile cf = new ClassFile(InvisibleAnnotation.class);
+        Set<String> dependentClasses = cf.getDependentClasses();
+        assertThat(dependentClasses).containsOnly(
+                "de.spricom.dessert.samples.annotations.InvisibleNestedAnnotation",
+                "java.lang.Object",
+                "java.lang.String",
+                "java.lang.annotation.Annotation",
+                "java.lang.annotation.Documented",
+                "java.lang.annotation.ElementType",
+                "java.lang.annotation.Inherited",
+                "java.lang.annotation.Retention",
+                "java.lang.annotation.RetentionPolicy",
+                "java.lang.annotation.Target");
+    }
+
+    @Test
+    public void testInvisibleArg() throws IOException {
+        ClassFile cf = new ClassFile(InvisibleArg.class);
+        Set<String> dependentClasses = cf.getDependentClasses();
+        assertThat(dependentClasses).containsOnly(
+                "java.lang.Object",
+                "java.lang.annotation.Annotation",
+                "java.lang.annotation.ElementType",
+                "java.lang.annotation.Retention",
+                "java.lang.annotation.RetentionPolicy",
+                "java.lang.annotation.Target");
+    }
+
+    @Test
+    public void testInvisibleNestedAnnotation() throws IOException {
+        ClassFile cf = new ClassFile(InvisibleNestedAnnotation.class);
+        Set<String> dependentClasses = cf.getDependentClasses();
+        assertThat(dependentClasses).containsOnly(
+                "java.lang.Object",
+                "java.lang.annotation.Annotation",
+                "java.lang.annotation.Documented",
+                "java.lang.annotation.ElementType",
+                "java.lang.annotation.Retention",
+                "java.lang.annotation.RetentionPolicy",
+                "java.lang.annotation.Target");
     }
 
     @Test
@@ -101,23 +143,6 @@ public class AnnotationsTest {
                 "java.lang.String",
                 "java.lang.StringBuilder",
                 "java.lang.System");
-    }
-
-    @Test
-    public void testInvisibleAnnotation() throws IOException {
-        ClassFile cf = new ClassFile(InvisibleAnnotation.class);
-        Set<String> dependentClasses = cf.getDependentClasses();
-        assertThat(dependentClasses).containsOnly(
-                "de.spricom.dessert.samples.annotations.InvisibleNestedAnnotation",
-                "java.lang.String",
-                "java.lang.annotation.Documented",
-                "java.lang.annotation.Inherited",
-                "java.lang.Object",
-                "java.lang.annotation.Annotation",
-                "java.lang.annotation.ElementType",
-                "java.lang.annotation.Retention",
-                "java.lang.annotation.RetentionPolicy",
-                "java.lang.annotation.Target");
     }
 
     @Test

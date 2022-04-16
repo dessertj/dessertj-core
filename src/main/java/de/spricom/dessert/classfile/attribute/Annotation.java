@@ -56,10 +56,10 @@ public class Annotation implements DependencyHolder {
 	}
 
 	public String toString() {
-		StringBuilder sb = new StringBuilder("@" + type.toString());
+		StringBuilder sb = new StringBuilder(256);
+		sb.append("@").append(type.toString()).append("(");
 		if (elementValuePairs.length > 0) {
 			boolean first = true;
-			sb.append("(");
 			for (ElementValuePair pair : elementValuePairs) {
 				if (first) {
 					first = false;
@@ -68,8 +68,8 @@ public class Annotation implements DependencyHolder {
 				}
 				sb.append(pair);
 			}
-			sb.append(")");
 		}
+		sb.append(")");
 		return sb.toString();
 	}
 }
