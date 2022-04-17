@@ -24,7 +24,7 @@ import java.util.BitSet;
 
 /**
  * Representes a
- * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.4.12" target="_blank">
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se18/html/jvms-4.html#jvms-4.4.12" target="_blank">
  * Java Virtual Machine Specification: 4.4.12. The CONSTANT_Package_info Structure</a>.
  */
 class ConstantPackage extends ConstantPoolEntry {

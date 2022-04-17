@@ -19,6 +19,7 @@ package de.spricom.dessert.partitioning;
  * limitations under the License.
  * #L%
  */
+
 import de.spricom.dessert.classfile.ClassFile;
 import de.spricom.dessert.classfile.MethodInfo;
 import de.spricom.dessert.classfile.attribute.Attributes;
@@ -168,7 +169,7 @@ public class AnnotationsMatcherTest {
     }
 
     @Test
-    @Ignore
+    @Ignore("member order changes")
     @CheckToString(element = @CheckElement({Short.class, Long.class}),
             shortValue = 5, longValue = 4, strings={"A", "B"}, doubleValue = 7.0,
             doubles={5,6}, floatValue = 8,

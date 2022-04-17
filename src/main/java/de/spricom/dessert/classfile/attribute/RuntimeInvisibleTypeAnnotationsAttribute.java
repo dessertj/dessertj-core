@@ -19,37 +19,21 @@ package de.spricom.dessert.classfile.attribute;
  * limitations under the License.
  * #L%
  */
+
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.Set;
 
 /**
  * Representes a
- * <a href="https://docs.oracle.com/javase/specs/jvms/se18/html/jvms-4.html#jvms-4.7.27" target="_blank">
- * Java Virtual Machine Specification: 4.7.27. The ModuleMainClass Attribute</a>.
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se18/html/jvms-4.html#jvms-4.7.21" target="_blank">
+ * Java Virtual Machine Specification: 4.7.21. The RuntimeInvisibleTypeAnnotations Attribute</a>.
  */
-public class ModuleMainClassAttribute extends AttributeInfo {
+public class RuntimeInvisibleTypeAnnotationsAttribute extends AbstractTypeAnnotationsAttribute {
 
-    private final String mainClassName;
-
-    public ModuleMainClassAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
-        super(name);
-        skipLength(is);
-        mainClassName = constantPool.getConstantClassName(is.readUnsignedShort());
-    }
-
-    public String getMainClassName() {
-        return mainClassName;
-    }
-
-    public void addDependentClassNames(Set<String> classNames) {
-        classNames.add(mainClassName);
-    }
-
-    @Override
-    public String toString() {
-        return getName() + ": " + mainClassName;
-    }
+	public RuntimeInvisibleTypeAnnotationsAttribute(String name, DataInputStream is, ConstantPool constantPool)
+			throws IOException {
+		super(name, is, constantPool);
+	}
 }

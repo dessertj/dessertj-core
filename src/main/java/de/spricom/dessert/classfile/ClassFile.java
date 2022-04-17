@@ -33,7 +33,7 @@ import java.util.TreeSet;
 
 /**
  * Wraps the information contained in a .class file according
- * to the <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html" target="_blank">
+ * to the <a href="https://docs.oracle.com/javase/specs/jvms/se18/html/jvms-4.html" target="_blank">
  * Java Virtual Machine Specification</a>.
  */
 public class ClassFile {

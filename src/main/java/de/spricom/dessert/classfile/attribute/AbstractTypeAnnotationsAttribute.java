@@ -26,37 +26,37 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Set;
 
-/**
- * Representes a
- * <a href="https://docs.oracle.com/javase/specs/jvms/se18/html/jvms-4.html#jvms-4.7.9" target="_blank">
- * Java Virtual Machine Specification: 4.7.9. The Signature Attribute</a>.
- */
-public class SignatureAttribute extends AttributeInfo {
+public abstract class AbstractTypeAnnotationsAttribute extends AttributeInfo {
+	private final TypeAnnotation[] typeAnnotations;
 
-	private final String signature;
-
-	public SignatureAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
+	AbstractTypeAnnotationsAttribute(String name, DataInputStream is, ConstantPool constantPool)
+			throws IOException {
 		super(name);
-		skipLength(is);
-		signature = constantPool.getUtf8String(is.readUnsignedShort());
-	}
-
-	@Override
-	public void addDependentClassNames(Set<String> classNames) {
-		SignatureParser parser = new SignatureParser(signature, classNames);
-		switch (getContext()) {
-		case CLASS:
-			parser.parseClassSignature();
-			break;
-		case METHOD:
-			parser.parseMethodSignature();
-			break;
-		case FIELD:
-			parser.parseFieldSignature();
-			break;
-		default:
-			throw new IllegalArgumentException("Signature attribute not supported for context " + getContext() + "!");
+		is.readInt(); // skip length
+		typeAnnotations = new TypeAnnotation[is.readUnsignedShort()];
+		for (int i = 0; i < typeAnnotations.length; i++) {
+			typeAnnotations[i] = new TypeAnnotation(is, constantPool);
 		}
 	}
 
+	public TypeAnnotation[] getTypeAnnotations() {
+		return typeAnnotations;
+	}
+
+	public void addDependentClassNames(Set<String> classNames) {
+		for (TypeAnnotation annotation : typeAnnotations) {
+			annotation.addDependentClassNames(classNames);
+		}
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder(super.toString());
+        sb.append(":");
+		for (TypeAnnotation typeAnnotation : typeAnnotations) {
+            sb.append("\n\t\t\t\t");
+			sb.append(typeAnnotation);
+		}
+		return sb.toString();
+	}
 }

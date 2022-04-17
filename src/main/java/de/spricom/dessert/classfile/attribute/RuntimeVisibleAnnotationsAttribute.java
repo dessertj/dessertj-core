@@ -27,7 +27,7 @@ import java.io.IOException;
 
 /**
  * Representes a
- * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.16" target="_blank">
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se18/html/jvms-4.html#jvms-4.7.16" target="_blank">
  * Java Virtual Machine Specification: 4.7.16. The RuntimeVisibleAnnotations Attribute</a>.
  */
 public class RuntimeVisibleAnnotationsAttribute extends AbstractAnnotationsAttribute {

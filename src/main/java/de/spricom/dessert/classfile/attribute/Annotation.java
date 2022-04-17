@@ -40,19 +40,19 @@ public class Annotation implements DependencyHolder {
 		}
 	}
 
-	public void addDependentClassNames(Set<String> classNames) {
-		type.addDependentClassNames(classNames);
-		for (ElementValuePair pair : elementValuePairs) {
-			pair.addDependentClassNames(classNames);
-		}
-	}
-
 	public FieldType getType() {
 		return type;
 	}
 
 	public ElementValuePair[] getElementValuePairs() {
 		return elementValuePairs;
+	}
+
+	public void addDependentClassNames(Set<String> classNames) {
+		type.addDependentClassNames(classNames);
+		for (ElementValuePair pair : elementValuePairs) {
+			pair.addDependentClassNames(classNames);
+		}
 	}
 
 	public String toString() {

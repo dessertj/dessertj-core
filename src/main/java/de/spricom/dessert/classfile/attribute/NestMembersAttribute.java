@@ -30,7 +30,7 @@ import java.util.Set;
 
 /**
  * Representes a
- * <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-4.html#jvms-4.7.29" target="_blank">
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se18/html/jvms-4.html#jvms-4.7.29" target="_blank">
  * Java Virtual Machine Specification: 4.7.29. The NestMembers Attribute</a>.
  */
 public class NestMembersAttribute extends AttributeInfo {

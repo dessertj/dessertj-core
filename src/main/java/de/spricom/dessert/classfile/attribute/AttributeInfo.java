@@ -49,6 +49,10 @@ public abstract class AttributeInfo implements DependencyHolder {
                 attributes[i] = new RuntimeVisibleParameterAnnotationsAttribute(name, is, constantPool);
             } else if ("RuntimeInvisibleParameterAnnotations".equals(name)) {
                 attributes[i] = new RuntimeInvisibleParameterAnnotationsAttribute(name, is, constantPool);
+            } else if ("RuntimeVisibleTypeAnnotations".equals(name)) {
+                attributes[i] = new RuntimeVisibleTypeAnnotationsAttribute(name, is, constantPool);
+            } else if ("RuntimeInvisibleTypeAnnotations".equals(name)) {
+                attributes[i] = new RuntimeInvisibleTypeAnnotationsAttribute(name, is, constantPool);
             } else if ("Signature".equals(name)) {
                 attributes[i] = new SignatureAttribute(name, is, constantPool);
             } else if ("EnclosingMethod".equals(name)) {

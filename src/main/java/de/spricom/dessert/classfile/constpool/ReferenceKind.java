@@ -22,7 +22,7 @@ package de.spricom.dessert.classfile.constpool;
 
 /**
  * Bytecode Behaviors for Method Handles.
- * See <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-5.html#jvms-5.4.3.5" target="_blank">Method Type and Method Handle Resolution</a>.
+ * See <a href="https://docs.oracle.com/javase/specs/jvms/se18/html/jvms-5.html#jvms-5.4.3.5" target="_blank">Method Type and Method Handle Resolution</a>.
  */
 public enum ReferenceKind {
     NONE("not defined"),
