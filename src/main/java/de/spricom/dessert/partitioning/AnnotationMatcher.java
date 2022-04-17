@@ -77,8 +77,7 @@ class AnnotationMatcher implements Predicate<ClassFile> {
                 if (matchesAny(annotationsAttribute.getAnnotations())) {
                     return true;
                 }
-            }
-            if (attribute instanceof AbstractParameterAnnotationsAttribute) {
+            } else if (attribute instanceof AbstractParameterAnnotationsAttribute) {
                 AbstractParameterAnnotationsAttribute annotationsAttribute =
                         (AbstractParameterAnnotationsAttribute) attribute;
                 for (ParameterAnnotation parameterAnnotation : annotationsAttribute.getParameterAnnotations()) {
@@ -86,6 +85,21 @@ class AnnotationMatcher implements Predicate<ClassFile> {
                         return true;
                     }
                 }
+            } else if (attribute instanceof AbstractTypeAnnotationsAttribute) {
+                AbstractTypeAnnotationsAttribute annotationsAttribute =
+                        (AbstractTypeAnnotationsAttribute) attribute;
+                if (matchesAny(annotationsAttribute.getTypeAnnotations())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean matchesAny(TypeAnnotation[] typeAnnotations) {
+        for (TypeAnnotation typeAnnotation : typeAnnotations) {
+            if (matches(typeAnnotation.getAnnotation())) {
+                return true;
             }
         }
         return false;
@@ -138,7 +152,7 @@ class AnnotationMatcher implements Predicate<ClassFile> {
                 return patternValue.getClass().getName().equals(value.getType().getDeclaration())
                         && patternValue.toString().equals(value.getConstantValue().getValue());
             case 'c':
-                return ((Class<?>)patternValue).getName().equals(value.getType().getDeclaration());
+                return ((Class<?>) patternValue).getName().equals(value.getType().getDeclaration());
             case '@':
                 return new AnnotationMatcher((AnnotationPattern) patternValue).matches(value.getAnnotation());
             case '[':
@@ -151,7 +165,7 @@ class AnnotationMatcher implements Predicate<ClassFile> {
     private boolean matches(ElementValue[] values, Object patternValue) {
         Object[] patternValues = patternValue instanceof Object[]
                 ? (Object[]) patternValue
-                : new Object[] {patternValue};
+                : new Object[]{patternValue};
         if (values.length != patternValues.length) {
             return false;
         }
