@@ -274,8 +274,7 @@ public class ClassFile {
                 }
             }
         }
-        int packageSeparatorIndex = thisClass.lastIndexOf('.');
-        return packageSeparatorIndex == -1 ? thisClass : thisClass.substring(packageSeparatorIndex);
+        return thisClass.substring(thisClass.lastIndexOf('.') + 1);
     }
 
     public boolean isInnerClass() {

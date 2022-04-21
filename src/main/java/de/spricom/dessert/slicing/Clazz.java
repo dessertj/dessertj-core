@@ -21,8 +21,6 @@ package de.spricom.dessert.slicing;
  */
 
 import de.spricom.dessert.classfile.ClassFile;
-import de.spricom.dessert.classfile.attribute.Attributes;
-import de.spricom.dessert.classfile.attribute.NestHostAttribute;
 import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.util.ClassUtils;
 import de.spricom.dessert.util.Predicate;
@@ -166,16 +164,21 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
     }
 
     public String getSimpleName() {
-        int dollarIndex = className.lastIndexOf('$');
-        if (dollarIndex > 0) {
-            String name = className.substring(dollarIndex + 1);
-            if (name.matches("\\d+")) {
-                return "";
+        if (classFile != null) {
+            return classFile.getSimpleName();
+        } else if (classImpl != null) {
+            return classImpl.getSimpleName();
+        } else {
+            int dollarIndex = className.lastIndexOf('$');
+            if (dollarIndex > 0) {
+                String name = className.substring(dollarIndex + 1);
+                if (name.matches("\\d+")) {
+                    return "";
+                }
+                return name;
             }
-            return name;
+            return getShortName();
         }
-        int dotIndex = className.lastIndexOf('.');
-        return className.substring(dotIndex + 1);
     }
 
     /**
@@ -297,15 +300,19 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
 
     public Clazz getHost() {
         if (host == null) {
-            if (classFile != null && classFile.getMajorVersion() >= 55) {
-                List<NestHostAttribute> nestHostAttributes =
-                        Attributes.filter(classFile.getAttributes(), NestHostAttribute.class);
-                if (nestHostAttributes.isEmpty()) {
+            if (classFile != null) {
+                String nestHostName = classFile.getNestHost();
+                if (nestHostName == null || nestHostName.equals(className)) {
                     host = this;
                 } else {
-                    String hostClassname = nestHostAttributes.get(0).getHostClassName();
-                    host = classpath.asClazz(hostClassname);
+                    host = classpath.asClazz(nestHostName);
                 }
+            } else if (classImpl != null) {
+                Class<?> enclosingClass = classImpl;
+                while (enclosingClass.getEnclosingClass() != null) {
+                    enclosingClass = enclosingClass.getEnclosingClass();
+                }
+                host = classpath.asClazz(enclosingClass);
             } else if (className.indexOf('$') >= 0) {
                 String hostClassname = className.substring(0, className.indexOf('$'));
                 host = classpath.asClazz(hostClassname);
@@ -317,7 +324,24 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
     }
 
     public Slice getNest() {
-        return this; // TODO
+        if (nest != null) {
+            ClassFile hostClassFile = getHost().classFile;
+            if (hostClassFile == null) {
+                nest = this;
+            } else {
+                List<String> nestMembers = hostClassFile.getNestMembers();
+                if (nestMembers.isEmpty()) {
+                    nest = this;
+                } else {
+                    Set<Clazz> nestClazzes = new TreeSet<Clazz>();
+                    for (String nestMember : nestMembers) {
+                        nestClazzes.add(classpath.asClazz(nestMember));
+                    }
+                    nest = new ConcreteSlice(nestClazzes);
+                }
+            }
+        }
+        return nest;
     }
 
     public ConcreteSlice getDependencies() {
