@@ -112,8 +112,13 @@ public class InnerClass implements DependencyHolder {
         if (is(ACC_ENUM)) {
             sb.append("enum ");
         }
-        sb.append(" within ").append(outerClassName);
-        sb.append(" called ").append(simpleName);
+        sb.append(innerClassName);
+        if (outerClassName != null) {
+            sb.append(" within ").append(outerClassName);
+        }
+        if (simpleName != null) {
+            sb.append(" called ").append(simpleName);
+        }
         return sb.toString();
     }
 

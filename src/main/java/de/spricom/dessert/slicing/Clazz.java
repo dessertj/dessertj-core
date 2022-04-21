@@ -21,6 +21,8 @@ package de.spricom.dessert.slicing;
  */
 
 import de.spricom.dessert.classfile.ClassFile;
+import de.spricom.dessert.classfile.attribute.Attributes;
+import de.spricom.dessert.classfile.attribute.NestHostAttribute;
 import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.util.ClassUtils;
 import de.spricom.dessert.util.Predicate;
@@ -50,6 +52,8 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
     private List<Clazz> implementedInterfaces;
     private ConcreteSlice dependencies;
     private List<Clazz> alternatives;
+    private Clazz host;
+    private Slice nest;
 
     private Clazz() {
         classpath = null;
@@ -292,7 +296,24 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
     }
 
     public Clazz getHost() {
-        return this; // TODO
+        if (host == null) {
+            if (classFile != null && classFile.getMajorVersion() >= 55) {
+                List<NestHostAttribute> nestHostAttributes =
+                        Attributes.filter(classFile.getAttributes(), NestHostAttribute.class);
+                if (nestHostAttributes.isEmpty()) {
+                    host = this;
+                } else {
+                    String hostClassname = nestHostAttributes.get(0).getHostClassName();
+                    host = classpath.asClazz(hostClassname);
+                }
+            } else if (className.indexOf('$') >= 0) {
+                String hostClassname = className.substring(0, className.indexOf('$'));
+                host = classpath.asClazz(hostClassname);
+            } else {
+                host = this;
+            }
+        }
+        return host;
     }
 
     public Slice getNest() {
@@ -338,7 +359,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
         return getURI().equals(ce.getURI());
     }
 
-   /**
+    /**
      * The min-version is available for .class files located in the META-INF directory of
      * a multi-release JAR.
      *

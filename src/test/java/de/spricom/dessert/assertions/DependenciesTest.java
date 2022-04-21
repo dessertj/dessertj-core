@@ -147,7 +147,9 @@ public class DependenciesTest {
         Slice attributes = classfile.slice("..classfile.attribute.*");
         dessert(main.minus(classfile, cp.asClazz("de.spricom.dessert.partitioning.AnnotationMatcher")))
                 .usesNot(classfile.minus(cp.asClazz(ClassFile.class), attributes));
-        dessert(main.minus(classfile).minus("..dessert.modules..*").minus("..dessert.partitioning.AnnotationMatcher"))
+        dessert(main.minus(classfile).minus("..dessert.modules..*")
+                .minus("..dessert.partitioning.AnnotationMatcher")
+                .minus("..dessert.slicing.Clazz"))
                 .usesNot(classfile.minus(cp.asClazz(ClassFile.class)));
     }
 }

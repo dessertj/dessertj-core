@@ -69,4 +69,9 @@ public class EnclosingMethodAttribute extends AttributeInfo {
 	public MethodType getEnclosingMethodType() {
 		return enclosingMethodType;
 	}
+	
+	public String toString() {
+		return super.toString() + ": " + enclosingClassname + "."
+				+ (enclosingMethodName == null ? "<init>" : enclosingMethodName + enclosingMethodType);
+	}
 }

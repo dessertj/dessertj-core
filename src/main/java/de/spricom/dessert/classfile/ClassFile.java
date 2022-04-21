@@ -20,7 +20,7 @@ package de.spricom.dessert.classfile;
  * #L%
  */
 
-import de.spricom.dessert.classfile.attribute.AttributeInfo;
+import de.spricom.dessert.classfile.attribute.*;
 import de.spricom.dessert.classfile.attribute.AttributeInfo.AttributeContext;
 import de.spricom.dessert.classfile.constpool.ConstantPool;
 
@@ -28,8 +28,7 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Wraps the information contained in a .class file according
@@ -263,5 +262,135 @@ public class ClassFile {
 
     public boolean isModule() {
         return (accessFlags & ACC_MODULE) != 0;
+    }
+
+    public String getSimpleName() {
+        List<InnerClassesAttribute> innerClassesAttributes = Attributes.filter(attributes, InnerClassesAttribute.class);
+        if (!innerClassesAttributes.isEmpty()) {
+            for (InnerClass innerClass : innerClassesAttributes.get(0).getInnerClasses()) {
+                if (thisClass.equals(innerClass.getInnerClassName())) {
+                    String simpleName = innerClass.getSimpleName();
+                    return simpleName == null ? "" : simpleName;
+                }
+            }
+        }
+        int packageSeparatorIndex = thisClass.lastIndexOf('.');
+        return packageSeparatorIndex == -1 ? thisClass : thisClass.substring(packageSeparatorIndex);
+    }
+
+    public boolean isInnerClass() {
+        if (thisClass.indexOf('$') == -1) {
+            return false;
+        }
+        if (majorVersion >= 55) {
+            return !Attributes.filter(attributes, NestHostAttribute.class).isEmpty();
+        }
+        if (!Attributes.filter(attributes, EnclosingMethodAttribute.class).isEmpty()) {
+            return true;
+        }
+        List<InnerClassesAttribute> innerClassesAttributes =
+                Attributes.filter(attributes, InnerClassesAttribute.class);
+        if (innerClassesAttributes.isEmpty()) {
+            return false;
+        }
+        for (InnerClass innerClass : innerClassesAttributes.get(0).getInnerClasses()) {
+            if (thisClass.equals(innerClass.getInnerClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isNestHost() {
+        if (majorVersion >= 55) {
+            List<NestMembersAttribute> nestMembersAttributes =
+                    Attributes.filter(attributes, NestMembersAttribute.class);
+            return !nestMembersAttributes.isEmpty();
+        }
+        List<InnerClassesAttribute> innerClassesAttributes =
+                Attributes.filter(attributes, InnerClassesAttribute.class);
+        if (innerClassesAttributes.isEmpty()) {
+            return false;
+        }
+        int dollarIndex = thisClass.indexOf('$');
+        boolean hasInnerClass = false;
+        for (InnerClass innerClass : innerClassesAttributes.get(0).getInnerClasses()) {
+            if (this.thisClass.equals(innerClass.getInnerClassName())) {
+                return false;
+            }
+            if (innerClass.getInnerClassName().startsWith(thisClass)) {
+                if (dollarIndex == -1) {
+                    return true;
+                }
+                hasInnerClass = true;
+            }
+        }
+        return hasInnerClass;
+    }
+
+    public String getNestHost() {
+        if (majorVersion >= 55) {
+            List<NestHostAttribute> nestHostAttributes = Attributes.filter(attributes, NestHostAttribute.class);
+            return nestHostAttributes.isEmpty() ? null : nestHostAttributes.get(0).getHostClassName();
+        }
+        List<InnerClassesAttribute> innerClassesAttributes =
+                Attributes.filter(attributes, InnerClassesAttribute.class);
+        if (innerClassesAttributes.isEmpty()) {
+            return null;
+        }
+        List<EnclosingMethodAttribute> enclosingMethodAttributes =
+                Attributes.filter(attributes, EnclosingMethodAttribute.class);
+        String outerName = enclosingMethodAttributes.isEmpty()
+                ? thisClass
+                : enclosingMethodAttributes.get(0).getEnclosingClassname();
+        InnerClass[] innerClasses = innerClassesAttributes.get(0).getInnerClasses();
+        boolean outerMost = false;
+        while (!outerMost) {
+            outerMost = true;
+            for (InnerClass innerClass : innerClasses) {
+                if (outerName.equals(innerClass.getInnerClassName())
+                        && innerClass.getOuterClassName() != null) {
+                    outerName = innerClass.getOuterClassName();
+                    outerMost = false;
+                }
+            }
+        }
+        if (thisClass.equals(outerName)) {
+            for (InnerClass innerClass : innerClasses) {
+                if (thisClass.equals(innerClass.getOuterClassName())
+                        || innerClass.getInnerClassName().startsWith(thisClass)) {
+                    return thisClass;
+                }
+            }
+            return null;
+        }
+        return outerName;
+    }
+
+    public List<String> getNestMembers() {
+        if (majorVersion >= 55) {
+            List<NestMembersAttribute> nestMembersAttributes =
+                    Attributes.filter(attributes, NestMembersAttribute.class);
+            if (nestMembersAttributes.isEmpty()) {
+                return Collections.emptyList();
+            }
+            return Arrays.asList(nestMembersAttributes.get(0).getMembers());
+        }
+        List<InnerClassesAttribute> innerClassesAttributes =
+                Attributes.filter(attributes, InnerClassesAttribute.class);
+        if (innerClassesAttributes.isEmpty()) {
+            return Collections.emptyList();
+        }
+        InnerClass[] innerClasses = innerClassesAttributes.get(0).getInnerClasses();
+        List<String> nestMembers = new ArrayList<String>(innerClasses.length);
+        for (InnerClass innerClass : innerClasses) {
+            if (this.thisClass.equals(innerClass.getInnerClassName())) {
+                return Collections.emptyList();
+            }
+            if (innerClass.getInnerClassName().startsWith(thisClass)) {
+                nestMembers.add(innerClass.getInnerClassName());
+            }
+        }
+        return nestMembers;
     }
 }

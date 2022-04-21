@@ -19,9 +19,8 @@ package de.spricom.dessert.slicing;
  * limitations under the License.
  * #L%
  */
+
 import de.spricom.dessert.classfile.ClassFile;
-import de.spricom.dessert.classfile.attribute.Attributes;
-import de.spricom.dessert.util.Sets;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -37,8 +36,6 @@ public class DependencyClosureTest {
         Slice closure = classFile.dependencyClosure(dessert);
 
         Slice classFilePackageTree = cp.packageTreeOf(ClassFile.class).slice(dessert);
-        assertThat(Sets.difference(closure.getClazzes(), classFilePackageTree.getClazzes())).isEmpty();
-        assertThat(Sets.difference(classFilePackageTree.getClazzes(), closure.getClazzes()))
-                .containsOnly(cp.asClazz(Attributes.class));
+        assertThat(closure.getClazzes()).isEqualTo(classFilePackageTree.getClazzes());
     }
 }
