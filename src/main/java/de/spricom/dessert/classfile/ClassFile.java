@@ -383,9 +383,6 @@ public class ClassFile {
         InnerClass[] innerClasses = innerClassesAttributes.get(0).getInnerClasses();
         List<String> nestMembers = new ArrayList<String>(innerClasses.length);
         for (InnerClass innerClass : innerClasses) {
-            if (this.thisClass.equals(innerClass.getInnerClassName())) {
-                return Collections.emptyList();
-            }
             if (innerClass.getInnerClassName().startsWith(thisClass)) {
                 nestMembers.add(innerClass.getInnerClassName());
             }
