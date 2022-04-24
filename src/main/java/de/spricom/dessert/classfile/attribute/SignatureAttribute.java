@@ -33,30 +33,31 @@ import java.util.Set;
  */
 public class SignatureAttribute extends AttributeInfo {
 
-	private final String signature;
+    private final String signature;
 
-	public SignatureAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
-		super(name);
-		skipLength(is);
-		signature = constantPool.getUtf8String(is.readUnsignedShort());
-	}
+    public SignatureAttribute(String name, DataInputStream is, ConstantPool constantPool) throws IOException {
+        super(name);
+        skipLength(is);
+        signature = constantPool.getUtf8String(is.readUnsignedShort());
+    }
 
-	@Override
-	public void addDependentClassNames(Set<String> classNames) {
-		SignatureParser parser = new SignatureParser(signature, classNames);
-		switch (getContext()) {
-		case CLASS:
-			parser.parseClassSignature();
-			break;
-		case METHOD:
-			parser.parseMethodSignature();
-			break;
-		case FIELD:
-			parser.parseFieldSignature();
-			break;
-		default:
-			throw new IllegalArgumentException("Signature attribute not supported for context " + getContext() + "!");
-		}
-	}
+    @Override
+    public void addDependentClassNames(Set<String> classNames) {
+        SignatureParser parser = new SignatureParser(signature, classNames);
+        switch (getContext()) {
+            case CLASS:
+            case RECORD:
+                parser.parseClassSignature();
+                break;
+            case METHOD:
+                parser.parseMethodSignature();
+                break;
+            case FIELD:
+                parser.parseFieldSignature();
+                break;
+            default:
+                throw new IllegalArgumentException("Signature attribute not supported for context " + getContext() + "!");
+        }
+    }
 
 }
