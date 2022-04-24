@@ -20,6 +20,7 @@ package de.spricom.dessert.partitioning;
  * #L%
  */
 
+import de.spricom.dessert.slicing.Clazz;
 import de.spricom.dessert.slicing.SlicePartitioner;
 
 import static de.spricom.dessert.partitioning.ClazzPredicates.*;
@@ -40,4 +41,12 @@ public class SlicePartitioners {
             .split("package internal classes")
             .by(or(EACH))
             .build();
+
+    public static final SlicePartitioner HOST = new SlicePartitioner() {
+
+        @Override
+        public String partKey(Clazz entry) {
+            return entry.getHost().getName();
+        }
+    };
 }

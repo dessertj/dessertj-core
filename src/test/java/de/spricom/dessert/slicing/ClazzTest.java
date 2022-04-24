@@ -24,6 +24,7 @@ import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.resolve.FakeClassEntry;
 import de.spricom.dessert.resolve.FakeRoot;
 import de.spricom.dessert.samples.basic.Outer;
+import de.spricom.dessert.samples.dollar.Dollar;
 import org.junit.Test;
 
 import java.io.File;
@@ -35,12 +36,11 @@ import java.util.Set;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class ClazzTest {
-
-    private final Classpath sc = new Classpath();
+    private static final Classpath cp = new Classpath();
 
     @Test
     public void testThisClass() throws MalformedURLException {
-        Slice slice = sc.slice(ClazzTest.class.getName());
+        Slice slice = cp.slice(ClazzTest.class.getName());
         Set<Clazz> entries = slice.getClazzes();
         assertThat(entries).hasSize(1);
         Clazz entry = entries.iterator().next();
@@ -51,7 +51,7 @@ public class ClazzTest {
         assertThat(entry.getClassFile().getThisClass()).isEqualTo(getClass().getName());
         assertThat(entry.getClassImpl()).isSameAs(getClass());
         assertThat(entry.getPackageName()).isEqualTo(getClass().getPackage().getName());
-        
+
         assertThat(entry.getSuperclass().getClassImpl()).isSameAs(Object.class);
         assertThat(entry.getImplementedInterfaces()).isEmpty();
         assertThat(entry.getURI().toURL()).isEqualTo(getClass().getResource(getClass().getSimpleName() + ".class"));
@@ -72,7 +72,7 @@ public class ClazzTest {
     }
 
     private void checkName(Class<?> classImpl) {
-        Clazz clazz = sc.sliceOf(classImpl).getClazzes().iterator().next();
+        Clazz clazz = cp.sliceOf(classImpl).getClazzes().iterator().next();
 
         System.out.println("Checking " + clazz.getName());
         assertThat(clazz.getName()).isEqualTo(classImpl.getName());
@@ -91,22 +91,35 @@ public class ClazzTest {
         root1.add(fakeClassName);
         root2.add(fakeClassName);
 
-        Classpath sc = new Classpath(resolver);
-        Slice slice = sc.packageTreeOf("de.spricom.dessert");
+        Classpath fakeClasspath = new Classpath(resolver);
+        Slice slice = fakeClasspath.packageTreeOf("de.spricom.dessert");
         Set<Clazz> entries = slice.getClazzes();
         assertThat(entries).hasSize(2);
         Clazz entry = entries.iterator().next();
         assertThat(new HashSet<Clazz>(entry.getAlternatives())).isEqualTo(entries);
 
-        Slice duplicates = sc.duplicates();
+        Slice duplicates = fakeClasspath.duplicates();
         assertThat(duplicates.getClazzes()).isEqualTo(entries);
     }
 
     @Test
     public void testGetClassImpl() {
-        Slice slice = sc.packageOf(Slice.class);
+        Slice slice = cp.packageOf(Slice.class);
         for (Clazz clazz : slice.getClazzes()) {
             assertThat(clazz.getName()).isEqualTo(clazz.getClassImpl().getName());
         }
+    }
+
+    @Test
+    public void testDessertNames() {
+        Slice dessert = cp.packageTreeOf("de.spricom.dessert");
+        for (Clazz clazz : dessert.getClazzes()) {
+            String name = clazz.getClassImpl().getName();
+            assertThat(clazz.getName()).as(name).isEqualTo(name);
+            assertThat(clazz.getPackageName() + "." + clazz.getShortName()).as(name).isEqualTo(name);
+            assertThat(clazz.getSimpleName()).as(name).isEqualTo(clazz.getClassImpl().getSimpleName());
+        }
+        assertThat(dessert.contains(cp.asClazz(Clazz.class)));
+        assertThat(dessert.contains(cp.asClazz(Dollar.class)));
     }
 }

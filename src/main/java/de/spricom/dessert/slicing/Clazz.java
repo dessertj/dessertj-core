@@ -324,7 +324,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
     }
 
     public Slice getNest() {
-        if (nest != null) {
+        if (nest == null) {
             ClassFile hostClassFile = getHost().classFile;
             if (hostClassFile == null) {
                 nest = this;
@@ -334,14 +334,35 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
                     nest = this;
                 } else {
                     Set<Clazz> nestClazzes = new TreeSet<Clazz>();
+                    nestClazzes.add(getHost());
                     for (String nestMember : nestMembers) {
-                        nestClazzes.add(classpath.asClazz(nestMember));
+                        Clazz nestClazz = classpath.asClazz(nestMember);
+                        nestClazzes.add(nestClazz);
+                        if (hostClassFile.getMajorVersion() < 55) {
+                            addNextMembersRecursive(nestClazzes, nestClazz);
+                        }
                     }
                     nest = new ConcreteSlice(nestClazzes);
                 }
             }
         }
         return nest;
+    }
+
+    private void addNextMembersRecursive(Set<Clazz> nestClazzes, Clazz outerClazz) {
+        if (outerClazz.classFile == null) {
+            return;
+        }
+        List<String> nestMembers = outerClazz.classFile.getNestMembers();
+        if (nestMembers.isEmpty()) {
+            return;
+        }
+        for (String nestMember : nestMembers) {
+            Clazz nestedClazz = classpath.asClazz(nestMember);
+            if (nestClazzes.add(nestedClazz)) {
+                addNextMembersRecursive(nestClazzes, nestedClazz);
+            }
+        }
     }
 
     public ConcreteSlice getDependencies() {
