@@ -10,7 +10,7 @@ Add the _dessert-core_ dependency:
 <dependency>
     <groupId>de.spricom.dessert</groupId>
     <artifactId>dessert-core</artifactId>
-    <version>0.4.3</version>
+    <version>0.5.0</version>
     <scope>test</scope>
 </dependency>
 ----
