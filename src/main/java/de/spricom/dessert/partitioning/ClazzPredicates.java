@@ -91,9 +91,20 @@ public final class ClazzPredicates {
         }
     };
 
+    public static final Predicate<Clazz> DEPRECATED = new Predicate<Clazz>() {
+        @Override
+        public boolean test(Clazz clazz) {
+            return clazz.getClassFile().isDeprecated();
+        }
+    };
+
     public static final Predicate<Clazz> INNER_TYPE = new Predicate<Clazz>() {
         @Override
         public boolean test(Clazz clazz) {
+            if (clazz.getClassFile() != null) {
+                return clazz.getClassFile().isInnerClass();
+            }
+            // Not correct, if classname contains $, but sufficient for the rare case where there is no ClassFile
             return clazz.getName().lastIndexOf('$') != -1;
         }
     };
@@ -132,7 +143,7 @@ public final class ClazzPredicates {
 
     public static Predicate<Clazz> hostedBy(final Clazz host) {
         return new Predicate<Clazz>() {
-            private Slice nest = host.getNest();
+            private final Slice nest = host.getNest();
 
             @Override
             public boolean test(Clazz clazz) {

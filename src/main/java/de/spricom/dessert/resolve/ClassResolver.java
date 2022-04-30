@@ -68,9 +68,8 @@ public final class ClassResolver implements TraversalRoot {
      *
      * @param path the path to scan using the system specific classpath format
      * @return a ClassResolver with the corresponding entries
-     * @throws IOException if a directory or jar file could not be read
      */
-    public static ClassResolver of(String path) throws IOException {
+    public static ClassResolver of(String path) {
         ClassResolver r = new ClassResolver();
         r.add(path);
         return r;
@@ -82,9 +81,9 @@ public final class ClassResolver implements TraversalRoot {
      * those entries will be added, too, recursively.
      *
      * @return a ClassResolver with the corresponding entries
-     * @throws IOException if a directory or jar file could not be read
+     * @throws ResolveException if a directory or jar file could not be read
      */
-    public static ClassResolver ofClassPath() throws IOException {
+    public static ClassResolver ofClassPath() {
         ClassResolver r = new ClassResolver();
         r.addClassPath();
         return r;
@@ -96,9 +95,9 @@ public final class ClassResolver implements TraversalRoot {
      * all java runtime modules from Java 9 on.
      *
      * @return a ClassResolver with the corresponding entries
-     * @throws IOException if a directory or jar file could not be read
+     * @throws ResolveException if a directory or jar file could not be read
      */
-    public static ClassResolver ofClassPathAndJavaRuntime() throws IOException {
+    public static ClassResolver ofClassPathAndJavaRuntime() {
         long ts = System.nanoTime();
         ClassResolver r = new ClassResolver();
         r.addClassPath();
@@ -115,9 +114,9 @@ public final class ClassResolver implements TraversalRoot {
      * Creates a ClassResolver containing only the directories on the <i>java.class.path</i> system-property.
      *
      * @return a ClassResolver with the corresponding entries
-     * @throws IOException if a directory or jar file could not be read
+     * @throws ResolveException if a directory or jar file could not be read
      */
-    public static ClassResolver ofClassPathWithoutJars() throws IOException {
+    public static ClassResolver ofClassPathWithoutJars() {
         ClassResolver r = new ClassResolver();
         for (String entry : System.getProperty("java.class.path").split(File.pathSeparator)) {
             if (!entry.endsWith(".jar")) {
@@ -133,9 +132,9 @@ public final class ClassResolver implements TraversalRoot {
      * flag of the resulting ClassResolver will be true.
      *
      * @return a ClassResolver with the corresponding entries
-     * @throws IOException if a directory or jar file could not be read
+     * @throws ResolveException if a directory or jar file could not be read
      */
-    public static ClassResolver ofClassPathIgnoringManifests() throws IOException {
+    public static ClassResolver ofClassPathIgnoringManifests() {
         ClassResolver r = new ClassResolver();
         r.setIgnoreManifest(true);
         r.addClassPath();
@@ -148,22 +147,22 @@ public final class ClassResolver implements TraversalRoot {
      * no difference to {@link #ofClassPath()}.
      *
      * @return a ClassResolver with the corresponding entries
-     * @throws IOException if a directory or jar file could not be read
+     * @throws ResolveException if a directory or jar file could not be read
      * @deprecated use ofClassPathAndJavaRuntime instead
      */
     @Deprecated
-    public static ClassResolver ofClassPathAndBootClassPath() throws IOException {
+    public static ClassResolver ofClassPathAndBootClassPath() {
         ClassResolver r = new ClassResolver();
         r.addClassPath();
         r.addBootClassPath();
         return r;
     }
 
-    public void addClassPath() throws IOException {
+    public void addClassPath() {
         add(System.getProperty("java.class.path"));
     }
 
-    public void addBootClassPath() throws IOException {
+    public void addBootClassPath() {
         String path = System.getProperty("sun.boot.class.path");
         // For JDK 9 there is no sun.boot.class.path property
         if (path != null) {
@@ -175,10 +174,10 @@ public final class ClassResolver implements TraversalRoot {
      * Adds all modules form the Java Runtime System. For Java 8 and older this
      * method has no effect
      *
-     * @throws IOException modules could not be read
+     * @throws ResolveException modules could not be read
      */
-    public void addJavaRuntimeModules() throws IOException {
-        if (!isJrtFileSystemAvailalbe()) {
+    public void addJavaRuntimeModules() {
+        if (!isJrtFileSystemAvailable()) {
             return;
         }
         try {
@@ -186,49 +185,57 @@ public final class ClassResolver implements TraversalRoot {
             for (String module : fs.listModules()) {
                 addRoot(new JrtModuleRoot(module, fs));
             }
+        } catch (IOException ex) {
+            throw new ResolveException("Unable to read java runtime modules: " + ex.getMessage(), ex);
         } catch (InvocationTargetException ex) {
             if (ex.getTargetException() instanceof IOException) {
-                throw (IOException) ex.getTargetException();
+                throw new ResolveException("Unable to read java runtime modules: " +
+                        ex.getTargetException().getMessage(), ex.getTargetException());
             }
-            throw new IOException("Unable to read java runtime modules.", ex);
+            throw new ResolveException("Unable to read java runtime modules.", ex);
         } catch (ClassNotFoundException ex) {
-            throw new IOException("Cannot access NIO classes.", ex);
+            throw new ResolveException("Cannot access NIO classes.", ex);
         } catch (NoSuchMethodException ex) {
-            throw new IOException("Cannot access NIO classes.", ex);
+            throw new ResolveException("Cannot access NIO classes.", ex);
         } catch (IllegalAccessException ex) {
-            throw new IOException("Cannot access NIO classes.", ex);
+            throw new ResolveException("Cannot access NIO classes.", ex);
         }
     }
 
-    private boolean isJrtFileSystemAvailalbe() {
-        return String.class.getResource("/module-info.class") != null;
+    public static boolean isJrtFileSystemAvailable() {
+        URL resource = String.class.getResource("String.class");
+        return resource != null && "jrt".equalsIgnoreCase(resource.getProtocol());
     }
 
-    public void add(String path) throws IOException {
+    public void add(String path) {
         for (String entry : path.split(File.pathSeparator)) {
             addFile(entry);
         }
     }
 
-    private void addFile(String filename) throws IOException {
+    private void addFile(String filename) {
         add(new File(filename));
     }
 
-    public void add(File file) throws IOException {
-        if (!file.exists()) {
-            log.warning("Does not exist: " + file.getAbsolutePath());
-        } else if (getRoot(file) != null) {
-            log.warning("Already on path: " + file.getAbsolutePath());
-        } else if (file.isDirectory()) {
-            addRoot(new DirectoryRoot(file));
-        } else if (file.isFile() && file.getName().endsWith(".jar")) {
-            JarRoot root = new JarRoot(file);
-            addRoot(root);
-            if (!ignoreManifest) {
-                addManifestClassPath(root);
+    public void add(File file) {
+        try {
+            if (!file.exists()) {
+                log.warning("Does not exist: " + file.getAbsolutePath());
+            } else if (getRoot(file) != null) {
+                log.warning("Already on path: " + file.getAbsolutePath());
+            } else if (file.isDirectory()) {
+                addRoot(new DirectoryRoot(file));
+            } else if (file.isFile() && file.getName().endsWith(".jar")) {
+                JarRoot root = new JarRoot(file);
+                addRoot(root);
+                if (!ignoreManifest) {
+                    addManifestClassPath(root);
+                }
+            } else {
+                log.warning("Don't know how to process: " + file.getAbsolutePath());
             }
-        } else {
-            log.warning("Don't know how to process: " + file.getAbsolutePath());
+        } catch (IOException ex) {
+            throw new ResolveException("Unable to resolve " + file.getAbsolutePath() + ": " + ex.getMessage(), ex);
         }
     }
 

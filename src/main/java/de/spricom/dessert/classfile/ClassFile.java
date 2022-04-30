@@ -389,4 +389,8 @@ public class ClassFile {
         }
         return nestMembers;
     }
+
+    public boolean isDeprecated() {
+        return !Attributes.filter(attributes, DeprecatedAttribute.class).isEmpty();
+    }
 }

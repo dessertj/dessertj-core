@@ -23,6 +23,7 @@ package de.spricom.dessert.slicing;
 import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.resolve.ClassRoot;
+import de.spricom.dessert.resolve.ResolveException;
 import de.spricom.dessert.util.ClassUtils;
 
 import java.io.File;
@@ -69,11 +70,7 @@ public final class Classpath extends AbstractRootSlice {
 
     private static ClassResolver getDefaultResolver() {
         if (defaultResolver == null) {
-            try {
-                defaultResolver = ClassResolver.ofClassPathAndJavaRuntime();
-            } catch (IOException ex) {
-                throw new ResolveException("Unable to access classes on classpath.", ex);
-            }
+            defaultResolver = ClassResolver.ofClassPathAndJavaRuntime();
         }
         return defaultResolver;
     }

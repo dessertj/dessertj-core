@@ -1,4 +1,4 @@
-package de.spricom.dessert.slicing;
+package de.spricom.dessert.resolve;
 
 /*-
  * #%L
@@ -21,10 +21,9 @@ package de.spricom.dessert.slicing;
  */
 
 /**
- * @deprecated use {@link de.spricom.dessert.resolve.ResolveException}
+ * This exception is thrown if some error occurred while resolving classes or libraries.
  */
-@Deprecated
-public class ResolveException extends RuntimeException {
+public class ResolveException extends de.spricom.dessert.slicing.ResolveException {
     public ResolveException(String message) {
         super(message);
     }

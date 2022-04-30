@@ -58,7 +58,7 @@ public class DependenciesTest {
      * The same Classpath is used for all tests.
      */
     private static final Classpath cp = new Classpath();
-    private final Slice main = cp.rootOf(Slice.class);
+    private final Slice main = cp.rootOf(Slice.class).minus(ClazzPredicates.DEPRECATED);
     private final Slice test = cp.rootOf(this.getClass());
 
     /**
@@ -90,12 +90,13 @@ public class DependenciesTest {
      */
     @Test
     public void testExternalDependencies() {
+        Slice deprecated = cp.rootOf(Slice.class).slice(ClazzPredicates.DEPRECATED);
         Slice java = Slices.of(
                 cp.packageTreeOf("java.lang"),
                 cp.packageTreeOf("java.util"),
                 cp.packageTreeOf("java.io"),
                 cp.packageTreeOf("java.net"));
-        dessert(main).usesOnly(java);
+        dessert(main).usesOnly(java, deprecated);
     }
 
     @Test

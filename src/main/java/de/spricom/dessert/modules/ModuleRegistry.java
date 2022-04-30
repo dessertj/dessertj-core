@@ -26,6 +26,7 @@ import de.spricom.dessert.modules.core.ModuleSlice;
 import de.spricom.dessert.modules.java.JavaModulesResolver;
 import de.spricom.dessert.modules.jdk.JdkModulesResolver;
 import de.spricom.dessert.modules.jpms.JavaPlatformModuleResolver;
+import de.spricom.dessert.resolve.ClassResolver;
 import de.spricom.dessert.slicing.Classpath;
 
 import java.util.Collection;
@@ -65,7 +66,7 @@ public final class ModuleRegistry implements ModuleResolver, ModuleLookup {
     }
 
     public static boolean isJavaPlattformModuleSystemAvailable() {
-        return String.class.getResource("/module-info.class") != null;
+        return ClassResolver.isJrtFileSystemAvailable();
     }
 
     public Collection<ModuleSlice> getModules() {
