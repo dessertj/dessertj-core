@@ -21,6 +21,7 @@ package de.spricom.dessert.slicing;
  */
 
 import de.spricom.dessert.matching.NamePattern;
+import de.spricom.dessert.resolve.ResolveException;
 import de.spricom.dessert.util.Predicate;
 import de.spricom.dessert.util.Predicates;
 

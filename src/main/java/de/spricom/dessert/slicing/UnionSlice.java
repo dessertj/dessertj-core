@@ -29,7 +29,6 @@ import java.util.Set;
 
 class UnionSlice extends AbstractSlice {
     private final List<Slice> slices;
-    private Boolean iterable;
 
     public UnionSlice(List<Slice> slices) {
         if (slices.size() < 2) {

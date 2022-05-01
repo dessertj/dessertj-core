@@ -24,7 +24,6 @@ import org.fest.assertions.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.net.URL;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -33,17 +32,17 @@ public class ClassEntryURITest {
     private ClassResolver resolver;
 
     @Before
-    public void init() throws IOException {
+    public void init() {
         resolver = ClassResolver.ofClassPath();
     }
 
     @Test
-    public void testDirURI() throws IOException {
+    public void testDirURI() {
         check(ClassResolver.class);
     }
 
     @Test
-    public void testJarURI() throws IOException {
+    public void testJarURI() {
         check(Assertions.class);
     }
 

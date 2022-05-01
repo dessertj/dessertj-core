@@ -34,7 +34,7 @@ public class JarRootTest {
     private JarRoot jarRoot;
 
     @Before
-    public void init() throws IOException {
+    public void init() {
         ClassResolver resolver = ClassResolver.ofClassPath();
         for (File jar : resolver.getRootJars()) {
             if (jar.getName().startsWith("junit-4.")) {

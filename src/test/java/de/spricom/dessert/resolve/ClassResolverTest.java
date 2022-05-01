@@ -27,7 +27,6 @@ import org.junit.Assume;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.logging.Logger;
 
@@ -38,7 +37,7 @@ public class ClassResolverTest {
     private static ClassResolver defaultResolver;
 
     @Test
-    public void testClassPathWithoutJars() throws IOException {
+    public void testClassPathWithoutJars() {
         ClassResolver resolver = ClassResolver.ofClassPathWithoutJars();
         assertThat(resolver.getRootFiles()).isEqualTo(resolver.getRootDirs());
         // If there are separate directories for productive and test classes then we have two root dirs.
@@ -66,7 +65,7 @@ public class ClassResolverTest {
     }
 
     @Test
-    public void testAlternativePackages() throws IOException {
+    public void testAlternativePackages() {
         ClassResolver resolver = ClassResolver.ofClassPath();
         Assume.assumeTrue("There are separate directories for productive an test classes",
                 resolver.getRootDirs().size() == 2);
@@ -77,14 +76,14 @@ public class ClassResolverTest {
         String classname = Foo.class.getName();
         ClassEntry cf1 = resolver.getClassEntry(classname);
         assertThat(cf1.getClassfile().getThisClass()).isEqualTo(classname);
-        assertThat(resolver.getClassEntry(cf1.getPackage().getRootFile(), classname)).isSameAs(cf1);
+        assertThat(resolver.getClassEntry(cf1.getPackage().getRoot().getRootFile(), classname)).isSameAs(cf1);
         assertThat(resolver.getClassEntry(
-                resolver.getPackage(DependencyHolder.class.getPackage().getName()).getRootFile(),
+                resolver.getPackage(DependencyHolder.class.getPackage().getName()).getRoot().getRootFile(),
                 classname)).isNull();
     }
 
     @Test
-    public void testClassPath() throws IOException {
+    public void testClassPath() {
         ClassResolver resolver = ClassResolver.ofClassPath();
         assertThat(resolver.getRootDirs()).isNotEmpty();
         assertThat(resolver.getRootJars()).isNotEmpty();

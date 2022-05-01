@@ -59,7 +59,7 @@ public class TypeAnnotation implements DependencyHolder {
     }
 
     static class EmptyTarget implements TargetInfo {
-        EmptyTarget(DataInputStream is, ConstantPool constantPool) throws IOException {
+        EmptyTarget(DataInputStream is, ConstantPool constantPool) {
         }
     }
 

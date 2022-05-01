@@ -23,6 +23,7 @@ package de.spricom.dessert.slicing;
 import de.spricom.dessert.matching.NamePattern;
 import de.spricom.dessert.resolve.ClassEntry;
 import de.spricom.dessert.resolve.ClassVisitor;
+import de.spricom.dessert.resolve.ResolveException;
 import de.spricom.dessert.resolve.TraversalRoot;
 
 import java.util.Set;

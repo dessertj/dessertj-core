@@ -20,6 +20,7 @@ package de.spricom.dessert.slicing;
  * #L%
  */
 
+import de.spricom.dessert.resolve.ResolveException;
 import de.spricom.dessert.util.Predicate;
 
 import java.util.Set;

@@ -32,7 +32,7 @@ public class DirectoryRootTest {
     private DirectoryRoot directoryRoot;
 
     @Before
-    public void init() throws IOException {
+    public void init() {
         ClassResolver resolver = ClassResolver.ofClassPath();
         ClassEntry myEntry = resolver.getClassEntry(this.getClass().getName());
         ClassRoot root = myEntry.getPackage().getRoot();
