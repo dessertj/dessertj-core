@@ -62,7 +62,7 @@ public class SamplesDependenciesTest {
     }
 
     /**
-     * Make sure implicit the bounds of a generic are always added as an dependency even
+     * Make sure implicit the bounds of a generic are always added as a dependency even
      * if there is no field or method using the type argument.
      * <b>Dessert differs from jdeps, here.</b>
      */
@@ -76,7 +76,7 @@ public class SamplesDependenciesTest {
     }
 
     /**
-     * Make sure the explicit bounds of a generic are always added as an dependency even
+     * Make sure the explicit bounds of a generic are always added as a dependency even
      * if there is no field or method using the type argument.
      * <b>Dessert differs from jdeps, here.</b>
      */

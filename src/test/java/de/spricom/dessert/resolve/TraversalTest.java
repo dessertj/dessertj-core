@@ -33,7 +33,7 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class TraversalTest implements ClassVisitor {
     private final ClassResolver resolver = new ClassResolver();
-    private final FakeRoot root = new FakeRoot(new File("/fakeroot"));
+    private final FakeRoot root = new FakeRoot(new File("/fake-root"));
 
     private final List<String> visited = new ArrayList<String>();
 

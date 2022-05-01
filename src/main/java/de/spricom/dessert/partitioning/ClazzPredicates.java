@@ -30,8 +30,8 @@ import de.spricom.dessert.util.Predicates;
 public final class ClazzPredicates {
 
     /**
-     * This is a catch all predicate that can be used to collect
-     * anything that does not match an other predicate.
+     * This is a catch-all predicate that can be used to collect
+     * anything that does not match another predicate.
      */
     public static final Predicate<Clazz> EACH = Predicates.any();
 

@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.Set;
 
 /**
- * Representes a
+ * Represents a
  * <a href="https://docs.oracle.com/javase/specs/jvms/se18/html/jvms-4.html#jvms-4.7.27" target="_blank">
  * Java Virtual Machine Specification: 4.7.27. The ModuleMainClass Attribute</a>.
  */

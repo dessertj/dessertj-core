@@ -203,7 +203,7 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
             uri = classEntry.getURI();
             return uri;
         }
-        // either there is a classEntry or a classImpl or it's unknown
+        // either there is a classEntry or a classImpl, or it's unknown
         if (classImpl != null) {
             uri = ClassUtils.getURI(classImpl);
         } else {

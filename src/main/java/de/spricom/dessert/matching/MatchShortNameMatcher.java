@@ -22,7 +22,7 @@ package de.spricom.dessert.matching;
 
 /**
  * This matcher will be returned after there is a match for each
- * {@link ShortNameMatcher}. Thus at this node the branch matches,
+ * {@link ShortNameMatcher}. Thus, at this node the branch matches,
  * hence we have a match this node is a leaf.
  */
 enum MatchShortNameMatcher implements ShortNameMatcher {
@@ -30,7 +30,7 @@ enum MatchShortNameMatcher implements ShortNameMatcher {
 
     /**
      * Returns a {@link MissShortNameMatcher#MISS}, because if there
-     * is something after the match it's no match anymore. Hence
+     * is something after the match it's no match anymore. Hence,
      * the current match was not a leaf.
      */
     @Override

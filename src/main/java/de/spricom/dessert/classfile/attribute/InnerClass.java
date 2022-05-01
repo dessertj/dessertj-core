@@ -56,7 +56,7 @@ public class InnerClass implements DependencyHolder {
     public void addDependentClassNames(Set<String> classNames) {
     }
 
-    public boolean isIndependetOfOuterClass(String thisClass) {
+    public boolean isIndependentOfOuterClass(String thisClass) {
         return isStatic() && thisClass.equals(innerClassName);
     }
 

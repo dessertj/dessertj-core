@@ -56,7 +56,7 @@ public final class ClassUtils {
      * Gets the classname without the package prefix.
      * For inner classes this is different from {@link Class#getSimpleName()}.
      *
-     * @param clazz the class the determine the name for
+     * @param clazz the class to determine the name for
      * @return the classname without package prefix
      */
     public static String getShortName(Class<?> clazz) {

@@ -116,16 +116,16 @@ public class CombinationUtilsTest {
                 .hasSize(CombinationUtils.combinationsSorted(7));
     }
 
-    private String asString(List<Pair<Integer>> permuations) {
-        StringBuilder sb = new StringBuilder(permuations.size() * 6);
+    private String asString(List<Pair<Integer>> permutations) {
+        StringBuilder sb = new StringBuilder(permutations.size() * 6);
         boolean first = true;
-        for (Pair<Integer> permuation : permuations) {
+        for (Pair<Integer> permutation : permutations) {
             if (first) {
                 first = false;
             } else {
                 sb.append(",");
             }
-            sb.append("[").append(permuation.getLeft()).append(",").append(permuation.getRight()).append("]");
+            sb.append("[").append(permutation.getLeft()).append(",").append(permutation.getRight()).append("]");
         }
         return sb.toString();
     }

@@ -1,5 +1,5 @@
 /**
- * Paritioning of slices for architecture validations.
+ * Partitioning of slices for architecture validations.
  */
 package de.spricom.dessert.partitioning;
 /*-

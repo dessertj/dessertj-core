@@ -27,7 +27,7 @@ import de.spricom.dessert.samples.basic.Something;
  * This is inconsistent with {@link GenericWithoutBoundsEmpty} without that
  * dependency.
  * Dessert always adds the bounds to the dependencies, even if they are not
- * sepecified explicity, hence they are java.lang.Object.
+ * specified explicitly, hence they are java.lang.Object.
  *
  * @param <E> any generic
  */

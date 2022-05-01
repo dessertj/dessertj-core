@@ -70,7 +70,7 @@ public class DependenciesTest {
     }
 
     /**
-     * Enfore a nesting rule: Classes my use neighbour packages or packages
+     * Enforce a nesting rule: Classes my use neighbour packages or packages
      * that belong to the same package (nested packages), but a class from
      * such a nested package must not use a class from the surrounding package.
      */
@@ -85,7 +85,7 @@ public class DependenciesTest {
     }
 
     /**
-     * Make sure the whole dessert library does not depend on anyting but the
+     * Make sure the whole dessert library does not depend on anything but the
      * JDK packages specified below.
      */
     @Test

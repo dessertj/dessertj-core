@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  * It's either linked to the parent {@link ClassPackage} it belongs to or it is a
  * {@link ClassRoot} itself. It maintains a probably empty list of all its subpackages
  * and classes it contains directly.
- * If there is an other package with the same name in some other classes directory or
+ * If there is another package with the same name in some other classes directory or
  * .jar file within the {@link ClassResolver} scope it has a reference to a list of all
  * such packages.
  */

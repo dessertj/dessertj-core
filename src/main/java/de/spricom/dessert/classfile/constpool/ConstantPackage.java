@@ -23,7 +23,7 @@ package de.spricom.dessert.classfile.constpool;
 import java.util.BitSet;
 
 /**
- * Representes a
+ * Represents a
  * <a href="https://docs.oracle.com/javase/specs/jvms/se18/html/jvms-4.html#jvms-4.4.12" target="_blank">
  * Java Virtual Machine Specification: 4.4.12. The CONSTANT_Package_info Structure</a>.
  */

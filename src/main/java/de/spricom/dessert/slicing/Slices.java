@@ -37,11 +37,11 @@ public final class Slices {
     }
 
     /**
-     * Returns a new {@link Slice} that resembels the union of the <i>slices</i>.
+     * Returns a new {@link Slice} that resembles the union of the <i>slices</i>.
      * Returns an empty slice if <i>slices</i> is empty.
      *
      * @param slices the slices to create the union from
-     * @return the union of the the slices
+     * @return the union of the slices
      */
     public static Slice of(Iterable<? extends Slice> slices) {
         List<Slice> list = new LinkedList<Slice>();
@@ -57,11 +57,11 @@ public final class Slices {
     }
 
     /**
-     * Returns a new {@link Slice} that resembels the union of the <i>slices</i>.
+     * Returns a new {@link Slice} that resembles the union of the <i>slices</i>.
      * Returns an empty slice if <i>slices</i> is empty.
      *
      * @param slices the slices to create the union from
-     * @return the union of the the slices
+     * @return the union of the slices
      */
     public static Slice of(Slice... slices) {
         if (slices.length == 0) {

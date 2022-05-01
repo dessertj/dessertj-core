@@ -91,7 +91,7 @@ public final class Classpath extends AbstractRootSlice {
     /**
      * Creates a {@link Clazz} form a classname.
      * Returns the first matching class on this classpath, if there is one. If no such class
-     * could be found it tries to use the current {@link ClassLoader} to lookup the class.
+     * could be found it tries to use the current {@link ClassLoader} to look up the class.
      * Of both fail a place-holder object will be returned that contains nothing but the classname.
      *
      * @param classname the classname
@@ -184,7 +184,7 @@ public final class Classpath extends AbstractRootSlice {
 
     /**
      * Returns a slice of all duplicate .class files detected by the underlying {@link ClassResolver}.
-     * Hence for each entry in this slice there are at least two .class files with the same classname but
+     * Hence, for each entry in this slice there are at least two .class files with the same classname but
      * different URI's.
      *
      * @return Maybe empty slice of all duplicate .class files
@@ -259,7 +259,7 @@ public final class Classpath extends AbstractRootSlice {
 
     /**
      * Returns a {@link Slice} for a concrete list of Java classes.
-     * The classes do not necessarily have to be on the this Classpath.
+     * The classes do not necessarily have to be on this Classpath.
      *
      * @param classes the classes
      * @return the slice

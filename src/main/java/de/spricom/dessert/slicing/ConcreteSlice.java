@@ -29,7 +29,7 @@ import java.util.Set;
 
 /**
  * A concrete slice is a concrete collection of classes.
- * Hence it contains a set of {@link Clazz}.
+ * Hence, it contains a set of {@link Clazz}.
  * The sum or difference on concrete slices
  * produce a concrete slice again.
  */

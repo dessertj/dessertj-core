@@ -92,7 +92,7 @@ public class CombinationUtils {
     private static <T> Iterator<Pair<T>> pairs(final List<T> list) {
         final int sz = list.size();
         if (sz < 2) {
-            throw new IllegalArgumentException("A list must contain at least 2 elememts to create a permuation.");
+            throw new IllegalArgumentException("A list must contain at least 2 elements to create a permutation.");
         }
         if (sz == 2) {
             return Collections.singleton(new Pair<T>(list.get(0), list.get(1))).iterator();
@@ -135,7 +135,7 @@ public class CombinationUtils {
     }
 
     /**
-     * Caclulates @{code factorial(n) / (factorial(k) * factorial(n - k))}.
+     * Calculates @{code factorial(n) / (factorial(k) * factorial(n - k))}.
      *
      * @param n number of different values
      * @param k number of slots

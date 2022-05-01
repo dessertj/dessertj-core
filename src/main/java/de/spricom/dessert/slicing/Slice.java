@@ -150,8 +150,8 @@ public interface Slice {
     Set<Clazz> getClazzes();
 
     /**
-     * Returns a slice of all the dependencies of this slices. That is the union of all
-     * of the dependencies of each class that belongs to this slice.
+     * Returns a slice of all the dependencies of this slice. That is the union of all
+     * the dependencies of each class that belongs to this slice.
      *
      * @return the dependencies
      */

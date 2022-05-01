@@ -1,5 +1,5 @@
 /**
- * Module API implementation for the Java Platfrom Module System.
+ * Module API implementation for the Java Platform Module System.
  *
  * Provides the information within <i>module-info</i> classes by
  * {@link de.spricom.dessert.modules.jpms.JpmsModule} objects that

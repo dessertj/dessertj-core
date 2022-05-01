@@ -41,7 +41,7 @@ public class ClassResolverTest {
     public void testClassPathWithoutJars() throws IOException {
         ClassResolver resolver = ClassResolver.ofClassPathWithoutJars();
         assertThat(resolver.getRootFiles()).isEqualTo(resolver.getRootDirs());
-        // If there are separate directories for productive an test classes then we have two root dirs.
+        // If there are separate directories for productive and test classes then we have two root dirs.
         assertThat(resolver.getRootDirs().size()).isLessThanOrEqualTo(2);
         assertThat(resolver.getRootJars()).isEmpty();
 

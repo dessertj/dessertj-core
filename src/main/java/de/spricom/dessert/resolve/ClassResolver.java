@@ -35,10 +35,10 @@ import java.util.logging.Logger;
 
 /**
  * The class resolver provides fast access to the classes and packages to analyze.
- * Therefore it maintains of a list of all {@link ClassRoot} objects for which
+ * Therefore, it maintains of a list of all {@link ClassRoot} objects for which
  * each represents a classes directory or a JAR file. And it has two HashMaps
  * for all the packages and classes contained in any of these roots. The key
- * used for theses HashMaps is the full qualified class or package name.
+ * used for theses HashMaps is the fully qualified class or package name.
  *
  * <p>The {@link ClassPackage} has a collection of all classes subpackages it contains.
  * Thus it provides direct access to all classes and subpackages of some package

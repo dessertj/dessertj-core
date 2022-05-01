@@ -30,8 +30,8 @@ import java.util.Map;
 
 /**
  * To access the java runtime classes from Java 9 on, access to the JRT-FileSystem is need.
- * This requires NIO, which is not available for Java 6. Thus reflections is used for
- * this puropose. A better solution would be a multi-version jar.
+ * This requires NIO, which is not available for Java 6. Thus, reflection is used for
+ * this purpose. A better solution would be a multi-version jar.
  */
 class ReflectiveJrtFileSystem {
     private final Class<?> fileSystems;

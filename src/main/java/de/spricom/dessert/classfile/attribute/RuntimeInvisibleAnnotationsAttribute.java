@@ -26,7 +26,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 
 /**
- * Representes a
+ * Represents a
  * <a href="https://docs.oracle.com/javase/specs/jvms/se18/html/jvms-4.html#jvms-4.7.17" target="_blank">
  * Java Virtual Machine Specification: 4.7.17. The RuntimeInvisibleAnnotations Attribute</a>.
  */

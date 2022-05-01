@@ -40,7 +40,7 @@ public final class SliceAssertions {
     }
 
     /**
-     * Starts an assertion for slices passed. The result provides a fluent API to specfiy the
+     * Starts an assertion for slices passed. The result provides a fluent API to specify the
      * actual assertions. The method name <i>dessert</i> is a short form for
      * <i>dependency assert that</i>.
      *
@@ -52,7 +52,7 @@ public final class SliceAssertions {
     }
 
     /**
-     * An convenience method to specify slices for assertions.
+     * A convenience method to specify slices for assertions.
      *
      * @param slices the slices to verify the assertion for
      * @return an {@link SliceAssert} object that provides a fluent api to specify the assertions
@@ -62,7 +62,7 @@ public final class SliceAssertions {
     }
 
     /**
-     * An other convenience method to specify slices for assertions.
+     * Another convenience method to specify slices for assertions.
      *
      * @param slices the slices to verify the assertion for
      * @return an {@link SliceAssert} object that provides a fluent api to specify the assertions
