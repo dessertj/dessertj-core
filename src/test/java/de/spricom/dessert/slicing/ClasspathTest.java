@@ -57,7 +57,7 @@ public class ClasspathTest {
 
 
     /**
-     * The exepected result is the sum of
+     * The expected result is the sum of
      * {@code find target/classes/de/spricom/dessert/classfile -iname "*.class" | wc -l} and
      * {@code find target/test-classes/de/spricom/dessert/classfile -iname "*.class" | wc -l}.
      */

@@ -212,7 +212,7 @@ public final class Classpath extends AbstractRootSlice {
     /**
      * Return the {@link Root} of some class given by its classname.
      *
-     * @param classname the fully qualifed name of the class
+     * @param classname the fully qualified name of the class
      * @return the Root
      */
     public Root rootOfClass(String classname) {

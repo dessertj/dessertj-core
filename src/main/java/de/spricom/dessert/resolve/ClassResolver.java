@@ -49,7 +49,7 @@ import java.util.logging.Logger;
  * ClassPackage or ClassEntry has {@link LinkedList} of all entries with the
  * same name. This lists can be accessed by {@link ClassPackage#getAlternatives()}
  * or {@link ClassEntry#getAlternatives()} respectively. Each entry points
- * to the same list of alternatives. If there are no alternatives the correspondig
+ * to the same list of alternatives. If there are no alternatives the corresponding
  * list is null.</p>
  *
  * <p>Typically one of the static <i>of</i> methods should be used to create

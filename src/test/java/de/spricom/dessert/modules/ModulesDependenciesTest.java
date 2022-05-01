@@ -20,6 +20,7 @@ package de.spricom.dessert.modules;
  * #L%
  */
 import de.spricom.dessert.modules.fixed.JavaModules;
+import de.spricom.dessert.modules.fixed.JdkModules;
 import de.spricom.dessert.slicing.Classpath;
 import de.spricom.dessert.slicing.Root;
 import de.spricom.dessert.slicing.Slice;
@@ -31,11 +32,14 @@ public class ModulesDependenciesTest {
     private static final Classpath cp = new Classpath();
     private static final ModuleRegistry mr = new ModuleRegistry(cp);
     private static final JavaModules java = new JavaModules(mr);
+    private static final JdkModules jdk = new JdkModules(mr);
 
     private final Root dessertCode = cp.rootOf(Slice.class);
 
     @Test
     public void checkDessertDependencies() {
         dessert(dessertCode).usesOnly(java.base, java.logging);
+        // show usage of JDK modules:
+        dessert(dessertCode).usesNot(jdk.compiler, jdk.management.agent, java.management.rmi);
     }
 }

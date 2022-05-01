@@ -67,7 +67,7 @@ public abstract class ClassEntry {
      * should be called as late as possible. For .jar files the most time is spent by decompressing the
      * .class file. The result will be cached for further calls.
      *
-     * @return a chached or frechly resolved instance of the {@link ClassFile}
+     * @return a cached or freshly resolved instance of the {@link ClassFile}
      */
     public ClassFile getClassfile() {
         if (classFile == null) {
@@ -99,7 +99,7 @@ public abstract class ClassEntry {
      * Returns a list of all other .class files with the same fully qualified name with the same {@link ClassRoot}.
      * Such .class files exist within multi-release JAR files within the META-INF/versions directory.
      *
-     * @return all other versions of the same .class file or an emtpy list if there are none
+     * @return all other versions of the same .class file or an empty list if there are none
      */
     public List<ClassEntry> getAlternativesWithinSamePackage() {
         if (alternatives == null) {
