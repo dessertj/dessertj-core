@@ -39,7 +39,7 @@ final class JarClassEntry extends ClassEntry {
     private final JarEntry jarEntry;
 
     JarClassEntry(ClassPackage pckg, JarFile jarFile, JarEntry jarEntry) {
-        super(classname(jarEntry), pckg);
+        super(classname(jarEntry), pckg, version(jarEntry));
         this.jarFile = jarFile;
         this.jarEntry = jarEntry;
     }
@@ -47,6 +47,10 @@ final class JarClassEntry extends ClassEntry {
     private static String classname(JarEntry jarEntry) {
         String cn = VersionsHelper.removeVersionPrefix(jarEntry.getName());
         return cn.substring(0, cn.length() - ".class".length()).replace('/', '.');
+    }
+
+    private static Integer version(JarEntry jarEntry) {
+        return VersionsHelper.getVersion(jarEntry.getName());
     }
 
     @Override

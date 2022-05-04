@@ -116,8 +116,11 @@ public class ClassPackage {
     }
 
     public void addClass(ClassEntry ce) {
-        if (classes.put(ce.getClassname(), ce) != null) {
-            log.warning(ce.getURI() + " appears twice, using last one.");
+        ClassEntry previous = classes.get(ce.getClassname());
+        if (previous == null || (previous.getVersion() != null && ce.getVersion() == null)) {
+            classes.put(ce.getClassname(), ce);
+        } else if (previous.getVersion() == null && ce.getVersion() == null) {
+            log.warning(ce.getURI() + " appears twice, using first one.");
         }
     }
 

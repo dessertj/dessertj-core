@@ -410,7 +410,9 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
      * a multi-release JAR.
      *
      * @return the minimum java version required for this class or null if not specified
+     * @deprecated use rather {@link #getVersion()}
      */
+    @Deprecated
     public String getMinVersion() {
         String uri = getURI().toString();
         int i = uri.toUpperCase().indexOf("/META-INF/VERSIONS/");
@@ -419,5 +421,15 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
             return uri.substring(i + "/META-INF/VERSIONS/".length(), uri.length() - l);
         }
         return null;
+    }
+
+    /**
+     * Returns the major version number of a Java platform release, if the .class file is located
+     * in the <i>META-INF/versions/N</i> directory of a Multi-release JAR file, null otherwise.
+     *
+     * @return the major version number or null
+     */
+    public Integer getVersion() {
+        return classEntry == null ? null : classEntry.getVersion();
     }
 }

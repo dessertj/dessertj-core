@@ -20,11 +20,14 @@ package de.spricom.dessert.resolve;
  * #L%
  */
 
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class VersionsHelper {
-    private static final Pattern VERSIONED_ENTRY_PREFIX = Pattern.compile("META-INF/versions/\\d+/");
+    private static final Logger log = Logger.getLogger(ClassPackage.class.getName());
+
+    private static final Pattern VERSIONED_ENTRY_PREFIX = Pattern.compile("META-INF/versions/(\\d+)/");
 
     private VersionsHelper() {}
 
@@ -34,5 +37,17 @@ public final class VersionsHelper {
             return name.substring(matcher.end());
         }
         return name;
+    }
+
+    public static Integer getVersion(String name) {
+        Matcher matcher = VERSIONED_ENTRY_PREFIX.matcher(name);
+        if (matcher.lookingAt()) {
+            try {
+                return Integer.parseInt(matcher.group(1));
+            } catch (NumberFormatException ex) {
+                log.warning("Invalid version " + matcher.group(1) + " within " + name);
+            }
+        }
+        return null;
     }
 }

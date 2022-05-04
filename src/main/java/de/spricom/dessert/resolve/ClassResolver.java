@@ -276,9 +276,15 @@ public final class ClassResolver implements TraversalRoot {
         for (String relativeUrl : classpath.split("\\s+")) {
             try {
                 File file = new File(new URL(context, relativeUrl).toURI().getPath());
-                add(file);
+                if (file.exists()) {
+                    add(file);
+                } else {
+                    log.info("Does not exist: " + file.getAbsolutePath() +
+                            " (referenced by Manifest of " + context + ")");
+                }
             } catch (URISyntaxException ex) {
-                log.warning("Unable to parse relative path " + relativeUrl + " within Manifest of " + context);
+                log.warning("Unable to parse relative path " + relativeUrl
+                        + " within Manifest of " + context + ": " + ex.getMessage());
             }
         }
     }

@@ -37,12 +37,18 @@ import java.util.List;
 public abstract class ClassEntry {
     private final String classname;
     private final ClassPackage pckg;
+    private final Integer version;
     private List<ClassEntry> alternatives;
     private ClassFile classFile;
 
     protected ClassEntry(String classname, ClassPackage pckg) {
+        this(classname, pckg, null);
+    }
+
+    protected ClassEntry(String classname, ClassPackage pckg, Integer version) {
         this.classname = classname;
         this.pckg = pckg;
+        this.version = version;
     }
 
     /**
@@ -123,6 +129,16 @@ public abstract class ClassEntry {
         assert !alternatives.contains(alt) : "alternatives.contains(alt)";
         alternatives.add(alt);
         alt.alternatives = alternatives;
+    }
+
+    /**
+     * Returns the major version number of a Java platform release, if the .class file is located
+     * in the <i>META-INF/versions/N</i> directory of a Multi-release JAR file, null otherwise.
+     *
+     * @return the major version number or null
+     */
+    public Integer getVersion() {
+        return version;
     }
 
     /**
