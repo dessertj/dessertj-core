@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 import java.util.jar.Manifest;
@@ -254,7 +255,7 @@ public final class ClassResolver implements TraversalRoot {
     }
 
     /**
-     * Adds all entries from the  <i>Class-Path</i> attribute of the JAR's Manifest file.
+     * Adds all entries from the <i>Class-Path</i> attribute of the JAR's Manifest file.
      * Does nothing if there is no Manifest file or no <i>Class-Path</i> attribute.
      * Processes JAR files recursively unless {@link #isIgnoreManifest()} has been set.
      * Use {@link #getRoot(File)} to get the {@link JarRoot} for a file.
@@ -273,8 +274,12 @@ public final class ClassResolver implements TraversalRoot {
         }
         URL context = jarRoot.getRootFile().toURI().toURL();
         for (String relativeUrl : classpath.split("\\s+")) {
-            File file = new File(new URL(context, relativeUrl).getPath());
-            add(file);
+            try {
+                File file = new File(new URL(context, relativeUrl).toURI().getPath());
+                add(file);
+            } catch (URISyntaxException ex) {
+                log.warning("Unable to parse relative path " + relativeUrl + " within Manifest of " + context);
+            }
         }
     }
 
