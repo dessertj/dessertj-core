@@ -406,11 +406,11 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
     }
 
     /**
-     * The min-version is available for .class files located in the META-INF directory of
-     * a multi-release JAR.
+     * Returns the major version number N, if the .class file is located
+     * in the <i>META-INF/versions/N</i> directory of a Multi-release JAR file, null otherwise.
      *
-     * @return the minimum java version required for this class or null if not specified
-     * @deprecated use rather {@link #getVersion()}
+     * @return N or null
+     * @deprecated use {@link #getVersion()}
      */
     @Deprecated
     public String getMinVersion() {
@@ -424,10 +424,10 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
     }
 
     /**
-     * Returns the major version number of a Java platform release, if the .class file is located
+     * Returns the major version number N, if the .class file is located
      * in the <i>META-INF/versions/N</i> directory of a Multi-release JAR file, null otherwise.
      *
-     * @return the major version number or null
+     * @return N or null
      */
     public Integer getVersion() {
         return classEntry == null ? null : classEntry.getVersion();
