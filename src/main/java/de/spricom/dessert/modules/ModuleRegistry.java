@@ -85,6 +85,8 @@ public final class ModuleRegistry implements ModuleResolver, ModuleLookup {
         return modules.get(name);
     }
 
+    // TODO: public ModuleSlice getModuleOf(Class<?> clazz)...
+
     private boolean add(ModuleSlice module) {
         String name = module.getName();
         ModuleSlice previous = modules.get(name);

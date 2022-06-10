@@ -199,9 +199,11 @@ public class SliceAssert {
             return this;
         }
 
-        for (int i = list.size() - 1; i > 0; i--) {
+        for (int i = list.size() - 1; i >= 0; i--) {
             // disallow backward dependencies
-            addIllegalDependencies(illegalDependencies, list.get(i), list.subList(0, i));
+            if (i > 0) {
+                addIllegalDependencies(illegalDependencies, list.get(i), list.subList(0, i));
+            }
             // disallow forward dependencies skipping one layer
             if (i + 2 < list.size()) {
                 addIllegalDependencies(illegalDependencies, list.get(i), list.subList(i + 2, list.size()));
