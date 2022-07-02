@@ -62,6 +62,16 @@ public final class SliceAssertions {
     }
 
     /**
+     * Alias for {@link #dessert(Iterable)}
+     *
+     * @param slices the slices to verify the assertion for
+     * @return an {@link SliceAssert} object that provides a fluent api to specify the assertions
+     */
+    public static SliceAssert assertThatSlices(Iterable<? extends Slice> slices) {
+        return new SliceAssert(slices);
+    }
+
+    /**
      * A convenience method to specify slices for assertions.
      *
      * @param slices the slices to verify the assertion for
@@ -82,6 +92,16 @@ public final class SliceAssertions {
     }
 
     /**
+     * Alias for {@link #dessert(Slice...)}
+     *
+     * @param slices the slices to verify the assertion for
+     * @return an {@link SliceAssert} object that provides a fluent api to specify the assertions
+     */
+    public static SliceAssert assertThatSlices(Slice... slices) {
+        return dessert(Arrays.asList(slices));
+    }
+
+    /**
      * Another convenience method to specify slices for assertions.
      *
      * @param slices the slices to verify the assertion for
@@ -98,6 +118,16 @@ public final class SliceAssertions {
      * @return an {@link SliceAssert} object that provides a fluent api to specify the assertions
      */
     public static SliceAssert assertThatSlice(Map<String, ? extends Slice> slices) {
+        return dessert(slices.values());
+    }
+
+    /**
+     * Alias for {@link #dessert(Map)}.
+     *
+     * @param slices the slices to verify the assertion for
+     * @return an {@link SliceAssert} object that provides a fluent api to specify the assertions
+     */
+    public static SliceAssert assertThatSlices(Map<String, ? extends Slice> slices) {
         return dessert(slices.values());
     }
 }

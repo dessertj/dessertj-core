@@ -89,6 +89,16 @@ public class SliceAssert {
     }
 
     /**
+     * Plural alias for {@link #usesOnly(Iterable)}.
+     *
+     * @param others the slices to check dependencies for
+     * @return this instance (fluent API)
+     */
+    public SliceAssert useOnly(Iterable<Slice> others) {
+        return usesOnly(others);
+    }
+
+    /**
      * Alternative for {@link #usesOnly(Iterable)}.
      *
      * @param others the slices to check dependencies for
@@ -97,6 +107,16 @@ public class SliceAssert {
      */
     public SliceAssert usesOnly(Slice... others) {
         return usesOnly(Arrays.asList(others));
+    }
+
+    /**
+     * Plural alias for {@link #usesOnly(Iterable)}.
+     *
+     * @param others the slices to check dependencies for
+     * @return this instance (fluent API)
+     */
+    public SliceAssert useOnly(Slice... others) {
+        return usesOnly(others);
     }
 
     /**
@@ -146,6 +166,26 @@ public class SliceAssert {
         return usesNot(others);
     }
 
+    /**
+     * Plural alias for {@link #usesNot(Iterable)}
+     *
+     * @param others the slices to check dependencies for
+     * @return this instance (fluent API)
+     */
+    public SliceAssert doNotUse(Iterable<Slice> others) {
+        return usesNot(others);
+    }
+
+    /**
+     * Plural alias for {@link #usesNot(Slice...)}
+     *
+     * @param others the slices to check dependencies for
+     * @return this instance (fluent API)
+     */
+    public SliceAssert doNotUse(Slice... others) {
+        return usesNot(others);
+    }
+
     private void addIllegalDependencies(IllegalDependencies illegalDependencies, Slice slice, Iterable<Slice> illegals) {
         for (Clazz clazz : slice.getClazzes()) {
             for (Clazz dependency : clazz.getDependencies().getClazzes()) {
@@ -188,6 +228,15 @@ public class SliceAssert {
     }
 
     /**
+     * Plural alias for {@link #isCycleFree()}.
+     *
+     * @return this instance (fluent API)
+     */
+    public SliceAssert areCycleFree() {
+        return isCycleFree();
+    }
+
+    /**
      * Assert there are no backward references and each slice uses only its direct successor.
      *
      * @return this instance (fluent API)
@@ -217,6 +266,15 @@ public class SliceAssert {
     }
 
     /**
+     * Plural alias for {@link #isLayeredStrict()}.
+     *
+     * @return this instance (fluent API)
+     */
+    public SliceAssert areLayeredStrict() {
+        return isLayeredStrict();
+    }
+
+    /**
      * Assert there are no backward references.
      *
      * @return this instance (fluent API)
@@ -237,6 +295,15 @@ public class SliceAssert {
             throw new AssertionError(violationsRenderer.render(illegalDependencies));
         }
         return this;
+    }
+
+    /**
+     * Plural alias for {@link #isLayeredRelaxed()} ()}.
+     *
+     * @return this instance (fluent API)
+     */
+    public SliceAssert areLayeredRelaxed() {
+        return isLayeredRelaxed();
     }
 
     private List<Slice> asList() {
