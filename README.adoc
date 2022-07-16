@@ -1,3 +1,7 @@
+image:https://github.com/hajo70/dessert-core/actions/workflows/maven.yml/badge.svg[CI, link=https://github.com/hajo70/dessert-core/actions/workflows/maven.yml?query=branch%3Amaster++]
+image:https://maven-badges.herokuapp.com/maven-central/de.spricom.dessert/dessert-core/badge.svg[Maven Central, link=https://search.maven.org/search?q=g%3Ade.spricom.dessert%20a%3Adessert-core]
+image:https://img.shields.io/github/license/hajo70/dessert-core.svg[License, link=https://github.com/hajo70/dessert-core/blob/master/LICENSE.md]
+
 = Dessert Dependency Assertion Library for Java
 
 A library for unit-tests to check the dependencies between classes.
