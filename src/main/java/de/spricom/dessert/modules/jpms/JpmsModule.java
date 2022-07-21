@@ -31,6 +31,9 @@ import de.spricom.dessert.util.Predicate;
 
 import java.util.*;
 
+/**
+ * The information within a module-info.class represented as {@link de.spricom.dessert.modules.core.ModuleSlice}.
+ */
 public final class JpmsModule extends AbstractModule {
 
     private final ModuleAttribute moduleAttribute;

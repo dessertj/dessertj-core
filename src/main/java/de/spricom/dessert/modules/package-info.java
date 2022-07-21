@@ -1,5 +1,5 @@
 /**
- * Java Platform Module System (JPMS) support
+ * Java Platform Module System (JPMS) support.
  */
 package de.spricom.dessert.modules;
 

@@ -22,6 +22,9 @@ package de.spricom.dessert.modules.core;
 import de.spricom.dessert.slicing.AbstractDelegateSlice;
 import de.spricom.dessert.slicing.Slice;
 
+/**
+ * Common parent for all sorts of module slice implementations.
+ */
 public abstract class AbstractModule extends AbstractDelegateSlice implements ModuleSlice {
 
     @Override

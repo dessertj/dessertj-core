@@ -36,6 +36,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Maintains a map of modules found on the class-path,
+ * so that they can be accessed by <i>module-name</i>.
+ */
 public final class ModuleRegistry implements ModuleResolver, ModuleLookup {
     private static final Logger log = Logger.getLogger(ModuleRegistry.class.getName());
 
@@ -65,14 +69,29 @@ public final class ModuleRegistry implements ModuleResolver, ModuleLookup {
         }
     }
 
+    /**
+     * Checks whether the JPMS is available. This is always true for Java 9 or later.
+     *
+     * @return true, if the current JDK is Java 9 or newer.
+     */
     public static boolean isJavaPlattformModuleSystemAvailable() {
         return ClassResolver.isJrtFileSystemAvailable();
     }
 
+    /**
+     * Returns all module slices found on the class-path.
+     *
+     * @return the module slices
+     */
     public Collection<ModuleSlice> getModules() {
         return getModuleMap().values();
     }
 
+    /**
+     * Returns the names of all modules found on the class-path.
+     *
+     * @return the names
+     */
     public Collection<String> getModuleNames() {
         return getModuleMap().keySet();
     }
@@ -81,6 +100,12 @@ public final class ModuleRegistry implements ModuleResolver, ModuleLookup {
         return Collections.unmodifiableMap(modules);
     }
 
+    /**
+     * Return a module by name.
+     *
+     * @param name the module name
+     * @return the module or null if there is no such module.
+     */
     public ModuleSlice getModule(String name) {
         return modules.get(name);
     }

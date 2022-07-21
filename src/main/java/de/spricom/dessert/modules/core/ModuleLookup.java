@@ -20,6 +20,9 @@ package de.spricom.dessert.modules.core;
  * #L%
  */
 
+/**
+ * The interface of a service that can find a module by name.
+ */
 public interface ModuleLookup {
     ModuleSlice getModule(String name);
 }

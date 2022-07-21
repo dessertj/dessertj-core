@@ -21,6 +21,10 @@ package de.spricom.dessert.modules.core;
  */
 import de.spricom.dessert.slicing.Slice;
 
+/**
+ * Delegete for any {@link ModuleSlice} to be used for ModuleSlice extensions similar to
+ * {@link de.spricom.dessert.slicing.AbstractDelegateSlice}.
+ */
 public class DelegateModule extends AbstractModule {
 
     private final ModuleSlice delegate;

@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * A {@link ModuleResolver} that scans the class-path for module-info classes.
+ */
 public final class JavaPlatformModuleResolver implements ModuleResolver {
 
     private final Classpath cp;

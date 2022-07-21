@@ -21,6 +21,9 @@ package de.spricom.dessert.modules.core;
  */
 import de.spricom.dessert.slicing.Slice;
 
+/**
+ * The interface of {@link Slice} that represents a module.
+ */
 public interface ModuleSlice extends Slice {
 
     String getName();

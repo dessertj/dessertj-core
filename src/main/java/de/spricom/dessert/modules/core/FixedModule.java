@@ -22,6 +22,9 @@ package de.spricom.dessert.modules.core;
 import de.spricom.dessert.slicing.Slice;
 import de.spricom.dessert.slicing.Slices;
 
+/**
+ * A fixed module is a hard-coded module definition.
+ */
 public class FixedModule extends AbstractModule {
 
     private final String name;

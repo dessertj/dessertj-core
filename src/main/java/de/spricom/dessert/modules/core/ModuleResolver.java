@@ -22,6 +22,9 @@ package de.spricom.dessert.modules.core;
 
 import java.util.Collection;
 
+/**
+ * An interface of a service that can find modules.
+ */
 public interface ModuleResolver {
     Collection<? extends ModuleSlice> getModules();
 }

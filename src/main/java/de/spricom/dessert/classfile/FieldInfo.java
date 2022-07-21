@@ -24,6 +24,9 @@ import de.spricom.dessert.classfile.constpool.FieldType;
 
 import java.util.Set;
 
+/**
+ * Represents a field within a java class.
+ */
 public class FieldInfo extends MemberInfo {
 	public static final int ACC_VOLATILE = 0x0040; // Declared volatile; cannot
 													// be cached.
