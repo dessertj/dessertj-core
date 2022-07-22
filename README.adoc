@@ -14,7 +14,7 @@ Add the _dessert-core_ dependency:
 <dependency>
     <groupId>de.spricom.dessert</groupId>
     <artifactId>dessert-core</artifactId>
-    <version>0.5.1</version>
+    <version>0.5.2</version>
     <scope>test</scope>
 </dependency>
 ----
@@ -46,7 +46,7 @@ For more information see https://dessert.spricom.de/[dessert.spricom.de].
 
 == License
 
-The dessert-core library is published under the Apache License 2.0,
+The dessert-core library is published under the Apache License 2.0, +
 see http://www.apache.org/licenses/LICENSE-2.0 for details.
 
 There are no third party libraries required.
