@@ -24,7 +24,7 @@ import de.spricom.dessert.slicing.Classpath;
 import de.spricom.dessert.slicing.Slice;
 import org.junit.Test;
 
-import static de.spricom.dessert.assertions.SliceAssertions.dessert;
+import static de.spricom.dessert.assertions.SliceAssertions.assertThatSlice;
 
 public class SampleTest {
     private static final Classpath cp = new Classpath();
@@ -33,6 +33,6 @@ public class SampleTest {
     public void detectUsageOfJdkInternalApis() {
         Slice myCompanyCode = cp.slice("de.spricom..*");
         Slice jdkInternalApis = cp.slice("sun..*").plus(cp.slice("com.sun..*"));
-        dessert(myCompanyCode).usesNot(jdkInternalApis);
+        assertThatSlice(myCompanyCode).usesNot(jdkInternalApis);
     }
 }
