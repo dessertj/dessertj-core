@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 public class JrtModuleRoot extends ClassRoot {
@@ -48,11 +49,13 @@ public class JrtModuleRoot extends ClassRoot {
             throw new IOException("Unable to read content of " + moduleName + " module.", ex);
         } catch (IllegalAccessException ex) {
             throw new IOException("Cannot access NIO classes.", ex);
+        } catch (URISyntaxException ex) {
+            throw new IOException("Cannot convert jrt-URI.", ex);
         }
     }
 
     private void scan(ClassCollector collector, ClassPackage pckg, Object dirPath, String prefix)
-            throws InvocationTargetException, IllegalAccessException {
+            throws InvocationTargetException, IllegalAccessException, URISyntaxException {
         collector.addPackage(pckg);
         for (Object path : fs.newDirectoryStream(dirPath)) {
             String filename = fs.getFileName(path);

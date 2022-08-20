@@ -200,6 +200,8 @@ public final class ClassResolver implements TraversalRoot {
             throw new ResolveException("Cannot access NIO classes.", ex);
         } catch (IllegalAccessException ex) {
             throw new ResolveException("Cannot access NIO classes.", ex);
+        } catch (URISyntaxException ex) {
+            throw new ResolveException("Cannot convert jrt-URI.", ex);
         }
     }
 

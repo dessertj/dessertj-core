@@ -23,6 +23,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -87,19 +88,25 @@ class ReflectiveJrtFileSystem {
         return (Iterable<Object>) newDirectoryStream.invoke(null, path);
     }
 
-    URI toUri(Object path) throws InvocationTargetException, IllegalAccessException {
-        return (URI) toUri.invoke(path);
+    URI toUri(Object path) throws InvocationTargetException, IllegalAccessException, URISyntaxException {
+        URI uri = (URI) toUri.invoke(path);
+        if (uri.toASCIIString().startsWith("jrt:/modules/")) {
+            // Work-around for Java 11
+            uri = new URI(uri.toASCIIString().replace("jrt:/modules/", "jrt:/"));
+        }
+        return uri;
     }
 
     String getFileName(Object path) throws InvocationTargetException, IllegalAccessException {
         return getFileName.invoke(path).toString();
     }
 
-    List<String> listModules() throws InvocationTargetException, IllegalAccessException {
+    List<String> listModules() throws InvocationTargetException, IllegalAccessException, URISyntaxException {
         List<String> moduleNames = new ArrayList<String>(64);
         Object modulesRoot = getPath.invoke(jrtFileSystem, "/modules", new String[0]);
         for (Object module : newDirectoryStream(modulesRoot)) {
-            moduleNames.add(toUri(module).getPath().substring(1));
+            String path = toUri(module).getPath();
+            moduleNames.add(path.substring(path.lastIndexOf('/') + 1));
         }
         return moduleNames;
     }
