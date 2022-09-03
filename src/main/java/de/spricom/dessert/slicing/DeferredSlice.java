@@ -23,12 +23,14 @@ package de.spricom.dessert.slicing;
 import de.spricom.dessert.matching.NamePattern;
 import de.spricom.dessert.util.Predicate;
 
+import java.util.HashSet;
 import java.util.Set;
 
 class DeferredSlice extends AbstractSlice {
     private final Slice derivedSlice;
     private final NamePatternClazzResolver resolver;
     private final boolean resolvesConcrete;
+    private final Set<Clazz> cache = new HashSet<Clazz>();
     private ConcreteSlice concreteSlice;
 
     DeferredSlice(Slice derivedSlice, NamePatternClazzResolver resolver, boolean resolvesConcrete) {
@@ -60,13 +62,22 @@ class DeferredSlice extends AbstractSlice {
         if (isConcrete()) {
             return concreteSlice.contains(clazz);
         }
+        if (cache.contains(clazz)) {
+            return true;
+        }
         if (!derivedSlice.contains(clazz)) {
             return false;
         }
-        if (getClazzes().contains(clazz)) {
+        if (!resolvesConcrete) {
+            // derived slices are not limited by a resolver
             return true;
         }
-        return !isConcrete();
+        NamePatternClazzResolver singleClassResolver = resolver.filtered(NamePattern.of(clazz.getName()));
+        boolean member = singleClassResolver.getClazzes().contains(clazz);
+        if (member) {
+            cache.add(clazz);
+        }
+        return member;
     }
 
     private boolean isConcrete() {
@@ -85,6 +96,7 @@ class DeferredSlice extends AbstractSlice {
                 }
             });
         }
+        cache.clear();
         return concreteSlice.getClazzes();
     }
 
