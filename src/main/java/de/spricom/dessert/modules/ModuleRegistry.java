@@ -120,7 +120,7 @@ public final class ModuleRegistry implements ModuleResolver, ModuleLookup {
             return true;
         } else {
             if (!previous.equals(module)) {
-                log.log(Level.WARNING, "There are two modules named '{}'", name);
+                log.log(Level.WARNING, "There are two modules named ''{0}''", name);
             }
             return false;
         }
