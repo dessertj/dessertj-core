@@ -90,6 +90,12 @@ public class NamePatternTest {
         check("*..*..*", "sample.Baz", false);
     }
 
+    @Test
+    public void testClassWildcard() {
+        check("..foo.bar.*", "com.country.foo.bar.baz.Blub", false);
+        check("..foo.bar.*", "com.country.foo.bar.Blub", true);
+    }
+
     private void checkInvalid(String pattern) {
         try {
             NamePattern.of(pattern);

@@ -161,7 +161,9 @@ public class NamePattern implements Comparable<NamePattern> {
             if (!matcher.isMatchPossible()) {
                 return false;
             }
-            if (matchesAlternate(parts, i, matcher)) return true;
+            if (matchesAlternate(parts, i, matcher)) {
+                return true;
+            }
             matcher = matcher.match(parts[i]);
         }
         return matcher.matches();
@@ -177,9 +179,11 @@ public class NamePattern implements Comparable<NamePattern> {
     private boolean matches(String[] parts, int index, ShortNameMatcher matcher) {
         for (int i = index; i < parts.length; i++) {
             if (!matcher.isMatchPossible()) {
-                break;
+                return false;
             }
-            if (matchesAlternate(parts, i, matcher)) return true;
+            if (matchesAlternate(parts, i, matcher)) {
+                return true;
+            }
             matcher = matcher.match(parts[i]);
         }
         return matcher.matches();
@@ -189,8 +193,13 @@ public class NamePattern implements Comparable<NamePattern> {
         if (!matcher.isWildcard()) {
             return false;
         }
-        ShortNameMatcher alternate = matcher.next().match(parts[index]);
-        return matches(parts, index + 1, alternate);
+        ShortNameMatcher alternate = matcher.next();
+        for (int i = index; i < parts.length; i++) {
+            if (matches(parts, i, alternate)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
