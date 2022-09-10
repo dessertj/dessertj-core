@@ -138,16 +138,6 @@ public class NamePattern implements Comparable<NamePattern> {
         return shortNameMatchers[shortNameMatchers.length - 1] instanceof AnyShortNameMatcher;
     }
 
-    public boolean isMoreConcreteThan(NamePattern other) {
-        if (isAny()) {
-            return false;
-        }
-        if (other.isAny()) {
-            return true;
-        }
-        return shortNameMatchers.length > other.shortNameMatchers.length;
-    }
-
     /**
      * Matches 'name' against the pattern.
      *
@@ -202,9 +192,43 @@ public class NamePattern implements Comparable<NamePattern> {
         return false;
     }
 
+    /**
+     * Use a heuristic to check whether this or the other name pattern should be evaluated first.
+     * The name pattern that produces the smallest number of matches is the best to evaluate first,
+     * because each match costs additional effort.
+     *
+     * @param other the other pattern
+     * @return true if this pattern should be evaluated first.
+     */
+    public boolean isMoreConcreteThan(NamePattern other) {
+        return weight() > other.weight();
+    }
+
+    private int weight() {
+        int wildcards = 0;
+        for (ShortNameMatcher matcher : shortNameMatchers) {
+            if (matcher.isWildcard()) {
+                wildcards++;
+            }
+        }
+        return (matcher().isWildcard() ? 0 : 5)
+                + shortNameMatchers.length
+                - (wildcards > 0 ? 10 : 0);
+    }
+
+    /**
+     * Make sure name patterns are evaluated in the most useful order
+     *
+     * @param other the object to be compared.
+     * @return -1 if this name pattern is more concrete than the other one
+     */
     @Override
-    public int compareTo(NamePattern o) {
-        return Integer.valueOf(shortNameMatchers.length).compareTo(o.shortNameMatchers.length);
+    public int compareTo(NamePattern other) {
+        int diff = other.weight() - weight();
+        if (diff != 0) {
+            return diff;
+        }
+        return toString().compareTo(other.toString());
     }
 
     public String toString() {

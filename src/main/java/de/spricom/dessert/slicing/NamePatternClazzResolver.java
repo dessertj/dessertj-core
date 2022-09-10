@@ -26,16 +26,25 @@ import de.spricom.dessert.resolve.ClassVisitor;
 import de.spricom.dessert.resolve.ResolveException;
 import de.spricom.dessert.resolve.TraversalRoot;
 
+import java.util.Collections;
 import java.util.Set;
+import java.util.TreeSet;
 
 final class NamePatternClazzResolver extends AbstractClazzResolver implements ClassVisitor {
     private final NamePattern pattern;
     private final TraversalRoot root;
+    private final Set<NamePattern> additionalPatterns;
 
     NamePatternClazzResolver(Classpath cp, NamePattern pattern, TraversalRoot root) {
+        this(cp, pattern, root, Collections.<NamePattern>emptySet());
+    }
+
+    private NamePatternClazzResolver(Classpath cp, NamePattern pattern, TraversalRoot root,
+                                     Set<NamePattern> additionalPatterns) {
         super(cp);
         this.pattern = pattern;
         this.root = root;
+        this.additionalPatterns = additionalPatterns;
     }
 
     @Override
@@ -45,6 +54,11 @@ final class NamePatternClazzResolver extends AbstractClazzResolver implements Cl
 
     @Override
     public void visit(ClassEntry ce) {
+        for (NamePattern additionalPattern : additionalPatterns) {
+            if (!additionalPattern.matches(ce.getClassname())) {
+                return;
+            }
+        }
         add(ce);
     }
 
@@ -58,9 +72,17 @@ final class NamePatternClazzResolver extends AbstractClazzResolver implements Cl
     }
 
     public NamePatternClazzResolver filtered(NamePattern additionalPattern) {
+        TreeSet<NamePattern> patterns = new TreeSet<NamePattern>(additionalPatterns);
         if (additionalPattern.isMoreConcreteThan(pattern)) {
-            return new NamePatternClazzResolver(getClasspath(), additionalPattern, root);
+            patterns.add(pattern);
+            return new NamePatternClazzResolver(getClasspath(), additionalPattern, root, patterns);
+        } else {
+            patterns.add(additionalPattern);
+            return new NamePatternClazzResolver(getClasspath(), pattern, root, patterns);
         }
-        return this;
+    }
+
+    public NamePatternClazzResolver replace(NamePattern replacementPattern) {
+        return new NamePatternClazzResolver(getClasspath(), replacementPattern, root);
     }
 }

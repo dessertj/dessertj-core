@@ -44,7 +44,7 @@ public class ConcreteSlice extends AbstractSlice implements Concrete {
 
     @Override
     public ConcreteSlice slice(Predicate<Clazz> predicate) {
-        Set<Clazz> filtered = new HashSet<Clazz>();
+        Set<Clazz> filtered = new HashSet<Clazz>(entries.size());
         for (Clazz entry : entries) {
             if (predicate.test(entry)) {
                 filtered.add(entry);

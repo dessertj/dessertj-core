@@ -25,25 +25,26 @@ import de.spricom.dessert.resolve.ResolveException;
 import de.spricom.dessert.util.Predicate;
 import de.spricom.dessert.util.Predicates;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
+import java.util.TreeSet;
 
 final class DerivedSlice extends AbstractSlice {
-    private final NamePattern namePattern;
+    private final Set<NamePattern> namePatterns;
     private final Predicate<Clazz> predicate;
-    private final Set<Clazz> cache = new HashSet<Clazz>();
+    private final Set<Clazz> cache = new TreeSet<Clazz>();
 
-    private DerivedSlice(NamePattern namePattern, Predicate<Clazz> predicate) {
-        this.namePattern = namePattern;
+    private DerivedSlice(Set<NamePattern> namePatterns, Predicate<Clazz> predicate) {
+        this.namePatterns = namePatterns;
         this.predicate = predicate;
     }
 
     DerivedSlice(NamePattern namePattern) {
-        this(namePattern, Predicates.<Clazz>any());
+        this(Collections.singleton(namePattern), Predicates.<Clazz>any());
     }
 
     DerivedSlice(Predicate<Clazz> predicate) {
-        this(NamePattern.ANY_NAME, predicate);
+        this(Collections.<NamePattern>emptySet(), predicate);
     }
 
     @Override
@@ -57,12 +58,21 @@ final class DerivedSlice extends AbstractSlice {
     }
 
     @Override
+    public Slice slice(String pattern) {
+        TreeSet<NamePattern> patterns = new TreeSet<NamePattern>(namePatterns);
+        patterns.add(NamePattern.of(pattern));
+        return new DerivedSlice(patterns, predicate);
+    }
+
+    @Override
     public boolean contains(Clazz entry) {
-        if (!namePattern.matches(entry.getName())) {
-            return false;
-        }
         if (cache.contains(entry)) {
             return true;
+        }
+        for (NamePattern namePattern : namePatterns) {
+            if (!namePattern.matches(entry.getName())) {
+                return false;
+            }
         }
         boolean member = predicate.test(entry);
         if (member) {
@@ -77,10 +87,12 @@ final class DerivedSlice extends AbstractSlice {
     }
 
     public String toString() {
-        if (namePattern == NamePattern.ANY_NAME) {
+        if (namePatterns.isEmpty()) {
             return "slice from " + predicate;
+        } else if (namePatterns.size() == 1) {
+            return "slice " + namePatterns.iterator().next();
         } else {
-            return "slice " + namePattern;
+            return "slice " + namePatterns;
         }
     }
 }

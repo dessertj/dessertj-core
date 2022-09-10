@@ -23,6 +23,10 @@ package de.spricom.dessert.matching;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TreeSet;
+
 import static org.fest.assertions.Assertions.assertThat;
 
 public class NamePatternTest {
@@ -110,4 +114,30 @@ public class NamePatternTest {
         checkInvalid("..");
         checkInvalid("sample...Foo");
     }
+
+    @Test
+    public void testSorting() {
+        List<NamePattern> patterns = new LinkedList<NamePattern>();
+        patterns.add(NamePattern.of("sample.foo.bar.Baz"));
+        patterns.add(NamePattern.of("sample.foo.Baz"));
+        patterns.add(NamePattern.of("*a*l*.F*o"));
+        patterns.add(NamePattern.of("sample.Foo$Bar$Baz"));
+        patterns.add(NamePattern.of("sample.Foo*"));
+        patterns.add(NamePattern.of("sample..foo..bar..Baz"));
+        patterns.add(NamePattern.of("*..*..*"));
+        patterns.add(NamePattern.of("sample..bar.Baz"));
+        patterns.add(NamePattern.ANY_NAME);
+        assertThat(new TreeSet<NamePattern>(patterns).toString()).isEqualTo(patterns.toString());
+    }
+
+    @Test
+    public void testSortingDuplicates() {
+        TreeSet<NamePattern> patterns = new TreeSet<NamePattern>();
+        patterns.add(NamePattern.ANY_NAME);
+        patterns.add(NamePattern.of("sample.Foo*"));
+        patterns.add(NamePattern.ANY_NAME);
+        patterns.add(NamePattern.of("sample.Foo*"));
+        assertThat(patterns.toString()).isEqualTo("[sample.Foo*, ..*]");
+    }
+
 }
