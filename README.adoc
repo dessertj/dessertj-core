@@ -11,12 +11,12 @@ This can be used do keep an architecture clean.
 Simply said an architecture is something you can express with
 a https://en.wikipedia.org/wiki/Block_diagram[block diagram],
 that is a diagram with blocks and arrows between them.
-Dessert provides an API to express such block diagrams in Java code.
+Dessert provides an API to write down such block diagrams in Java code.
 
 A block is an arbitrary part of a software-system. Dessert uses
-the `Slice` interface to describe such blocks. The arrows are
+the `Slice` interface to describe blocks. The arrows are
 dependencies between the blocks. Dessert's assertion API represents
-such dependencies.
+dependencies.
 
 Can you see the advantage? If you use this API to describe your
 architecture within a unit-test it ensures the reality matches
