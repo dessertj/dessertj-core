@@ -13,9 +13,9 @@ a https://en.wikipedia.org/wiki/Block_diagram[block diagram],
 that is a diagram with blocks and arrows between them.
 Dessert provides an API to express such block diagrams in Java code.
 
-A block is an arbitrary part of a software-system. Dessert provides
-the `Slice` interface to express such blocks. The arrows are
-dependencies between the blocks. Dessert's assertion API expresses
+A block is an arbitrary part of a software-system. Dessert uses
+the `Slice` interface to describe such blocks. The arrows are
+dependencies between the blocks. Dessert's assertion API represents
 such dependencies.
 
 Can you see the advantage? If you use this API to describe your
