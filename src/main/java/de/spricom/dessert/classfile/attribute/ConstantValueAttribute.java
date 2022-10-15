@@ -28,7 +28,7 @@ import java.io.IOException;
 
 /**
  * Represents a
- * <a href="https://docs.oracle.com/javase/specs/jvms/se18/html/jvms-4.html#jvms-4.7.2" target="_blank">
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se19/html/jvms-4.html#jvms-4.7.2" target="_blank">
  * Java Virtual Machine Specification: 4.7.2. The ConstantValue Attribute</a>.
  */
 public class ConstantValueAttribute extends AttributeInfo {

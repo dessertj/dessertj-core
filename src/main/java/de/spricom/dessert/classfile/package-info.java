@@ -1,8 +1,8 @@
 /**
  * Analyzes .class files to determine dependencies.
  * The implementation is based on the
- * <a href="https://docs.oracle.com/javase/specs/jvms/se18/html/jvms-4.html" target="_blank">
- * Java Virtual Machine Specification</a> for Java SE 18.
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se19/html/jvms-4.html" target="_blank">
+ * Java Virtual Machine Specification</a> for Java SE 19.
  */
 package de.spricom.dessert.classfile;
 /*-
