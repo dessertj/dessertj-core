@@ -314,7 +314,7 @@ public final class ClassResolver implements TraversalRoot {
 
     public ClassRoot getRoot(File file) {
         for (ClassRoot root : path) {
-            if (root.getRootFile().equals(file)) {
+            if (root.getRootFile() != null && root.getRootFile().equals(file)) {
                 return root;
             }
         }
