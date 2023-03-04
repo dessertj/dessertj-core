@@ -3,7 +3,7 @@
 
     <groupId>de.spricom.dessert</groupId>
     <artifactId>dessert-core</artifactId>
-    <version>0.5.6-SNAPSHOT</version>
+    <version>0.5.6</version>
 
     <name>Dessert Dependency Assertion Library for Java</name>
     <description>A library for unit-tests to check the dependencies between classes.</description>
@@ -33,7 +33,7 @@
         <connection>scm:git:git@github.com:hajo70/dessert-core.git</connection>
         <developerConnection>scm:git:git@github.com:hajo70/dessert-core.git</developerConnection>
         <url>https://github.com/hajo70/dessert-core</url>
-        <tag>HEAD</tag>
+        <tag>dessert-core-0.5.6</tag>
     </scm>
 
     <issueManagement>
