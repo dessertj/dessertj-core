@@ -9,7 +9,7 @@
 
     <name>Dessert Dependency Assertion Library for Java</name>
     <description>A library for unit-tests to check the dependencies between classes.</description>
-    <url>https://dessert.spricom.de/</url>
+    <url>https://dessertj.org/</url>
     <inceptionYear>2017</inceptionYear>
 
     <licenses>
