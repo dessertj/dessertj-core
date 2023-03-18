@@ -1,11 +1,11 @@
-image:https://github.com/hajo70/dessert-core/actions/workflows/maven.yml/badge.svg[CI, link=https://github.com/hajo70/dessert-core/actions/workflows/maven.yml?query=branch%3Amaster++]
-image:https://maven-badges.herokuapp.com/maven-central/de.spricom.dessert/dessert-core/badge.svg[Maven Central, link=https://search.maven.org/search?q=g%3Ade.spricom.dessert%20a%3Adessert-core]
-image:https://img.shields.io/github/license/hajo70/dessert-core.svg[License, link=https://github.com/hajo70/dessert-core/blob/master/LICENSE.md]
+image:https://github.com/dessertj/dessertj-core/actions/workflows/maven.yml/badge.svg[CI, link=https://github.com/dessertj/dessertj-core/actions/workflows/maven.yml?query=branch%3Amaster++]
+image:https://maven-badges.herokuapp.com/maven-central/org.dessertj/dessertj-core/badge.svg[Maven Central, link=https://search.maven.org/search?q=g%3Aorg.dessertj%20a%3Adessertj-core]
+image:https://img.shields.io/github/license/dessertj/dessertj-core.svg[License, link=https://github.com/dessertj/dessertj-core/blob/master/LICENSE.md]
 
-= Dessert Dependency Assertion Library for Java
+= DessertJ Dependency Assertion Library for Java
 
-The name *dessert* comes from **de**pendency a**ssert**.
-Hence, *dessert* is a library for unit-tests to check dependencies between classes.
+The name *dessertj* comes from **de**pendency a**ssert** for **Java**.
+Hence, *dessertj* is a library for unit-tests to check dependencies between classes.
 It's used to keep an architecture clean.
 
 Simply said an architecture is something you can express with
@@ -14,10 +14,10 @@ that is a diagram with blocks and arrows between them.
 A block is an arbitrary part of a software-system. The arrows show the
 dependencies between the blocks.
 
-Dessert provides an API to write down such block diagrams in Java code:
-The `Slice` interface represents a block. Dessert has many ways
+DessertJ provides an API to write down such block diagrams in Java code:
+The `Slice` interface represents a block. DessertJ has many ways
 to specify what belongs to such a block.
-Dessert's assertion API expresses the dependencies between the block.
+DessertJ's assertion API expresses the dependencies between the block.
 
 Can you see the advantage? If you use this API to describe your
 architecture within a unit-test, it will ensure reality matches
@@ -25,13 +25,13 @@ the design each time the test is run.
 
 == Getting started
 
-Add the _dessert-core_ dependency:
+Add the _dessertj-core_ dependency:
 
 ----
 <dependency>
-    <groupId>de.spricom.dessert</groupId>
-    <artifactId>dessert-core</artifactId>
-    <version>0.5.6</version>
+    <groupId>org.dessertj</groupId>
+    <artifactId>dessertj-core</artifactId>
+    <version>0.6.0</version>
     <scope>test</scope>
 </dependency>
 ----
@@ -39,13 +39,13 @@ Add the _dessert-core_ dependency:
 Write your first test:
 [code, java]
 ----
-package de.spricom.dessert.samples;
+package org.dessertj.samples;
 
-import de.spricom.dessert.slicing.Classpath;
-import de.spricom.dessert.slicing.Slice;
+import org.dessertj.slicing.Classpath;
+import org.dessertj.slicing.Slice;
 import org.junit.Test;
 
-import static de.spricom.dessert.assertions.SliceAssertions.assertThatSlice;
+import static org.dessertj.assertions.SliceAssertions.assertThatSlice;
 
 public class SampleTest {
     private static final Classpath cp = new Classpath();
@@ -63,7 +63,7 @@ For more information see https://dessertj.org/[dessertj.org].
 
 == License
 
-The dessert-core library is published under the Apache License 2.0, +
+The dessertj-core library is published under the Apache License 2.0, +
 see http://www.apache.org/licenses/LICENSE-2.0 for details.
 
 There are no third party libraries required.
