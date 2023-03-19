@@ -142,23 +142,6 @@ public final class ClassResolver implements TraversalRoot {
         return r;
     }
 
-    /**
-     * Creates a ClassResolver with all entries for {@link #ofClassPath()} and all entries
-     * from the <i>sun.boot.class.path</i> system-property. From Java 9 on there is
-     * no difference to {@link #ofClassPath()}.
-     *
-     * @return a ClassResolver with the corresponding entries
-     * @throws ResolveException if a directory or jar file could not be read
-     * @deprecated use ofClassPathAndJavaRuntime instead
-     */
-    @Deprecated
-    public static ClassResolver ofClassPathAndBootClassPath() {
-        ClassResolver r = new ClassResolver();
-        r.addClassPath();
-        r.addBootClassPath();
-        return r;
-    }
-
     public void addClassPath() {
         add(System.getProperty("java.class.path"));
     }

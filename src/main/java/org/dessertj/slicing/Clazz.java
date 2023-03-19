@@ -120,16 +120,6 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
     }
 
     /**
-     * @return the classes directory or jar-archive containing this class
-     * @deprecated use getRoot().getRootFile() instead
-     */
-    @Deprecated
-    public File getRootFile() {
-        Root root = getRoot();
-        return root == null ? null : root.getRootFile();
-    }
-
-    /**
      * @return the {@link Root} this Clazz belongs to
      */
     public Root getRoot() {
@@ -403,24 +393,6 @@ public final class Clazz extends AbstractSlice implements Comparable<Clazz>, Con
             return classEntry == ce;
         }
         return getURI().equals(ce.getURI());
-    }
-
-    /**
-     * Returns the major version number N, if the .class file is located
-     * in the <i>META-INF/versions/N</i> directory of a Multi-release JAR file, null otherwise.
-     *
-     * @return N or null
-     * @deprecated use {@link #getVersion()}
-     */
-    @Deprecated
-    public String getMinVersion() {
-        String uri = getURI().toString();
-        int i = uri.toUpperCase().indexOf("/META-INF/VERSIONS/");
-        int l = className.length() + "/.class".length();
-        if (i > 0 && i + l < uri.length()) {
-            return uri.substring(i + "/META-INF/VERSIONS/".length(), uri.length() - l);
-        }
-        return null;
     }
 
     /**

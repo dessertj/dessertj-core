@@ -87,11 +87,6 @@ public class ClassPackage {
         return parent.getRoot();
     }
 
-    @Deprecated
-    public File getRootFile() {
-        return getRoot().getRootFile();
-    }
-
     @Override
     public String toString() {
         return packageName;

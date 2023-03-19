@@ -34,8 +34,8 @@ import java.util.Map;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class ClazzPredicatesTest {
-    private static final int SLICING_COUNT = 30;
-    private static final int PUBLIC_COUNT = 15;
+    private static final int SLICING_COUNT = 29;
+    private static final int PUBLIC_COUNT = 14;
     private static final int INTERFACE_COUNT = 5;
     private static final int FINAL_COUNT = 8;
     private static final int INNER_TYPE_COUNT = 8;
@@ -112,8 +112,8 @@ public class ClazzPredicatesTest {
     @Test
     public void testOr() {
         assertThat(slicing.slice(ClazzPredicates.PUBLIC).plus(slicing.slice(ClazzPredicates.FINAL)).getClazzes())
-                .hasSize(20);
+                .hasSize(19);
         assertThat(slicing.slice(Predicates.or(ClazzPredicates.FINAL, ClazzPredicates.PUBLIC)).getClazzes())
-                .hasSize(20);
+                .hasSize(19);
     }
 }

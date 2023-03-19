@@ -23,7 +23,7 @@ package org.dessertj.resolve;
 /**
  * This exception is thrown if some error occurred while resolving classes or libraries.
  */
-public class ResolveException extends org.dessertj.slicing.ResolveException {
+public class ResolveException extends RuntimeException {
     public ResolveException(String message) {
         super(message);
     }
