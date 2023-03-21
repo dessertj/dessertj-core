@@ -1,5 +1,5 @@
 /**
- * Represents <a href="https://docs.oracle.com/javase/specs/jvms/se19/html/jvms-4.html#jvms-4.4" target="_blank">the constant pool</a>
+ * Represents <a href="https://docs.oracle.com/javase/specs/jvms/se20/html/jvms-4.html#jvms-4.4" target="_blank">the constant pool</a>
  * within a .class file.
  */
 package org.dessertj.classfile.constpool;

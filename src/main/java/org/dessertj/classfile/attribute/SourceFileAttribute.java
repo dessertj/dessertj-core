@@ -27,7 +27,7 @@ import java.io.IOException;
 
 /**
  * Represents a
- * <a href="https://docs.oracle.com/javase/specs/jvms/se19/html/jvms-4.html#jvms-4.7.10" target="_blank">
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se20/html/jvms-4.html#jvms-4.7.10" target="_blank">
  * Java Virtual Machine Specification: 4.7.10. The SourceFile Attribute</a>.
  */
 public class SourceFileAttribute extends AttributeInfo {

@@ -28,7 +28,7 @@ import java.util.Set;
 
 /**
  * Represents a
- * <a href="https://docs.oracle.com/javase/specs/jvms/se19/html/jvms-4.html#jvms-4.7.9" target="_blank">
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se20/html/jvms-4.html#jvms-4.7.9" target="_blank">
  * Java Virtual Machine Specification: 4.7.9. The Signature Attribute</a>.
  */
 public class SignatureAttribute extends AttributeInfo {
