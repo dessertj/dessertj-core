@@ -46,13 +46,13 @@ public class SignatureAttribute extends AttributeInfo {
         SignatureParser parser = new SignatureParser(signature, classNames);
         switch (getContext()) {
             case CLASS:
-            case RECORD:
                 parser.parseClassSignature();
                 break;
             case METHOD:
                 parser.parseMethodSignature();
                 break;
             case FIELD:
+            case RECORD:
                 parser.parseFieldSignature();
                 break;
             default:
