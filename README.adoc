@@ -31,7 +31,7 @@ Add the _dessertj-core_ dependency:
 <dependency>
     <groupId>org.dessertj</groupId>
     <artifactId>dessertj-core</artifactId>
-    <version>0.6.0</version>
+    <version>0.6.1</version>
     <scope>test</scope>
 </dependency>
 ----
@@ -54,7 +54,7 @@ public class SampleTest {
     public void detectUsageOfJdkInternalApis() {
         Slice myCompanyCode = cp.slice("de.spricom..*");
         Slice jdkInternalApis = cp.slice("sun..*").plus(cp.slice("com.sun..*"));
-        assertThatSlice(myCompanyCode).usesNot(jdkInternalApis);
+        assertThatSlice(myCompanyCode).doesNotUse(jdkInternalApis);
     }
 }
 ----
