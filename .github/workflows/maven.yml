@@ -36,10 +36,10 @@ jobs:
     - run: which java
 
     - name: Build dessertj-core-java9 with Maven
-      run: . mvnw --batch-mode -f dessertj-core-java9/pom.xml install
+      run: ./mvnw --batch-mode -f dessertj-core-java9/pom.xml clean install
 
     - name: Build dessertj-core with Maven
-      run: . mvnw --batch-mode verify
+      run: ./mvnw --batch-mode clean install
 
     - name: Create .nojekyll
       run: touch target/apidocs/.nojekyll
