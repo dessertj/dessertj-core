@@ -38,7 +38,7 @@ public abstract class ClassRoot extends ClassPackage implements TraversalRoot {
 
     protected abstract void scan(ClassCollector classCollector) throws IOException;
 
-    public final void traverse(NamePattern pattern, ClassVisitor visitor) {
+    public void traverse(NamePattern pattern, ClassVisitor visitor) {
         traverse(pattern.matcher(), visitor);
     }
 

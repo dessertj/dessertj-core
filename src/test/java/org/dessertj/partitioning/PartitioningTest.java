@@ -21,6 +21,7 @@ package org.dessertj.partitioning;
  */
 
 import org.dessertj.slicing.Classpath;
+import org.dessertj.slicing.Clazz;
 import org.dessertj.slicing.Slice;
 import org.dessertj.util.ClassUtils;
 import org.dessertj.util.Predicate;
@@ -41,14 +42,25 @@ public class PartitioningTest {
 
     private Slice slicing;
 
+    private boolean containsPackageInfo;
+
     @Before
     public void init() {
         slicing = cp.rootOf(Slice.class).packageOf(Slice.class).named("slicing");
+        containsPackageInfo = !slicing
+                .slice(ClazzPredicates.SYNTHETIC)
+                .slice("..package-info")
+                .getClazzes()
+                .isEmpty();
+    }
+
+    private int slicingCount() {
+        return SLICING_COUNT + (containsPackageInfo ? 1 : 0);
     }
 
     @Test
     public void testEach() {
-        assertThat(slicing.slice(ClazzPredicates.EACH).getClazzes()).hasSize(SLICING_COUNT);
+        assertThat(slicing.slice(ClazzPredicates.EACH).getClazzes()).hasSize(slicingCount());
     }
 
     @Test
@@ -65,7 +77,10 @@ public class PartitioningTest {
 
     @Test
     public void testInterface() {
-        assertThat(slicing.slice(ClazzPredicates.INTERFACE).getClazzes()).hasSize(INTERFACE_COUNT);
+        Predicate<Clazz> nonSyntheticInterface =
+                Predicates.and(ClazzPredicates.INTERFACE, Predicates.not(ClazzPredicates.SYNTHETIC));
+        assertThat(slicing.slice(nonSyntheticInterface).getClazzes())
+                .hasSize(INTERFACE_COUNT);
     }
 
     @Test
@@ -88,7 +103,7 @@ public class PartitioningTest {
     @Test
     public void testNotFinal() {
         assertThat(slicing.slice(Predicates.not(ClazzPredicates.FINAL)).getClazzes())
-                .hasSize(SLICING_COUNT - FINAL_COUNT);
+                .hasSize(slicingCount() - FINAL_COUNT);
     }
 
     @Test

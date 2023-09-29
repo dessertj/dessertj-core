@@ -36,7 +36,6 @@ import org.dessertj.resolve.ClassResolver;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.PackageSlice;
 import org.dessertj.slicing.Slice;
-import org.dessertj.slicing.Slices;
 import org.dessertj.util.Sets;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
@@ -58,6 +57,8 @@ public class DependenciesTest {
      * The same Classpath is used for all tests.
      */
     private static final Classpath cp = new Classpath();
+    private static final ModuleRegistry mr = new ModuleRegistry(cp);
+    private static final JavaModules java = new JavaModules(mr);
     private final Slice main = cp.rootOf(Slice.class).minus(ClazzPredicates.DEPRECATED);
     private final Slice test = cp.rootOf(this.getClass());
 
@@ -86,17 +87,11 @@ public class DependenciesTest {
 
     /**
      * Make sure the whole dessertj library does not depend on anything but the
-     * JDK packages specified below.
+     * classes from modules specified below.
      */
     @Test
     public void testExternalDependencies() {
-        Slice deprecated = cp.rootOf(Slice.class).slice(ClazzPredicates.DEPRECATED);
-        Slice java = Slices.of(
-                cp.packageTreeOf("java.lang"),
-                cp.packageTreeOf("java.util"),
-                cp.packageTreeOf("java.io"),
-                cp.packageTreeOf("java.net"));
-        dessert(main).usesOnly(java, deprecated);
+        dessert(main).usesOnly(java.base, java.logging);
     }
 
     @Test
@@ -141,7 +136,7 @@ public class DependenciesTest {
         Slice javaCore = cp.packageTreeOf("java.lang")
                 .plus(cp.packageTreeOf("java.util"));
         Slice javaIO = cp.packageTreeOf("java.io").plus(javaCore);
-        SliceAssertions.dessert(classfile).usesOnly(javaIO);
+        dessert(classfile).usesOnly(javaIO);
 
         // Packages outside the 'classfile' package must not use anything but the ClassFile facade.
         // The only exception are modules which may use attributes.

@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -74,6 +75,11 @@ class ReflectiveJrtFileSystem {
         isDirectory = files.getMethod("isDirectory", path, emptyLinkOptionsArray.getClass());
 
         jrtFileSystem = newFileSystem.invoke(null, URI.create("jrt:/"), Collections.emptyMap());
+    }
+
+    static boolean isJrtFileSystemAvailable() {
+        URL resource = String.class.getResource("String.class");
+        return resource != null && "jrt".equalsIgnoreCase(resource.getProtocol());
     }
 
     Object getModulePath(String moduleName) throws InvocationTargetException, IllegalAccessException {

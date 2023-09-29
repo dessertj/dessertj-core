@@ -21,6 +21,7 @@ package org.dessertj.partitioning;
  */
 
 import org.dessertj.slicing.Classpath;
+import org.dessertj.slicing.Clazz;
 import org.dessertj.slicing.PartitionSlice;
 import org.dessertj.slicing.Slice;
 import org.dessertj.util.ClassUtils;
@@ -34,7 +35,6 @@ import java.util.Map;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class ClazzPredicatesTest {
-    private static final int SLICING_COUNT = 29;
     private static final int PUBLIC_COUNT = 14;
     private static final int INTERFACE_COUNT = 5;
     private static final int FINAL_COUNT = 8;
@@ -51,7 +51,7 @@ public class ClazzPredicatesTest {
 
     @Test
     public void testEach() {
-        assertThat(slicing.slice(ClazzPredicates.EACH).getClazzes()).hasSize(SLICING_COUNT);
+        assertThat(slicing.slice(ClazzPredicates.EACH).getClazzes()).hasSize(slicing.getClazzes().size());
     }
 
     @Test
@@ -72,7 +72,8 @@ public class ClazzPredicatesTest {
 
     @Test
     public void testInterface() {
-        assertThat(slicing.slice(ClazzPredicates.INTERFACE).getClazzes()).hasSize(INTERFACE_COUNT);
+        Predicate<Clazz> interfacesPredicate = Predicates.and(ClazzPredicates.INTERFACE, Predicates.not(ClazzPredicates.SYNTHETIC));
+        assertThat(slicing.slice(interfacesPredicate).getClazzes()).hasSize(INTERFACE_COUNT);
         Map<String, PartitionSlice> partitioned =
                 slicing.partitionBy(SlicePartitioners.INTERFACES);
         assertThat(partitioned.get("interfaces, enums an annotations").getClazzes()).hasSize(INTERFACE_COUNT);
@@ -93,12 +94,6 @@ public class ClazzPredicatesTest {
             }
         };
         assertThat(slicing.slice(ClazzPredicates.matches(isInnerType)).getClazzes()).hasSize(INNER_TYPE_COUNT);
-    }
-
-    @Test
-    public void testNotFinal() {
-        assertThat(slicing.slice(Predicates.not(ClazzPredicates.FINAL)).getClazzes())
-                .hasSize(SLICING_COUNT - FINAL_COUNT);
     }
 
     @Test

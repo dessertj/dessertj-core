@@ -35,8 +35,8 @@ final class DirectoryClassEntry extends ClassEntry {
 
     private final File classFile;
 
-    DirectoryClassEntry(ClassPackage pckg, File classFile) {
-        super(pckg.getClassName(simpleName(classFile)), pckg);
+    DirectoryClassEntry(ClassPackage pckg, File classFile, Integer version) {
+        super(pckg.getClassName(simpleName(classFile)), pckg, version);
         this.classFile = classFile;
     }
 

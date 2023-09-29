@@ -189,8 +189,7 @@ public final class ClassResolver implements TraversalRoot {
     }
 
     public static boolean isJrtFileSystemAvailable() {
-        URL resource = String.class.getResource("String.class");
-        return resource != null && "jrt".equalsIgnoreCase(resource.getProtocol());
+        return ReflectiveJrtFileSystem.isJrtFileSystemAvailable();
     }
 
     public void add(String path) {

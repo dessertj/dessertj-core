@@ -32,22 +32,49 @@ public final class VersionsHelper {
     private VersionsHelper() {}
 
     public static String removeVersionPrefix(String name) {
-        Matcher matcher = VERSIONED_ENTRY_PREFIX.matcher(name);
-        if (matcher.lookingAt()) {
-            return name.substring(matcher.end());
+        VersionInfo versionInfo = matchVersion(name);
+        if (versionInfo != null) {
+            return versionInfo.classname;
         }
         return name;
     }
 
     public static Integer getVersion(String name) {
-        Matcher matcher = VERSIONED_ENTRY_PREFIX.matcher(name);
-        if (matcher.lookingAt()) {
-            try {
-                return Integer.parseInt(matcher.group(1));
-            } catch (NumberFormatException ex) {
-                log.warning("Invalid version " + matcher.group(1) + " within " + name);
+        try {
+            VersionInfo versionInfo = matchVersion(name);
+            if (versionInfo != null) {
+                return versionInfo.version;
             }
+        } catch (NumberFormatException ex) {
+            log.warning("Invalid version " + ex.getMessage() + " within " + name);
         }
         return null;
+    }
+
+    static VersionInfo matchVersion(String name) {
+        Matcher matcher = VERSIONED_ENTRY_PREFIX.matcher(name);
+        if (matcher.lookingAt()) {
+            return new VersionInfo(name, matcher);
+        }
+        return null;
+    }
+
+    private static Integer parseVersion(String name, Matcher matcher) {
+        try {
+            return Integer.parseInt(matcher.group(1));
+        } catch (NumberFormatException ex) {
+            log.warning("Invalid version " + matcher.group(1) + " within " + name);
+        }
+        return null;
+    }
+
+    static class VersionInfo {
+        final String classname;
+        final Integer version;
+
+        VersionInfo(String name, Matcher matcher) {
+            classname = name.substring(matcher.end());
+            version = parseVersion(name, matcher);
+        }
     }
 }

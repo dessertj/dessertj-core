@@ -82,5 +82,4 @@ final class JarClassEntry extends ClassEntry {
             throw new IllegalStateException("Cannot create URI from '" + uri + "'", ex);
         }
     }
-
 }

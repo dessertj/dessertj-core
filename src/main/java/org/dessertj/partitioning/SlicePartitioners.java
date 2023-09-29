@@ -24,13 +24,13 @@ import org.dessertj.slicing.Clazz;
 import org.dessertj.slicing.SlicePartitioner;
 
 import static org.dessertj.partitioning.ClazzPredicates.*;
-import static org.dessertj.util.Predicates.or;
+import static org.dessertj.util.Predicates.*;
 
 public class SlicePartitioners {
 
     public static final SlicePartitioner INTERFACES = new SlicePartitionerBuilder()
             .split("interfaces, enums an annotations")
-            .by(or(INTERFACE, ENUM, ANNOTATION))
+            .by(and(or(INTERFACE, ENUM, ANNOTATION), not(SYNTHETIC)))
             .split("anything else")
             .by(or(EACH))
             .build();

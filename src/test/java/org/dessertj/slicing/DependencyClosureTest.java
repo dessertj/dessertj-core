@@ -35,7 +35,9 @@ public class DependencyClosureTest {
 
         Slice closure = classFile.dependencyClosure(dessertj);
 
-        Slice classFilePackageTree = cp.packageTreeOf(ClassFile.class).slice(dessertj);
+        Slice classFilePackageTree = cp.packageTreeOf(ClassFile.class)
+                .slice(dessertj)
+                .minus("..package-info");
         assertThat(closure.getClazzes()).isEqualTo(classFilePackageTree.getClazzes());
     }
 }

@@ -51,21 +51,21 @@ public class ClasspathTest {
     @Test
     public void testPackageTreeForSinglePackage() {
         int expectedNumberOfClasses = 25;
-        Slice slice = cp.packageTreeOf(ConstantPool.class);
+        Slice slice = cp.packageTreeOf(ConstantPool.class).minus("..package-info");
         assertThat(slice.getClazzes()).hasSize(expectedNumberOfClasses);
     }
 
 
     /**
      * The expected result is the sum of
-     * {@code find target/classes/de/spricom/dessert/classfile -iname "*.class" | wc -l} and
-     * {@code find target/test-classes/de/spricom/dessert/classfile -iname "*.class" | wc -l}.
+     * {@code find target/classes/org/dessertj/classfile -iname "*.class" | wc -l} and
+     * {@code find target/test-classes/org/dessertj/classfile -iname "*.class" | wc -l}.
      */
     @Test
     public void testPackageTreeForSubpackages() {
         int expectedNumberOfClasses = 89;
         int expectedNumberOfTestClasses = 15;
-        Slice slice = cp.packageTreeOf(ClassFile.class);
+        Slice slice = cp.packageTreeOf(ClassFile.class).minus("..package-info");
         assertThat(slice.getClazzes()).hasSize(expectedNumberOfClasses + expectedNumberOfTestClasses);
     }
 

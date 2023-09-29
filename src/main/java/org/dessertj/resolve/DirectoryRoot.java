@@ -20,32 +20,59 @@ package org.dessertj.resolve;
  * #L%
  */
 
+import org.dessertj.matching.NamePattern;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 final class DirectoryRoot extends ClassRoot {
+
+    private Map<Integer, ClassPackage> versions;
+
     public DirectoryRoot(File dir) {
         super(dir);
     }
 
     @Override
     protected void scan(ClassCollector collector) {
-        scan(collector, this, getRootFile(), "");
+        scan(collector, this, getRootFile(), "", null);
     }
 
-    private void scan(ClassCollector collector, ClassPackage pckg, File dir, String prefix) {
+    private void scan(ClassCollector collector, ClassPackage pckg, File dir, String prefix, Integer version) {
         collector.addPackage(pckg);
         for (File file : dir.listFiles()) {
             String filename = file.getName();
             if (file.isDirectory()) {
-                String packageName = prefix + filename;
-                ClassPackage subPackage = new ClassPackage(pckg, packageName);
-                scan(collector, subPackage, file, packageName + ".");
+                if (prefix.equalsIgnoreCase("meta-inf.versions.")) {
+                    Integer ver = Integer.parseInt(filename);
+                    ClassPackage rootPackage = new ClassPackage();
+                    if (versions == null) {
+                        versions = new HashMap<Integer, ClassPackage>();
+                    }
+                    versions.put(ver, rootPackage);
+                    scan(collector, rootPackage, file, "", ver);
+                } else {
+                    String packageName = prefix + filename;
+                    ClassPackage subPackage = new ClassPackage(pckg, packageName);
+                    scan(collector, subPackage, file, packageName + ".", version);
+                }
             } else if (filename.endsWith(".class")) {
-                ClassEntry classEntry = new DirectoryClassEntry(pckg, file);
+                ClassEntry classEntry = new DirectoryClassEntry(pckg, file, version);
                 pckg.addClass(classEntry);
                 collector.addClass(classEntry);
+            }
+        }
+    }
+
+    @Override
+    public void traverse(NamePattern pattern, ClassVisitor visitor) {
+        traverse(pattern.matcher(), visitor);
+        if (versions != null) {
+            for (ClassPackage root : versions.values()) {
+                root.traverse(pattern.matcher(), visitor);
             }
         }
     }
