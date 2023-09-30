@@ -27,7 +27,7 @@ import java.io.IOException;
 
 /**
  * Represents a
- * <a href="https://docs.oracle.com/javase/specs/jvms/se20/html/jvms-4.html#jvms-4.7.8" target="_blank">
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-4.html#jvms-4.7.8" target="_blank">
  * Java Virtual Machine Specification: 4.7.8. The Synthetic Attribute</a>.
  */
 public class SyntheticAttribute extends AttributeInfo {
