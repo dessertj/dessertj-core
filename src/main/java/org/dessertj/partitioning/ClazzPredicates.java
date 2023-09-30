@@ -169,6 +169,9 @@ public final class ClazzPredicates {
         return new Predicate<Clazz>() {
             @Override
             public boolean test(Clazz clazz) {
+                if ("module-info".equals(clazz.getName())) {
+                    return false;
+                }
                 return classPredicate.test(clazz.getClassImpl());
             }
         };

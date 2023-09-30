@@ -115,6 +115,7 @@ public class DependenciesTest {
                 packages.remove(packageOf(NamePattern.class)),
                 packages.remove(packageOf(Sets.class)));
         dessert(layers).isLayeredRelaxed();
+        packages.remove("");
         Assertions.assertThat(packages).isEmpty();
     }
 

@@ -48,12 +48,12 @@ final class DirectoryRoot extends ClassRoot {
             if (file.isDirectory()) {
                 if (prefix.equalsIgnoreCase("meta-inf.versions.")) {
                     Integer ver = Integer.parseInt(filename);
-                    ClassPackage rootPackage = new ClassPackage();
+                    VersionRoot versionRoot = new VersionRoot(this, ver);
                     if (versions == null) {
                         versions = new HashMap<Integer, ClassPackage>();
                     }
-                    versions.put(ver, rootPackage);
-                    scan(collector, rootPackage, file, "", ver);
+                    versions.put(ver, versionRoot);
+                    scan(collector, versionRoot, file, "", ver);
                 } else {
                     String packageName = prefix + filename;
                     ClassPackage subPackage = new ClassPackage(pckg, packageName);
