@@ -31,24 +31,8 @@ public final class VersionsHelper {
 
     private VersionsHelper() {}
 
-    public static String removeVersionPrefix(String name) {
-        VersionInfo versionInfo = matchVersion(name);
-        if (versionInfo != null) {
-            return versionInfo.classname;
-        }
-        return name;
-    }
-
-    public static Integer getVersion(String name) {
-        try {
-            VersionInfo versionInfo = matchVersion(name);
-            if (versionInfo != null) {
-                return versionInfo.version;
-            }
-        } catch (NumberFormatException ex) {
-            log.warning("Invalid version " + ex.getMessage() + " within " + name);
-        }
-        return null;
+    public static boolean isVersionPrefix(String prefix) {
+        return prefix.equalsIgnoreCase("meta-inf.versions.");
     }
 
     static VersionInfo matchVersion(String name) {
@@ -69,11 +53,11 @@ public final class VersionsHelper {
     }
 
     static class VersionInfo {
-        final String classname;
+        final String path;
         final Integer version;
 
         VersionInfo(String name, Matcher matcher) {
-            classname = name.substring(matcher.end());
+            path = name.substring(matcher.end());
             version = parseVersion(name, matcher);
         }
     }

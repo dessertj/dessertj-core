@@ -23,7 +23,6 @@ package org.dessertj.resolve;
 import org.dessertj.classfile.ClassFile;
 
 import java.net.URI;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -99,25 +98,6 @@ public abstract class ClassEntry {
      */
     public List<ClassEntry> getAlternatives() {
         return alternatives;
-    }
-
-    /**
-     * Returns a list of all other .class files with the same fully qualified name with the same {@link ClassRoot}.
-     * Such .class files exist within multi-release JAR files within the META-INF/versions directory.
-     *
-     * @return all other versions of the same .class file or an empty list if there are none
-     */
-    public List<ClassEntry> getAlternativesWithinSamePackage() {
-        if (alternatives == null) {
-            return Collections.emptyList();
-        }
-        List<ClassEntry> versioned = new LinkedList<ClassEntry>();
-        for (ClassEntry alternative : alternatives) {
-            if (alternative.getPackage() == pckg) {
-                versioned.add(alternative);
-            }
-        }
-        return versioned;
     }
 
     void addAlternative(ClassEntry alt) {

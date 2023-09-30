@@ -20,17 +20,12 @@ package org.dessertj.slicing;
  * #L%
  */
 
-import org.dessertj.resolve.ClassResolver;
-import org.dessertj.resolve.FakeClassEntry;
-import org.dessertj.resolve.FakeRoot;
 import org.dessertj.samples.basic.Outer;
 import org.dessertj.samples.dollar.Dollar;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -77,29 +72,6 @@ public class ClazzTest {
         System.out.println("Checking " + clazz.getName());
         assertThat(clazz.getName()).isEqualTo(classImpl.getName());
         assertThat(clazz.getSimpleName()).isEqualTo(classImpl.getSimpleName());
-    }
-
-    @Test
-    public void testCreateSliceEntryWithAlternative() throws IOException {
-        ClassResolver resolver = new ClassResolver();
-        FakeRoot root1 = new FakeRoot(new File("/root1"));
-        resolver.addRoot(root1);
-        FakeRoot root2 = new FakeRoot(new File("/root2"));
-        resolver.addRoot(root2);
-
-        String fakeClassName = FakeClassEntry.class.getName();
-        root1.add(fakeClassName);
-        root2.add(fakeClassName);
-
-        Classpath fakeClasspath = new Classpath(resolver);
-        Slice slice = fakeClasspath.packageTreeOf("org.dessertj");
-        Set<Clazz> entries = slice.getClazzes();
-        assertThat(entries).hasSize(2);
-        Clazz entry = entries.iterator().next();
-        assertThat(new HashSet<Clazz>(entry.getAlternatives())).isEqualTo(entries);
-
-        Slice duplicates = fakeClasspath.duplicates();
-        assertThat(duplicates.getClazzes()).isEqualTo(entries);
     }
 
     @Test

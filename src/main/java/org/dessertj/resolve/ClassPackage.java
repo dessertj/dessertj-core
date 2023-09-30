@@ -22,7 +22,6 @@ package org.dessertj.resolve;
 
 import org.dessertj.matching.ShortNameMatcher;
 
-import java.io.File;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -163,9 +162,6 @@ public class ClassPackage {
         for (ClassEntry clazz : classes.values()) {
             if (matcher.match(clazz.getShortName()).matches()) {
                 visitor.visit(clazz);
-                for (ClassEntry versionedAlternative : clazz.getAlternativesWithinSamePackage()) {
-                    visitor.visit(versionedAlternative);
-                }
             }
         }
     }

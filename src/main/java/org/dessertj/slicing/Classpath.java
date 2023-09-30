@@ -192,8 +192,12 @@ public final class Classpath extends AbstractRootSlice {
     public ConcreteSlice duplicates() {
         Set<Clazz> sliceEntries = new HashSet<Clazz>();
         for (List<ClassEntry> alternatives : resolver.getDuplicates().values()) {
+            Set<String> versions = new HashSet<String>();
             for (ClassEntry alternative : alternatives) {
-                sliceEntries.add(asClazz(alternative));
+                if (!versions.add(String.valueOf(alternative.getVersion()))) {
+                    // only add if two entries have the same version
+                    sliceEntries.add(asClazz(alternative));
+                }
             }
         }
         return new ConcreteSlice(sliceEntries);

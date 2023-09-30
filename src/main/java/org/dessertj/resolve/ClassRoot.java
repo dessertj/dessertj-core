@@ -27,10 +27,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.jar.Manifest;
 
 public abstract class ClassRoot extends ClassPackage implements TraversalRoot {
     private final File rootFile;
+
+    private Map<Integer, VersionRoot> versions;
 
     protected ClassRoot(File rootFile) {
         this.rootFile = rootFile;
@@ -38,8 +42,20 @@ public abstract class ClassRoot extends ClassPackage implements TraversalRoot {
 
     protected abstract void scan(ClassCollector classCollector) throws IOException;
 
-    public void traverse(NamePattern pattern, ClassVisitor visitor) {
+    protected final void addVersion(VersionRoot versionRoot) {
+        if (versions == null) {
+            versions = new HashMap<Integer, VersionRoot>();
+        }
+        versions.put(versionRoot.getVersion(), versionRoot);
+    }
+
+    public final void traverse(NamePattern pattern, ClassVisitor visitor) {
         traverse(pattern.matcher(), visitor);
+        if (versions != null) {
+            for (ClassPackage root : versions.values()) {
+                root.traverse(pattern.matcher(), visitor);
+            }
+        }
     }
 
     @Override

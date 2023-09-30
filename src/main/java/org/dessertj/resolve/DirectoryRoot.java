@@ -20,17 +20,11 @@ package org.dessertj.resolve;
  * #L%
  */
 
-import org.dessertj.matching.NamePattern;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 final class DirectoryRoot extends ClassRoot {
-
-    private Map<Integer, ClassPackage> versions;
 
     public DirectoryRoot(File dir) {
         super(dir);
@@ -46,13 +40,10 @@ final class DirectoryRoot extends ClassRoot {
         for (File file : dir.listFiles()) {
             String filename = file.getName();
             if (file.isDirectory()) {
-                if (prefix.equalsIgnoreCase("meta-inf.versions.")) {
+                if (VersionsHelper.isVersionPrefix(prefix)) {
                     Integer ver = Integer.parseInt(filename);
                     VersionRoot versionRoot = new VersionRoot(this, ver);
-                    if (versions == null) {
-                        versions = new HashMap<Integer, ClassPackage>();
-                    }
-                    versions.put(ver, versionRoot);
+                    addVersion(versionRoot);
                     scan(collector, versionRoot, file, "", ver);
                 } else {
                     String packageName = prefix + filename;
@@ -63,16 +54,6 @@ final class DirectoryRoot extends ClassRoot {
                 ClassEntry classEntry = new DirectoryClassEntry(pckg, file, version);
                 pckg.addClass(classEntry);
                 collector.addClass(classEntry);
-            }
-        }
-    }
-
-    @Override
-    public void traverse(NamePattern pattern, ClassVisitor visitor) {
-        traverse(pattern.matcher(), visitor);
-        if (versions != null) {
-            for (ClassPackage root : versions.values()) {
-                root.traverse(pattern.matcher(), visitor);
             }
         }
     }
