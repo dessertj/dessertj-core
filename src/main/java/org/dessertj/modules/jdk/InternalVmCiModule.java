@@ -19,6 +19,7 @@ package org.dessertj.modules.jdk;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,7 +30,7 @@ import org.dessertj.slicing.Slices;
 class InternalVmCiModule extends FixedModule {
 
     InternalVmCiModule(Classpath cp) {
-        super("jdk.internal.vm.ci", "17",
+        super("jdk.internal.vm.ci", "21",
                 Slices.of(
                         
                 ),
@@ -43,7 +44,9 @@ class InternalVmCiModule extends FixedModule {
                         cp.slice("jdk.vm.ci.hotspot.*"),
                         cp.slice("jdk.vm.ci.hotspot.aarch64.*"),
                         cp.slice("jdk.vm.ci.hotspot.amd64.*"),
+                        cp.slice("jdk.vm.ci.hotspot.riscv64.*"),
                         cp.slice("jdk.vm.ci.meta.*"),
+                        cp.slice("jdk.vm.ci.riscv64.*"),
                         cp.slice("jdk.vm.ci.runtime.*"),
                         cp.slice("jdk.vm.ci.services.*")
                 ));

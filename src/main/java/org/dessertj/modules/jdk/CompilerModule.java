@@ -19,6 +19,7 @@ package org.dessertj.modules.jdk;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,7 +30,7 @@ import org.dessertj.slicing.Slices;
 class CompilerModule extends FixedModule {
 
     CompilerModule(Classpath cp) {
-        super("jdk.compiler", "17",
+        super("jdk.compiler", "21",
                 Slices.of(
                         cp.slice("com.sun.source.doctree.*"),
                         cp.slice("com.sun.source.tree.*"),
@@ -56,14 +57,6 @@ class CompilerModule extends FixedModule {
                         cp.slice("com.sun.tools.javac.resources.*"),
                         cp.slice("com.sun.tools.javac.tree.*"),
                         cp.slice("com.sun.tools.javac.util.*"),
-                        cp.slice("com.sun.tools.sjavac.*"),
-                        cp.slice("com.sun.tools.sjavac.client.*"),
-                        cp.slice("com.sun.tools.sjavac.comp.*"),
-                        cp.slice("com.sun.tools.sjavac.comp.dependencies.*"),
-                        cp.slice("com.sun.tools.sjavac.options.*"),
-                        cp.slice("com.sun.tools.sjavac.pubapi.*"),
-                        cp.slice("com.sun.tools.sjavac.server.*"),
-                        cp.slice("com.sun.tools.sjavac.server.log.*"),
                         cp.slice("jdk.internal.shellsupport.doc.*"),
                         cp.slice("jdk.internal.shellsupport.doc.resources.*"),
                         cp.slice("sun.tools.serialver.*"),

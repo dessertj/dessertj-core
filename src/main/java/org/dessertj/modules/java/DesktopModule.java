@@ -19,6 +19,7 @@ package org.dessertj.modules.java;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,7 +30,7 @@ import org.dessertj.slicing.Slices;
 class DesktopModule extends FixedModule {
 
     DesktopModule(Classpath cp) {
-        super("java.desktop", "17",
+        super("java.desktop", "21",
                 Slices.of(
                         cp.slice("java.applet.*"),
                         cp.slice("java.awt.*"),
@@ -101,12 +102,12 @@ class DesktopModule extends FixedModule {
                         cp.slice("com.sun.imageio.spi.*"),
                         cp.slice("com.sun.imageio.stream.*"),
                         cp.slice("com.sun.java.swing.*"),
+                        cp.slice("com.sun.java.swing.plaf.gtk.*"),
+                        cp.slice("com.sun.java.swing.plaf.gtk.icons.*"),
+                        cp.slice("com.sun.java.swing.plaf.gtk.resources.*"),
                         cp.slice("com.sun.java.swing.plaf.motif.*"),
                         cp.slice("com.sun.java.swing.plaf.motif.icons.*"),
                         cp.slice("com.sun.java.swing.plaf.motif.resources.*"),
-                        cp.slice("com.sun.java.swing.plaf.windows.*"),
-                        cp.slice("com.sun.java.swing.plaf.windows.icons.*"),
-                        cp.slice("com.sun.java.swing.plaf.windows.resources.*"),
                         cp.slice("com.sun.media.sound.*"),
                         cp.slice("com.sun.swing.internal.plaf.basic.resources.*"),
                         cp.slice("com.sun.swing.internal.plaf.metal.resources.*"),
@@ -170,6 +171,7 @@ class DesktopModule extends FixedModule {
                         cp.slice("javax.swing.tree.*"),
                         cp.slice("javax.swing.undo.*"),
                         cp.slice("sun.awt.*"),
+                        cp.slice("sun.awt.X11.*"),
                         cp.slice("sun.awt.datatransfer.*"),
                         cp.slice("sun.awt.dnd.*"),
                         cp.slice("sun.awt.event.*"),
@@ -178,9 +180,9 @@ class DesktopModule extends FixedModule {
                         cp.slice("sun.awt.image.*"),
                         cp.slice("sun.awt.resources.*"),
                         cp.slice("sun.awt.resources.cursors.*"),
+                        cp.slice("sun.awt.screencast.*"),
                         cp.slice("sun.awt.shell.*"),
                         cp.slice("sun.awt.util.*"),
-                        cp.slice("sun.awt.windows.*"),
                         cp.slice("sun.awt.www.content.*"),
                         cp.slice("sun.awt.www.content.audio.*"),
                         cp.slice("sun.awt.www.content.image.*"),
@@ -190,21 +192,20 @@ class DesktopModule extends FixedModule {
                         cp.slice("sun.java2d.cmm.*"),
                         cp.slice("sun.java2d.cmm.lcms.*"),
                         cp.slice("sun.java2d.cmm.profiles.*"),
-                        cp.slice("sun.java2d.d3d.*"),
                         cp.slice("sun.java2d.loops.*"),
                         cp.slice("sun.java2d.marlin.*"),
                         cp.slice("sun.java2d.marlin.stats.*"),
                         cp.slice("sun.java2d.opengl.*"),
                         cp.slice("sun.java2d.pipe.*"),
                         cp.slice("sun.java2d.pipe.hw.*"),
-                        cp.slice("sun.java2d.windows.*"),
+                        cp.slice("sun.java2d.x11.*"),
+                        cp.slice("sun.java2d.xr.*"),
                         cp.slice("sun.print.*"),
                         cp.slice("sun.print.resources.*"),
                         cp.slice("sun.swing.*"),
                         cp.slice("sun.swing.icon.*"),
                         cp.slice("sun.swing.plaf.*"),
                         cp.slice("sun.swing.plaf.synth.*"),
-                        cp.slice("sun.swing.plaf.windows.*"),
                         cp.slice("sun.swing.table.*"),
                         cp.slice("sun.swing.text.*"),
                         cp.slice("sun.swing.text.html.*")

@@ -19,6 +19,7 @@ package org.dessertj.modules.jdk;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.modules.core.ModuleResolver;
 import org.dessertj.slicing.Classpath;
@@ -42,12 +43,10 @@ public class JdkModulesResolver implements ModuleResolver {
                         new CompilerModule(cp),
                         new CryptoCryptokiModule(cp),
                         new CryptoEcModule(cp),
-                        new CryptoMscapiModule(cp),
                         new DynalinkModule(cp),
                         new EditpadModule(cp),
                         new HotspotAgentModule(cp),
                         new HttpserverModule(cp),
-                        new IncubatorForeignModule(cp),
                         new IncubatorVectorModule(cp),
                         new InternalEdModule(cp),
                         new InternalJvmstatModule(cp),

@@ -19,6 +19,7 @@ package org.dessertj.modules.fixed;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.DelegateModule;
 import org.dessertj.modules.core.ModuleLookup;
 import org.dessertj.modules.core.ModuleSlice;
@@ -68,12 +69,10 @@ public final class JdkModules {
 
         public final ModuleSlice cryptoki;
         public final ModuleSlice ec;
-        public final ModuleSlice mscapi;
 
         Crypto(ModuleLookup registry) {
             cryptoki = registry.getModule("jdk.crypto.cryptoki");
             ec = registry.getModule("jdk.crypto.ec");
-            mscapi = registry.getModule("jdk.crypto.mscapi");
         }
     }
 
@@ -88,11 +87,9 @@ public final class JdkModules {
 
     public static final class Incubator {
 
-        public final ModuleSlice foreign;
         public final ModuleSlice vector;
 
         Incubator(ModuleLookup registry) {
-            foreign = registry.getModule("jdk.incubator.foreign");
             vector = registry.getModule("jdk.incubator.vector");
         }
     }

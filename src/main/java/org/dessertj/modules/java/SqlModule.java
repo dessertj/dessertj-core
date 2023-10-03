@@ -19,6 +19,7 @@ package org.dessertj.modules.java;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,7 +30,7 @@ import org.dessertj.slicing.Slices;
 class SqlModule extends FixedModule {
 
     SqlModule(Classpath cp) {
-        super("java.sql", "17",
+        super("java.sql", "21",
                 Slices.of(
                         cp.slice("java.sql.*"),
                         cp.slice("javax.sql.*")

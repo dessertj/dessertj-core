@@ -19,6 +19,7 @@ package org.dessertj.modules.jdk;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,7 +30,7 @@ import org.dessertj.slicing.Slices;
 class JshellModule extends FixedModule {
 
     JshellModule(Classpath cp) {
-        super("jdk.jshell", "17",
+        super("jdk.jshell", "21",
                 Slices.of(
                         cp.slice("jdk.jshell.*"),
                         cp.slice("jdk.jshell.execution.*"),
@@ -42,6 +43,7 @@ class JshellModule extends FixedModule {
                         cp.slice("jdk.internal.jshell.tool.resources.*"),
                         cp.slice("jdk.jshell.*"),
                         cp.slice("jdk.jshell.execution.*"),
+                        cp.slice("jdk.jshell.execution.impl.*"),
                         cp.slice("jdk.jshell.resources.*"),
                         cp.slice("jdk.jshell.spi.*"),
                         cp.slice("jdk.jshell.tool.*"),

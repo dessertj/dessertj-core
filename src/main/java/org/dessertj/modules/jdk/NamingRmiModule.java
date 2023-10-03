@@ -19,6 +19,7 @@ package org.dessertj.modules.jdk;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,7 +30,7 @@ import org.dessertj.slicing.Slices;
 class NamingRmiModule extends FixedModule {
 
     NamingRmiModule(Classpath cp) {
-        super("jdk.naming.rmi", "17",
+        super("jdk.naming.rmi", "21",
                 Slices.of(
                         
                 ),

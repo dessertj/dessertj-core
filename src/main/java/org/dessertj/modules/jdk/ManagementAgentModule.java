@@ -19,6 +19,7 @@ package org.dessertj.modules.jdk;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,14 +30,13 @@ import org.dessertj.slicing.Slices;
 class ManagementAgentModule extends FixedModule {
 
     ManagementAgentModule(Classpath cp) {
-        super("jdk.management.agent", "17",
+        super("jdk.management.agent", "21",
                 Slices.of(
                         
                 ),
                 Slices.of(
                         cp.slice("jdk.internal.agent.*"),
                         cp.slice("jdk.internal.agent.resources.*"),
-                        cp.slice("jdk.internal.agent.spi.*"),
                         cp.slice("sun.management.jdp.*"),
                         cp.slice("sun.management.jmxremote.*")
                 ));

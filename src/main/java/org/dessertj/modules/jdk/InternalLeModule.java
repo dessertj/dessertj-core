@@ -19,6 +19,7 @@ package org.dessertj.modules.jdk;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,11 +30,12 @@ import org.dessertj.slicing.Slices;
 class InternalLeModule extends FixedModule {
 
     InternalLeModule(Classpath cp) {
-        super("jdk.internal.le", "17",
+        super("jdk.internal.le", "21",
                 Slices.of(
                         
                 ),
                 Slices.of(
+                        cp.slice("jdk.internal.org.jline.*"),
                         cp.slice("jdk.internal.org.jline.keymap.*"),
                         cp.slice("jdk.internal.org.jline.reader.*"),
                         cp.slice("jdk.internal.org.jline.reader.impl.*"),
@@ -41,8 +43,9 @@ class InternalLeModule extends FixedModule {
                         cp.slice("jdk.internal.org.jline.reader.impl.history.*"),
                         cp.slice("jdk.internal.org.jline.terminal.*"),
                         cp.slice("jdk.internal.org.jline.terminal.impl.*"),
+                        cp.slice("jdk.internal.org.jline.terminal.impl.exec.*"),
                         cp.slice("jdk.internal.org.jline.terminal.impl.jna.*"),
-                        cp.slice("jdk.internal.org.jline.terminal.impl.jna.win.*"),
+                        cp.slice("jdk.internal.org.jline.terminal.impl.jna.linux.*"),
                         cp.slice("jdk.internal.org.jline.terminal.spi.*"),
                         cp.slice("jdk.internal.org.jline.utils.*")
                 ));

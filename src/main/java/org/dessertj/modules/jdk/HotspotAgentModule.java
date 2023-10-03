@@ -19,6 +19,7 @@ package org.dessertj.modules.jdk;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,7 +30,7 @@ import org.dessertj.slicing.Slices;
 class HotspotAgentModule extends FixedModule {
 
     HotspotAgentModule(Classpath cp) {
-        super("jdk.hotspot.agent", "17",
+        super("jdk.hotspot.agent", "21",
                 Slices.of(
                         
                 ),
@@ -58,20 +59,18 @@ class HotspotAgentModule extends FixedModule {
                         cp.slice("sun.jvm.hotspot.debugger.linux.aarch64.*"),
                         cp.slice("sun.jvm.hotspot.debugger.linux.amd64.*"),
                         cp.slice("sun.jvm.hotspot.debugger.linux.ppc64.*"),
+                        cp.slice("sun.jvm.hotspot.debugger.linux.riscv64.*"),
                         cp.slice("sun.jvm.hotspot.debugger.linux.x86.*"),
                         cp.slice("sun.jvm.hotspot.debugger.posix.*"),
                         cp.slice("sun.jvm.hotspot.debugger.posix.elf.*"),
                         cp.slice("sun.jvm.hotspot.debugger.ppc64.*"),
-                        cp.slice("sun.jvm.hotspot.debugger.proc.*"),
-                        cp.slice("sun.jvm.hotspot.debugger.proc.aarch64.*"),
-                        cp.slice("sun.jvm.hotspot.debugger.proc.amd64.*"),
-                        cp.slice("sun.jvm.hotspot.debugger.proc.ppc64.*"),
-                        cp.slice("sun.jvm.hotspot.debugger.proc.x86.*"),
                         cp.slice("sun.jvm.hotspot.debugger.remote.*"),
                         cp.slice("sun.jvm.hotspot.debugger.remote.aarch64.*"),
                         cp.slice("sun.jvm.hotspot.debugger.remote.amd64.*"),
                         cp.slice("sun.jvm.hotspot.debugger.remote.ppc64.*"),
+                        cp.slice("sun.jvm.hotspot.debugger.remote.riscv64.*"),
                         cp.slice("sun.jvm.hotspot.debugger.remote.x86.*"),
+                        cp.slice("sun.jvm.hotspot.debugger.riscv64.*"),
                         cp.slice("sun.jvm.hotspot.debugger.win32.coff.*"),
                         cp.slice("sun.jvm.hotspot.debugger.windbg.*"),
                         cp.slice("sun.jvm.hotspot.debugger.windbg.aarch64.*"),
@@ -86,6 +85,7 @@ class HotspotAgentModule extends FixedModule {
                         cp.slice("sun.jvm.hotspot.gc.serial.*"),
                         cp.slice("sun.jvm.hotspot.gc.shared.*"),
                         cp.slice("sun.jvm.hotspot.gc.shenandoah.*"),
+                        cp.slice("sun.jvm.hotspot.gc.x.*"),
                         cp.slice("sun.jvm.hotspot.gc.z.*"),
                         cp.slice("sun.jvm.hotspot.interpreter.*"),
                         cp.slice("sun.jvm.hotspot.memory.*"),
@@ -103,9 +103,11 @@ class HotspotAgentModule extends FixedModule {
                         cp.slice("sun.jvm.hotspot.runtime.linux_aarch64.*"),
                         cp.slice("sun.jvm.hotspot.runtime.linux_amd64.*"),
                         cp.slice("sun.jvm.hotspot.runtime.linux_ppc64.*"),
+                        cp.slice("sun.jvm.hotspot.runtime.linux_riscv64.*"),
                         cp.slice("sun.jvm.hotspot.runtime.linux_x86.*"),
                         cp.slice("sun.jvm.hotspot.runtime.posix.*"),
                         cp.slice("sun.jvm.hotspot.runtime.ppc64.*"),
+                        cp.slice("sun.jvm.hotspot.runtime.riscv64.*"),
                         cp.slice("sun.jvm.hotspot.runtime.win32_aarch64.*"),
                         cp.slice("sun.jvm.hotspot.runtime.win32_amd64.*"),
                         cp.slice("sun.jvm.hotspot.runtime.win32_x86.*"),

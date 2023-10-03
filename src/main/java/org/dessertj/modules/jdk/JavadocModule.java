@@ -19,6 +19,7 @@ package org.dessertj.modules.jdk;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,7 +30,7 @@ import org.dessertj.slicing.Slices;
 class JavadocModule extends FixedModule {
 
     JavadocModule(Classpath cp) {
-        super("jdk.javadoc", "17",
+        super("jdk.javadoc", "21",
                 Slices.of(
                         cp.slice("jdk.javadoc.doclet.*")
                 ),
@@ -45,8 +46,8 @@ class JavadocModule extends FixedModule {
                         cp.slice("jdk.javadoc.internal.doclets.toolkit.resources.*"),
                         cp.slice("jdk.javadoc.internal.doclets.toolkit.resources.releases.*"),
                         cp.slice("jdk.javadoc.internal.doclets.toolkit.taglets.*"),
+                        cp.slice("jdk.javadoc.internal.doclets.toolkit.taglets.snippet.*"),
                         cp.slice("jdk.javadoc.internal.doclets.toolkit.util.*"),
-                        cp.slice("jdk.javadoc.internal.doclets.toolkit.util.links.*"),
                         cp.slice("jdk.javadoc.internal.doclint.*"),
                         cp.slice("jdk.javadoc.internal.doclint.resources.*"),
                         cp.slice("jdk.javadoc.internal.tool.*"),

@@ -19,6 +19,7 @@ package org.dessertj.modules.java;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,7 +30,7 @@ import org.dessertj.slicing.Slices;
 class TransactionXaModule extends FixedModule {
 
     TransactionXaModule(Classpath cp) {
-        super("java.transaction.xa", "17",
+        super("java.transaction.xa", "21",
                 Slices.of(
                         cp.slice("javax.transaction.xa.*")
                 ),

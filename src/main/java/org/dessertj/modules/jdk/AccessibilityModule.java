@@ -19,6 +19,7 @@ package org.dessertj.modules.jdk;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,12 +30,11 @@ import org.dessertj.slicing.Slices;
 class AccessibilityModule extends FixedModule {
 
     AccessibilityModule(Classpath cp) {
-        super("jdk.accessibility", "17",
+        super("jdk.accessibility", "21",
                 Slices.of(
                         cp.slice("com.sun.java.accessibility.util.*")
                 ),
                 Slices.of(
-                        cp.slice("com.sun.java.accessibility.internal.*"),
                         cp.slice("com.sun.java.accessibility.util.*"),
                         cp.slice("com.sun.java.accessibility.util.internal.*")
                 ));

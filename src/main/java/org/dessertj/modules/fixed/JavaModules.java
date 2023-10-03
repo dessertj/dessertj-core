@@ -19,6 +19,7 @@ package org.dessertj.modules.fixed;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.DelegateModule;
 import org.dessertj.modules.core.ModuleLookup;
 import org.dessertj.modules.core.ModuleSlice;

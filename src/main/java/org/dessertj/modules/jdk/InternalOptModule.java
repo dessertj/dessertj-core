@@ -19,6 +19,7 @@ package org.dessertj.modules.jdk;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,14 +30,15 @@ import org.dessertj.slicing.Slices;
 class InternalOptModule extends FixedModule {
 
     InternalOptModule(Classpath cp) {
-        super("jdk.internal.opt", "17",
+        super("jdk.internal.opt", "21",
                 Slices.of(
                         
                 ),
                 Slices.of(
                         cp.slice("jdk.internal.joptsimple.*"),
                         cp.slice("jdk.internal.joptsimple.internal.*"),
-                        cp.slice("jdk.internal.joptsimple.util.*")
+                        cp.slice("jdk.internal.joptsimple.util.*"),
+                        cp.slice("jdk.internal.opt.*")
                 ));
     }
 }

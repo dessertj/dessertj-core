@@ -19,6 +19,7 @@ package org.dessertj.modules.java;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,7 +30,7 @@ import org.dessertj.slicing.Slices;
 class SecurityJgssModule extends FixedModule {
 
     SecurityJgssModule(Classpath cp) {
-        super("java.security.jgss", "17",
+        super("java.security.jgss", "21",
                 Slices.of(
                         cp.slice("javax.security.auth.kerberos.*"),
                         cp.slice("org.ietf.jgss.*")
@@ -51,7 +52,6 @@ class SecurityJgssModule extends FixedModule {
                         cp.slice("sun.security.krb5.internal.crypto.dk.*"),
                         cp.slice("sun.security.krb5.internal.ktab.*"),
                         cp.slice("sun.security.krb5.internal.rcache.*"),
-                        cp.slice("sun.security.krb5.internal.tools.*"),
                         cp.slice("sun.security.krb5.internal.util.*")
                 ));
     }

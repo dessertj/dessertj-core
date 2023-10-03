@@ -19,6 +19,7 @@ package org.dessertj.modules.jdk;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,7 +30,7 @@ import org.dessertj.slicing.Slices;
 class RandomModule extends FixedModule {
 
     RandomModule(Classpath cp) {
-        super("jdk.random", "17",
+        super("jdk.random", "21",
                 Slices.of(
                         
                 ),

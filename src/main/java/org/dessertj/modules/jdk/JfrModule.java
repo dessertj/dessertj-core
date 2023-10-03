@@ -19,6 +19,7 @@ package org.dessertj.modules.jdk;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,7 +30,7 @@ import org.dessertj.slicing.Slices;
 class JfrModule extends FixedModule {
 
     JfrModule(Classpath cp) {
-        super("jdk.jfr", "17",
+        super("jdk.jfr", "21",
                 Slices.of(
                         cp.slice("jdk.jfr.*"),
                         cp.slice("jdk.jfr.consumer.*")
@@ -40,16 +41,22 @@ class JfrModule extends FixedModule {
                         cp.slice("jdk.jfr.events.*"),
                         cp.slice("jdk.jfr.internal.*"),
                         cp.slice("jdk.jfr.internal.consumer.*"),
+                        cp.slice("jdk.jfr.internal.consumer.filter.*"),
                         cp.slice("jdk.jfr.internal.dcmd.*"),
-                        cp.slice("jdk.jfr.internal.handlers.*"),
+                        cp.slice("jdk.jfr.internal.event.*"),
                         cp.slice("jdk.jfr.internal.instrument.*"),
                         cp.slice("jdk.jfr.internal.jfc.*"),
                         cp.slice("jdk.jfr.internal.jfc.model.*"),
                         cp.slice("jdk.jfr.internal.management.*"),
+                        cp.slice("jdk.jfr.internal.periodic.*"),
+                        cp.slice("jdk.jfr.internal.query.*"),
                         cp.slice("jdk.jfr.internal.settings.*"),
                         cp.slice("jdk.jfr.internal.test.*"),
                         cp.slice("jdk.jfr.internal.tool.*"),
-                        cp.slice("jdk.jfr.internal.types.*")
+                        cp.slice("jdk.jfr.internal.types.*"),
+                        cp.slice("jdk.jfr.internal.util.*"),
+                        cp.slice("jdk.jfr.snippets.*"),
+                        cp.slice("jdk.jfr.snippets.consumer.*")
                 ));
     }
 }

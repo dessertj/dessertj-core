@@ -19,6 +19,7 @@ package org.dessertj.modules.jdk;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,7 +30,7 @@ import org.dessertj.slicing.Slices;
 class SecurityJgssModule extends FixedModule {
 
     SecurityJgssModule(Classpath cp) {
-        super("jdk.security.jgss", "17",
+        super("jdk.security.jgss", "21",
                 Slices.of(
                         cp.slice("com.sun.security.jgss.*")
                 ),

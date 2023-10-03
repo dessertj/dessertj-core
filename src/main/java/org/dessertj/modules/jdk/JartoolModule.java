@@ -19,6 +19,7 @@ package org.dessertj.modules.jdk;
  * limitations under the License.
  * #L%
  */
+
 import org.dessertj.modules.core.FixedModule;
 import org.dessertj.slicing.Classpath;
 import org.dessertj.slicing.Slices;
@@ -29,13 +30,11 @@ import org.dessertj.slicing.Slices;
 class JartoolModule extends FixedModule {
 
     JartoolModule(Classpath cp) {
-        super("jdk.jartool", "17",
+        super("jdk.jartool", "21",
                 Slices.of(
-                        cp.slice("com.sun.jarsigner.*"),
                         cp.slice("jdk.security.jarsigner.*")
                 ),
                 Slices.of(
-                        cp.slice("com.sun.jarsigner.*"),
                         cp.slice("jdk.security.jarsigner.*"),
                         cp.slice("sun.security.tools.jarsigner.*"),
                         cp.slice("sun.tools.jar.*"),
