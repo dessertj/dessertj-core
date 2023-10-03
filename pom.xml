@@ -51,13 +51,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>dessertj-core-java9</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- must use these old dependencies to be compatible with Java 6 -->
         <dependency>
             <groupId>junit</groupId>
@@ -105,28 +98,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.8</version>
-                <executions>
-                    <execution>
-                        <id>add-java9-supplement</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeGroupIds>${project.groupId}</includeGroupIds>
-                            <includeArtifactIds>dessertj-core-java9</includeArtifactIds>
-                            <excludeTransitive>true</excludeTransitive>
-                            <includes>**/*.class</includes>
-                            <outputDirectory>${project.build.directory}/generated-resources/META-INF/versions/9
-                            </outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
@@ -165,6 +136,9 @@
                             <roots>
                                 <root>src/main/java</root>
                                 <root>src/test/java</root>
+                                <root>${project.basedir}/src/main/java9</root>
+                                <root>${project.basedir}/dessertj-core-java9/src/main/java</root>
+                                <root>${project.basedir}/dessertj-core-java9/src/test/java</root>
                             </roots>
                         </configuration>
                     </execution>
@@ -284,6 +258,7 @@
                                     </jdkToolchain>
                                     <compileSourceRoots>
                                         <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+                                        <compileSourceRoot>${project.basedir}/dessertj-core-java9/src/main/java</compileSourceRoot>
                                     </compileSourceRoots>
                                     <multiReleaseOutput>true</multiReleaseOutput>
                                 </configuration>
