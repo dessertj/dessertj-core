@@ -22,6 +22,7 @@ package org.dessertj.slicing;
 
 import org.dessertj.samples.basic.Outer;
 import org.dessertj.samples.dollar.Dollar;
+import org.dessertj.util.Predicate;
 import org.junit.Test;
 
 import java.io.File;
@@ -84,7 +85,9 @@ public class ClazzTest {
 
     @Test
     public void testDessertNames() {
-        Slice dessertj = cp.packageTreeOf("org.dessertj");
+        Slice dessertj = cp.rootOf(Slice.class)
+                .minus(isVersioned())
+                .plus(cp.rootOf(SliceTest.class));
         for (Clazz clazz : dessertj.getClazzes()) {
             String name = clazz.getClassImpl().getName();
             assertThat(clazz.getName()).as(name).isEqualTo(name);
@@ -93,5 +96,14 @@ public class ClazzTest {
         }
         assertThat(dessertj.contains(cp.asClazz(Clazz.class)));
         assertThat(dessertj.contains(cp.asClazz(Dollar.class)));
+    }
+
+    private Predicate<Clazz> isVersioned() {
+        return new Predicate<Clazz>() {
+            @Override
+            public boolean test(Clazz clazz) {
+                return clazz.getVersion() != null;
+            }
+        };
     }
 }
