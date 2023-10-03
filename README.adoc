@@ -33,7 +33,7 @@ Add the _dessertj-core_ dependency:
 <dependency>
     <groupId>org.dessertj</groupId>
     <artifactId>dessertj-core</artifactId>
-    <version>0.6.1</version>
+    <version>0.6.2</version>
     <scope>test</scope>
 </dependency>
 ----
