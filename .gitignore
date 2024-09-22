@@ -1,5 +1,6 @@
 /target/
 /dessertj-core-java9/target/
+/.sdkmanrc
 *~
 
 # ignore eclipse specific files
