@@ -34,7 +34,7 @@ public class SamplesDependenciesTest {
 
     /**
      * Make sure dependencies introduced by a
-     * <a href="https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-4.html#jvms-4.7.18">RuntimeVisibleParameterAnnotations Attribute</a>
+     * <a href="https://docs.oracle.com/javase/specs/jvms/se23/html/jvms-4.html#jvms-4.7.18">RuntimeVisibleParameterAnnotations Attribute</a>
      * are detected.
      */
     @Test

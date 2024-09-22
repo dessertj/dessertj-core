@@ -25,7 +25,7 @@ import java.io.IOException;
 
 /**
  * This is a placeholder for an attribute that is new or not relevant for dependency detection. For details see
- * <a href="https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-4.html#jvms-4.7" target="_blank">
+ * <a href="https://docs.oracle.com/javase/specs/jvms/se23/html/jvms-4.html#jvms-4.7" target="_blank">
  * Java Virtual Machine Specification: 4.7. Attributes</a>.
  */
 public class UnknownAttribute extends AttributeInfo {
