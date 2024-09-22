@@ -4,7 +4,7 @@ package org.dessertj.assertions;
  * #%L
  * DessertJ Dependency Assertion Library for Java
  * %%
- * Copyright (C) 2017 - 2023 Hans Jörg Heßmann
+ * Copyright (C) 2017 - 2024 Hans Jörg Heßmann
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,11 @@ import org.dessertj.slicing.Slice;
 import org.dessertj.slicing.Slices;
 import org.dessertj.util.Dag;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implements a DSL for slice assertions using a fluent API.

@@ -4,7 +4,7 @@ package org.dessertj.partitioning;
  * #%L
  * DessertJ Dependency Assertion Library for Java
  * %%
- * Copyright (C) 2017 - 2023 Hans Jörg Heßmann
+ * Copyright (C) 2017 - 2024 Hans Jörg Heßmann
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.lang.annotation.*;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 
 import static org.fest.assertions.Assertions.assertThat;

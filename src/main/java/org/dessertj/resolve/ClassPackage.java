@@ -4,7 +4,7 @@ package org.dessertj.resolve;
  * #%L
  * DessertJ Dependency Assertion Library for Java
  * %%
- * Copyright (C) 2017 - 2023 Hans Jörg Heßmann
+ * Copyright (C) 2017 - 2024 Hans Jörg Heßmann
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,11 @@ package org.dessertj.resolve;
 
 import org.dessertj.matching.ShortNameMatcher;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
 /**

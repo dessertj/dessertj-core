@@ -4,7 +4,7 @@ package org.dessertj.classfile;
  * #%L
  * DessertJ Dependency Assertion Library for Java
  * %%
- * Copyright (C) 2017 - 2023 Hans Jörg Heßmann
+ * Copyright (C) 2017 - 2024 Hans Jörg Heßmann
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,27 @@ package org.dessertj.classfile;
  * #L%
  */
 
-import org.dessertj.classfile.attribute.*;
+import org.dessertj.classfile.attribute.AttributeInfo;
 import org.dessertj.classfile.attribute.AttributeInfo.AttributeContext;
+import org.dessertj.classfile.attribute.Attributes;
+import org.dessertj.classfile.attribute.DeprecatedAttribute;
+import org.dessertj.classfile.attribute.EnclosingMethodAttribute;
+import org.dessertj.classfile.attribute.InnerClass;
+import org.dessertj.classfile.attribute.InnerClassesAttribute;
+import org.dessertj.classfile.attribute.NestHostAttribute;
+import org.dessertj.classfile.attribute.NestMembersAttribute;
 import org.dessertj.classfile.constpool.ConstantPool;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Wraps the information contained in a .class file according

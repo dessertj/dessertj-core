@@ -4,7 +4,7 @@ package org.dessertj.classfile;
  * #%L
  * DessertJ Dependency Assertion Library for Java
  * %%
- * Copyright (C) 2017 - 2023 Hans Jörg Heßmann
+ * Copyright (C) 2017 - 2024 Hans Jörg Heßmann
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,13 @@ package org.dessertj.classfile;
 import org.dessertj.classfile.attribute.AttributeInfo;
 import org.dessertj.classfile.constpool.FieldType;
 import org.dessertj.classfile.constpool.MethodType;
-import org.fest.assertions.*;
+import org.fest.assertions.Assertions;
+import org.fest.assertions.BooleanAssert;
+import org.fest.assertions.CollectionAssert;
+import org.fest.assertions.IntAssert;
+import org.fest.assertions.ObjectArrayAssert;
+import org.fest.assertions.ObjectAssert;
+import org.fest.assertions.StringAssert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;

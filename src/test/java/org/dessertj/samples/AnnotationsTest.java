@@ -4,7 +4,7 @@ package org.dessertj.samples;
  * #%L
  * DessertJ Dependency Assertion Library for Java
  * %%
- * Copyright (C) 2017 - 2023 Hans Jörg Heßmann
+ * Copyright (C) 2017 - 2024 Hans Jörg Heßmann
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,15 @@ package org.dessertj.samples;
  */
 
 import org.dessertj.classfile.ClassFile;
-import org.dessertj.samples.annotations.*;
+import org.dessertj.samples.annotations.AnnotatedObject;
+import org.dessertj.samples.annotations.InvisibleAnnotation;
+import org.dessertj.samples.annotations.InvisibleArg;
+import org.dessertj.samples.annotations.InvisibleNestedAnnotation;
+import org.dessertj.samples.annotations.MetaAnnotatedObject;
+import org.dessertj.samples.annotations.SampleAnnotation;
+import org.dessertj.samples.annotations.SpecialArg;
+import org.dessertj.samples.annotations.SpecialArgSample;
+import org.dessertj.samples.annotations.Val3Annotation;
 import org.junit.Test;
 
 import java.io.IOException;

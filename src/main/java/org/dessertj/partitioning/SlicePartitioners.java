@@ -4,7 +4,7 @@ package org.dessertj.partitioning;
  * #%L
  * DessertJ Dependency Assertion Library for Java
  * %%
- * Copyright (C) 2017 - 2023 Hans Jörg Heßmann
+ * Copyright (C) 2017 - 2024 Hans Jörg Heßmann
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,14 @@ package org.dessertj.partitioning;
 import org.dessertj.slicing.Clazz;
 import org.dessertj.slicing.SlicePartitioner;
 
-import static org.dessertj.partitioning.ClazzPredicates.*;
-import static org.dessertj.util.Predicates.*;
+import static org.dessertj.partitioning.ClazzPredicates.ANNOTATION;
+import static org.dessertj.partitioning.ClazzPredicates.EACH;
+import static org.dessertj.partitioning.ClazzPredicates.ENUM;
+import static org.dessertj.partitioning.ClazzPredicates.INTERFACE;
+import static org.dessertj.partitioning.ClazzPredicates.SYNTHETIC;
+import static org.dessertj.util.Predicates.and;
+import static org.dessertj.util.Predicates.not;
+import static org.dessertj.util.Predicates.or;
 
 public class SlicePartitioners {
 
