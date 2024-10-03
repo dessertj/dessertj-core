@@ -4,7 +4,7 @@
 
     <groupId>org.dessertj</groupId>
     <artifactId>dessertj-core</artifactId>
-    <version>0.6.3-SNAPSHOT</version>
+    <version>0.6.3</version>
 
     <name>DessertJ Dependency Assertion Library for Java</name>
     <description>A library for unit-tests to check the dependencies between classes.</description>
@@ -34,7 +34,7 @@
         <connection>scm:git:git@github.com:dessertj/dessertj-core.git</connection>
         <developerConnection>scm:git:git@github.com:dessertj/dessertj-core.git</developerConnection>
         <url>https://github.com/dessertj/dessertj-core</url>
-        <tag>HEAD</tag>
+        <tag>dessertj-core-0.6.3</tag>
     </scm>
 
     <issueManagement>
