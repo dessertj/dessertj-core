@@ -23,7 +23,7 @@ Can you see the advantage? If you use this API to describe your
 architecture within a unit-test, it will ensure reality matches
 the design each time the test is run.
 
-DessertJ supports any JDK version between 6 and 21.
+DessertJ supports any JDK version between 6 and 23.
 
 == Getting started
 
@@ -33,7 +33,7 @@ Add the _dessertj-core_ dependency:
 <dependency>
     <groupId>org.dessertj</groupId>
     <artifactId>dessertj-core</artifactId>
-    <version>0.6.2</version>
+    <version>0.6.3</version>
     <scope>test</scope>
 </dependency>
 ----
