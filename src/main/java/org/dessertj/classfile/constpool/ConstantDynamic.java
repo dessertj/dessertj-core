@@ -27,7 +27,7 @@ class ConstantDynamic extends ConstantPoolEntry {
 	public static final int TAG = 17;
 	private final int bootstrapMethodAttrIndex;
 	private final int nameAndTypeIndex;
-	private MethodType type;
+	private FieldType type;
 
 	public ConstantDynamic(int bootstrapMethodAttrIndex, int referenceIndex) {
 		this.bootstrapMethodAttrIndex = bootstrapMethodAttrIndex;
@@ -43,28 +43,28 @@ class ConstantDynamic extends ConstantPoolEntry {
 	public String dump() {
 		return dump("[" + bootstrapMethodAttrIndex + "]" + "." + index(nameAndTypeIndex),
 				"[bootstrapMethodAttrIndex=" + bootstrapMethodAttrIndex + "]"
-						+ "." + getMethodName() + ": " + getMethodType());
+						+ "." + getFieldName() + ": " + getFieldType());
 	}
 
 	public int getBootstrapMethodAttrIndex() {
 		return bootstrapMethodAttrIndex;
 	}
 
-	public String getMethodName() {
+	public String getFieldName() {
 		ConstantNameAndType nameAndType = getConstantPoolEntry(nameAndTypeIndex);
 		return nameAndType.getName();
 	}
 
-	public MethodType getMethodType() {
+	public FieldType getFieldType() {
 		if (type == null) {
 			ConstantNameAndType nameAndType = getConstantPoolEntry(nameAndTypeIndex);
-			type = new MethodType(nameAndType.getDescriptor());
+			type = new FieldType(nameAndType.getDescriptor());
 		}
 		return type;
 	}
 
 	@Override
 	public void addDependentClassNames(Set<String> classNames) {
-		getMethodType().addDependentClassNames(classNames);
+		getFieldType().addDependentClassNames(classNames);
 	}
 }
