@@ -4,7 +4,7 @@ package org.dessertj.modules.java;
  * #%L
  * DessertJ Dependency Assertion Library for Java
  * %%
- * Copyright (C) 2017 - 2024 Hans Jörg Heßmann
+ * Copyright (C) 2017 - 2025 Hans Jörg Heßmann
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
